@@ -1,0 +1,463 @@
+/* Calendar grid specific styles */
+
+.calendar-shell {
+  display: grid;
+  grid-template-columns: var(--facility-label-width) 1fr;
+  position: relative;
+  overflow: auto;
+  /* Fit the viewport minus the topbar and some page chrome; status bar removed */
+  max-height: calc(100vh - var(--topbar-height) - 17rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.time-axis {
+  grid-column: 1 / -1;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--color-grid-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.time-axis .time-row {
+  display: flex;
+  align-items: stretch;
+  height: calc(var(--row-height) + 16px);
+}
+
+.time-axis .time-cell {
+  width: var(--time-slot-width);
+  flex: 0 0 var(--time-slot-width);
+  padding: 0 0 0 4px;
+  text-align: left;
+  border-left: 1px solid var(--color-border-faint);
+  /* faint line for 10-min divisions */
+  font-size: 12px;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.time-axis .time-cell.hour {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  border-left: 1px solid var(--color-border-heavy);
+  /* more visible line for hourly timestamps */
+}
+
+.corner-cell {
+  width: var(--facility-label-width);
+  min-width: var(--facility-label-width);
+  padding: 0.5rem 1rem;
+  border-right: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+}
+
+.facility-group {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--color-surface-subtle);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-strong);
+  margin: 16px 0 8px 0;
+  box-sizing: border-box;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+}
+
+.facility-row {
+  display: grid;
+  grid-template-columns: var(--facility-label-width) repeat(60, var(--time-slot-width));
+  align-items: stretch;
+  grid-column: 1 / -1;
+}
+
+.facility-label {
+  position: sticky;
+  left: 0;
+  z-index: 25;
+  width: var(--facility-label-width);
+  min-width: var(--facility-label-width);
+  background: var(--color-facility-header-bg);
+  padding: 0.5rem 1rem;
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  grid-column: 1;
+}
+
+/* alternating row background for readability */
+.facility-row:nth-of-type(2n) {
+  background: var(--color-surface-faint);
+}
+
+.time-grid {
+  display: contents;
+}
+
+.time-grid-inner {
+  display: contents;
+}
+
+/* Calendar body: removed in favor of direct calendar-shell scroll container */
+.calendar-body {
+  display: none;
+}
+
+/* Overlay container: removed in favor of direct child positioning */
+.time-grid-overlay {
+  display: contents;
+}
+
+/* Current time indicator: vertical red line */
+.current-time-indicator {
+  position: absolute;
+  /* place indicator below the TimeAxis header inside the calendar shell */
+  top: var(--row-height);
+  height: calc(100% - var(--row-height));
+  width: 0;
+  border-left: 1.5px dashed #4b0909;
+  z-index: 22;
+  pointer-events: none;
+  display: none;
+}
+
+.time-slot {
+  width: var(--time-slot-width);
+  height: 100%;
+  min-height: var(--row-height);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* hover affordance for available and past slots */
+.time-slot.available:hover {
+  background: rgba(34, 197, 94, 0.12);
+  cursor: pointer
+}
+
+.time-slot.past:hover {
+  background: rgba(156, 163, 175, 0.18);
+  cursor: pointer
+}
+
+/* available empty slots (future or implicitly free) */
+.time-slot.available {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--color-available)
+}
+
+/* past empty slots use past legend color */
+.time-slot.past {
+  background: rgba(156, 163, 175, 0.12);
+  color: var(--color-past);
+  cursor: pointer
+}
+
+.time-cell.past {
+  color: rgba(148, 163, 184, 0.5);
+}
+
+.booking-block {
+  height: 100%;
+  min-height: var(--row-height);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 6px 8px;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-text-primary);
+  font-size: 12px;
+  align-self: stretch;
+  border-right: 1px solid var(--color-border);
+}
+
+.booking-AVAILABLE {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--color-available);
+  cursor: pointer
+}
+
+.booking-AVAILABLE:hover {
+  background: rgba(34, 197, 94, 0.2)
+}
+
+.time-slot.selected,
+.booking-block.selected {
+  box-shadow: inset 0 0 0 2px rgba(234, 179, 8, 0.95), 0 0 14px rgba(234, 179, 8, 0.25);
+}
+
+.time-slot.selected {
+  background: rgba(250, 204, 21, 0.16);
+}
+
+.booking-block.selected {
+  background: rgba(250, 204, 21, 0.16);
+}
+
+.booking-RESERVED {
+  background: var(--color-reserved);
+  color: white;
+  opacity: 0.6;
+  cursor: pointer
+}
+
+.booking-RESERVED:hover {
+  opacity: 0.8
+}
+
+.booking-PENDING {
+  background: var(--color-pending);
+  color: white;
+  opacity: 0.6;
+  cursor: pointer
+}
+
+.booking-PENDING:hover {
+  opacity: 0.8
+}
+
+.booking-MY_BOOKING {
+  background: var(--color-my-booking);
+  color: white;
+  opacity: 0.6;
+  cursor: pointer
+}
+
+.booking-MY_BOOKING:hover {
+  opacity: 0.8
+}
+
+.booking-UNAVAILABLE {
+  background: var(--color-unavailable);
+  color: white;
+  opacity: 0.6;
+  cursor: pointer
+}
+
+.booking-UNAVAILABLE:hover {
+  opacity: 0.8
+}
+
+.booking-PAST {
+  background: rgba(156, 163, 175, 0.12);
+  color: var(--color-past);
+  opacity: 0.7;
+  cursor: pointer
+}
+
+.booking-PAST:hover {
+  opacity: 0.85
+}
+
+.booking-RESERVED-END {
+  background: color-mix(in srgb, var(--color-reserved) 45%, transparent);
+  color: white;
+  opacity: 0.5;
+  cursor: default;
+  position: relative
+}
+
+.booking-RESERVED-END::after {
+  content: 'Event ENDED';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  opacity: 0.5
+}
+
+.booking-RESERVED-END:hover {
+  opacity: 0.6
+}
+
+.booking-PENDING-END {
+  background: color-mix(in srgb, var(--color-pending) 45%, transparent);
+  color: white;
+  opacity: 0.5;
+  cursor: default;
+  position: relative
+}
+
+.booking-PENDING-END::after {
+  content: 'Event ENDED';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  opacity: 0.5
+}
+
+.booking-PENDING-END:hover {
+  opacity: 0.6
+}
+
+.booking-UNAVAILABLE-END {
+  background: color-mix(in srgb, var(--color-unavailable) 45%, transparent);
+  color: white;
+  opacity: 0.5;
+  cursor: default;
+  position: relative
+}
+
+.booking-UNAVAILABLE-END::after {
+  content: 'Event ENDED';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  opacity: 0.5
+}
+
+.booking-UNAVAILABLE-END:hover {
+  opacity: 0.6
+}
+
+.booking-MY_BOOKING-END {
+  background: color-mix(in srgb, var(--color-my-booking) 45%, transparent);
+  color: white;
+  opacity: 0.5;
+  cursor: default;
+  position: relative
+}
+
+.booking-MY_BOOKING-END::after {
+  content: 'Event ENDED';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  opacity: 0.5
+}
+
+.booking-MY_BOOKING-END:hover {
+  opacity: 0.6
+}
+
+.booking-CANCELLED {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--color-text-muted)
+}
+
+.booking-COMPLETED {
+  background: rgba(34, 197, 94, 0.08);
+  color: var(--color-available)
+}
+
+.booking-REJECTED {
+  background: rgba(239, 68, 68, 0.12);
+  color: var(--color-unavailable)
+}
+
+.booking-NO_SHOW {
+  background: rgba(107, 114, 128, 0.12);
+  color: var(--color-text-muted)
+}
+
+/* small responsive tweak: ensure grid doesn't collapse */
+@media (max-width: 800px) {
+  .time-axis .time-cell {
+    padding: 0 4px;
+    font-size: 11px
+  }
+}
+
+/* Calendar legend (status color key) */
+.calendar-legend {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 0;
+  display: inline-block;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.legend-label {
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+}
+
+.legend-swatch.booking-AVAILABLE {
+  background: var(--color-available);
+}
+
+.legend-swatch.booking-RESERVED {
+  background: var(--color-reserved);
+}
+
+.legend-swatch.booking-PENDING {
+  background: var(--color-pending);
+}
+
+.legend-swatch.booking-UNAVAILABLE {
+  background: var(--color-unavailable);
+}
+
+.legend-swatch.booking-MY_BOOKING {
+  background: var(--color-my-booking);
+}
+
+.legend-swatch.booking-PAST {
+  background: var(--color-past);
+  border: 1px solid var(--color-border-faint);
+  opacity: 0.9;
+}
+
+.legend-swatch.booking-CANCELLED {
+  background: rgba(148, 163, 184, 0.9);
+}
+
+.legend-swatch.booking-COMPLETED {
+  background: rgba(34, 197, 94, 0.95);
+}
+
+.legend-swatch.booking-REJECTED {
+  background: rgba(239, 68, 68, 0.95);
+}
+
+.legend-swatch.booking-NO_SHOW {
+  background: rgba(107, 114, 128, 0.9);
+}
