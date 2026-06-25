@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+mysql-connector-python
+passlib[bcrypt]
+pydantic
+pydantic[email]
+dotenv
+bcrypt
+apscheduler
