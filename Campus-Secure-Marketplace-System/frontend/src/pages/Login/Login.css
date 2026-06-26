@@ -1,0 +1,109 @@
+.login-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--color-dark-blue), var(--color-blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+.login-card {
+  background: var(--color-card);
+  border-radius: var(--radius-xl);
+  padding: 36px 28px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+}
+
+.login-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.login-logo-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, var(--color-blue), var(--color-dark-blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.login-logo-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--color-dark-blue);
+  line-height: 1.1;
+}
+
+.login-logo-sub {
+  font-size: 11px;
+  color: var(--color-text-sec);
+  font-weight: 500;
+}
+
+.login-heading {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.login-sub {
+  font-size: 13px;
+  color: var(--color-text-sec);
+  margin-bottom: 24px;
+}
+
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--color-red-soft);
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-md);
+  padding: 11px 14px;
+  margin-bottom: 18px;
+  font-size: 13px;
+  color: var(--color-red-dark);
+  font-weight: 500;
+}
+
+.login-password-wrap {
+  position: relative;
+}
+
+.login-password-wrap .input-field {
+  padding-right: 44px;
+}
+
+.login-eye-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-sec);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color var(--transition);
+}
+.login-eye-btn:hover { color: var(--color-text); }
+
+.login-footer {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 11px;
+  color: var(--color-text-hint);
+  line-height: 1.8;
+}
