@@ -1,0 +1,224 @@
+/**
+ * Global Styles - Campus Facility Reservation System
+ * Reset, base fonts, box-sizing, and global defaults
+ */
+
+/**
+ * RESET AND BASE STYLES
+ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/**
+ * HTML AND BODY
+ */
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  background-color: var(--color-grid-bg);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/**
+ * TYPOGRAPHY
+ */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+h4 {
+  font-size: 1.125rem;
+}
+
+h5 {
+  font-size: 1rem;
+}
+
+h6 {
+  font-size: 0.875rem;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-available);
+    outline-offset: 2px;
+  }
+}
+
+/**
+ * FORM ELEMENTS
+ */
+input,
+textarea,
+select,
+button {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+input,
+textarea,
+select {
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-grid-bg);
+  color: var(--color-text-primary);
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-available);
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+/**
+ * BUTTONS
+ */
+button {
+  cursor: pointer;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  background-color: var(--color-available);
+  color: #ffffff;
+  font-weight: 500;
+  transition: background-color var(--transition-base);
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-available);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/**
+ * LISTS
+ */
+ul, ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+/**
+ * SCROLLBAR STYLING
+ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--color-grid-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 4px;
+
+  &:hover {
+    background-color: var(--color-text-muted);
+  }
+}
+
+/**
+ * SELECTION
+ */
+::selection {
+  background-color: var(--color-available);
+  color: #ffffff;
+}
+
+/**
+ * ACCESSIBILITY
+ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/**
+ * FOCUS VISIBLE FOR KEYBOARD NAVIGATION
+ */
+:focus-visible {
+  outline: 2px solid var(--color-available);
+  outline-offset: 2px;
+}
+
+/**
+ * REDUCE MOTION FOR ACCESSIBILITY
+ */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

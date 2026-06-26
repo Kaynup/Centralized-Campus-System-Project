@@ -1,0 +1,6 @@
+full_name,email,password,role
+Alice Student,alicestud@example.com,Password123!,student
+Bob Professor,bobprof@example.com,Password123!,professor
+Charlie Admin,charlieadm@example.com,Password123!,admin
+Duplicate Test,alicestud@example.com,Password123!,student
+Missing Role,missing@example.com,Password123!,

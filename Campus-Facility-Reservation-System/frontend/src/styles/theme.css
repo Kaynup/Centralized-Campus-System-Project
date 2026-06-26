@@ -1,0 +1,145 @@
+/**
+ * Theme CSS - Campus Facility Reservation System
+ * Defines all CSS custom properties for colors, spacing, fonts, and layout
+ * Dark theme as default
+ */
+
+:root {
+  /* BOOKING STATUS COLORS (States = 6) */
+  --color-available: #136732;
+  --color-reserved: #193f7d;
+  --color-pending: #9c5624;
+  --color-unavailable: #7c2222;
+  --color-my-booking: #653196;
+  --color-past: #6b6d6f;
+
+  /* BACKGROUND COLORS (Dark theme) */
+  --color-sidebar-bg: #1e1e2e;
+  --color-topbar-bg: #1a1a2e;
+  --color-grid-bg: #0f0f1a;
+  --color-facility-header-bg: #16213e;
+  --color-border: #2d2d4e;
+
+  /* TEXT COLORS */
+  --color-text-primary: #e2e8f0;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+
+  /* TYPOGRAPHY */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* BORDER RADIUS */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* SHADOWS */
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.2);
+
+  /* LAYOUT DIMENSIONS */
+  --sidebar-width: 360px;
+  --sidebar-collapsed-width: 60px;
+  --topbar-height: 64px;
+  --status-bar-height: 48px;
+  --facility-label-width: 300px;
+  --time-slot-width: 22.5px;
+  --row-height: 56px;
+
+  /* CALCULATED DIMENSIONS */
+  /* Total time grid width: 60 slots × 20px = 1200px */
+  --total-time-grid-width: 1200px;
+
+  /* TRANSITIONS */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-slow: 0.3s ease;
+
+  /* Z-INDEX STACKING */
+  --z-base: 1;
+  --z-sticky: 5;
+  --z-fixed: 10;
+  --z-modal-overlay: 40;
+  --z-drawer: 50;
+  --z-tooltip: 60;
+  --z-current-time: 20;
+
+  /* SURFACE TOKENS (semi-transparent layers, dark-theme default) */
+  --color-surface-faint: rgba(255, 255, 255, 0.01);
+  --color-surface-subtle: rgba(255, 255, 255, 0.04);
+  --color-surface-hover:  rgba(255, 255, 255, 0.06);
+  --color-surface-active: rgba(255, 255, 255, 0.08);
+  --color-surface-card: #0d1527;
+  --color-surface-header: #090d16;
+
+  /* BORDER TOKENS */
+  --color-border-faint: rgba(255, 255, 255, 0.06);
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.15);
+  --color-border-heavy: rgba(255, 255, 255, 0.25);
+
+  /* DANGER TOKENS */
+  --color-danger-muted-bg: rgba(239, 68, 68, 0.08);
+  --color-danger-muted-hover: rgba(239, 68, 68, 0.18);
+  --color-danger-border: rgba(239, 68, 68, 0.4);
+  --color-danger-text: #f87171;
+  
+  /* ADMIN TOKENS */
+  --color-admin-approvals: #f4a861;
+  --color-admin-logs: #b48be8;
+  --color-admin-users: #4CAF50;
+}
+
+/**
+ * Light theme — applied dynamically by ThemeContext
+ * when data-theme="light" is set on <html>.
+ */
+[data-theme="light"] {
+  /* Backgrounds */
+  --color-sidebar-bg:          #ffffff;
+  --color-topbar-bg:           #f8fafc;
+  --color-grid-bg:             #f1f5f9;
+  --color-facility-header-bg:  #e8edf5;
+  --color-border:              #cbd5e1;
+
+  /* Text */
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #334155;
+  --color-text-muted:   #475569;
+
+  /* Status colors — slightly darker for legibility on light background */
+  --color-available:   #15803d;
+  --color-reserved:    #1d4ed8;
+  --color-pending:     #b45309;
+  --color-unavailable: #dc2626;
+  --color-my-booking:  #7c3aed;
+  --color-past:        #6b7280;
+
+  /* Surface tokens */
+  --color-surface-faint:  rgba(0, 0, 0, 0.02);
+  --color-surface-subtle: rgba(0, 0, 0, 0.04);
+  --color-surface-hover:  rgba(0, 0, 0, 0.06);
+  --color-surface-active: rgba(0, 0, 0, 0.08);
+  --color-surface-card: #ffffff;
+  --color-surface-header: #f8fafc;
+
+  /* Border tokens */
+  --color-border-faint: rgba(0, 0, 0, 0.12);
+  --color-border-subtle: rgba(0, 0, 0, 0.15);
+  --color-border-strong: rgba(0, 0, 0, 0.25);
+  --color-border-heavy: rgba(0, 0, 0, 0.35);
+
+  /* Danger tokens */
+  --color-danger-muted-bg: rgba(220, 38, 38, 0.08);
+  --color-danger-muted-hover: rgba(220, 38, 38, 0.18);
+  --color-danger-border: rgba(220, 38, 38, 0.4);
+  --color-danger-text: #dc2626;
+
+  /* Admin tokens */
+  --color-admin-approvals: #d97706; 
+  --color-admin-logs: #7e22ce; 
+  --color-admin-users: #166534; 
+}

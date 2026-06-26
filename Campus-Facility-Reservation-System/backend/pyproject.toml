@@ -1,0 +1,18 @@
+[project]
+name = "campus-facility-reservation"
+version = "0.1.0"
+description = "Campus Facility Reservation System — Backend API"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["app/tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = false
+ignore_missing_imports = true

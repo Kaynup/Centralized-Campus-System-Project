@@ -1,0 +1,186 @@
+/**
+ * MyReservationsPage — /reservations
+ *
+ * Lists all bookings for the current user with status-based filtering
+ * and an inline cancel confirmation modal.
+ *
+ * DEV:  renders MOCK_BOOKINGS — no API calls.
+ * PROD: calls bookingApi.fetchMyBookings() / bookingApi.cancelBooking().
+ */
+
+import { useState, useEffect, useMemo } from 'react';
+import PageLayout from '../components/layout/PageLayout';
+import StatusFilter from '../components/reservations/StatusFilter';
+import ReservationsTable from '../components/reservations/ReservationsTable';
+import CancelModal from '../components/reservations/CancelModal';
+import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../contexts/ToastContext';
+import * as bookingApi from '../api/bookingApi';
+
+/* ── DEV mock data ─────────────────────────────────────────────────────────── */
+const MOCK_BOOKINGS = [
+  { id: 1, facilityName: 'Advanced CS Research Laboratory', facilityGroup: 'Labs',       date: '2026-06-10', startTime: '10:00', endTime: '11:30', status: 'ACTIVE',    deposit: 2 },
+  { id: 2, facilityName: 'Seminar Auditorium 303',           facilityGroup: 'Classrooms', date: '2026-06-12', startTime: '14:00', endTime: '16:00', status: 'PENDING',   deposit: 3 },
+  { id: 3, facilityName: 'Main Conference Grand Hall',        facilityGroup: 'Halls',      date: '2026-05-28', startTime: '09:00', endTime: '12:00', status: 'CANCELLED', deposit: 0 },
+  { id: 4, facilityName: 'Physics Laboratory B',             facilityGroup: 'Labs',       date: '2026-06-15', startTime: '13:00', endTime: '14:00', status: 'ACTIVE',    deposit: 1 },
+  { id: 5, facilityName: 'Study Room 201',                   facilityGroup: 'Rooms',      date: '2026-05-20', startTime: '11:00', endTime: '12:00', status: 'CANCELLED', deposit: 0 },
+  { id: 6, facilityName: 'Sports Court A',                   facilityGroup: 'Sports',     date: '2026-06-11', startTime: '16:00', endTime: '17:30', status: 'PENDING',   deposit: 2 },
+];
+
+export default function MyReservationsPage() {
+  const { user } = useAuth();
+  const { showSuccess, showError } = useToast();
+
+  const [bookings, setBookings]           = useState([]);
+  const [isLoading, setIsLoading]         = useState(true);
+  const [activeFilter, setActiveFilter]   = useState('all');
+  const [cancelTarget, setCancelTarget]   = useState(null);
+  const [isCancelling, setIsCancelling]   = useState(false);
+
+  // Date filter states
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
+  const [enableDateFilter, setEnableDateFilter] = useState(false);
+
+  const handleToggleDateFilter = () => {
+    setEnableDateFilter(prev => !prev);
+  };
+
+  /* ── Load bookings ───────────────────────────────────────────────────────── */
+  useEffect(() => {
+    const load = async () => {
+      setIsLoading(true);
+      if (import.meta.env.DEV) {
+        await new Promise((r) => setTimeout(r, 400));
+        setBookings(MOCK_BOOKINGS);
+      } else {
+        try {
+          const data = await bookingApi.fetchMyBookings();
+          setBookings(data);
+        } catch (err) {
+          console.error('Failed to load bookings:', err);
+          showError('Failed to load reservations.');
+        }
+      }
+      setIsLoading(false);
+    };
+    load();
+  }, []);
+
+  /* ── Counts for filter tabs ──────────────────────────────────────────────── */
+  const counts = useMemo(() => {
+    // Determine which bookings are visible after date filtering (for accurate status counts)
+    const dateFiltered = enableDateFilter ? bookings.filter(b => b.date === selectedDate) : bookings;
+    return {
+      all:       dateFiltered.length,
+      active:    dateFiltered.filter((b) => b.status === 'ACTIVE').length,
+      pending:   dateFiltered.filter((b) => b.status === 'PENDING').length,
+      cancelled: dateFiltered.filter((b) => b.status === 'CANCELLED').length,
+    };
+  }, [bookings, enableDateFilter, selectedDate]);
+
+  /* ── Filtered list ───────────────────────────────────────────────────────── */
+  const filteredBookings = useMemo(() => {
+    let result = bookings;
+    if (activeFilter !== 'all') {
+      result = result.filter((b) => b.status === activeFilter.toUpperCase());
+    }
+    if (enableDateFilter) {
+      result = result.filter(b => b.date === selectedDate);
+    }
+    return result;
+  }, [bookings, activeFilter, selectedDate, enableDateFilter]);
+
+  /* ── Cancel flow ─────────────────────────────────────────────────────────── */
+  const handleCancelConfirm = async (id, reason) => {
+    setIsCancelling(true);
+    try {
+      // Support cancelling single id or array of ids
+      const ids = Array.isArray(id) ? id : [id];
+
+      if (import.meta.env.DEV) {
+        await new Promise((r) => setTimeout(r, 500));
+        setBookings((prev) => prev.map((b) => {
+          const isMatch = Array.isArray(b.id) ? b.id.some(i => ids.includes(i)) : ids.includes(b.id);
+          return isMatch ? { ...b, status: 'CANCELLED' } : b;
+        }));
+        showSuccess('Booking(s) cancelled successfully.');
+      } else {
+        for (const bid of ids) {
+          await bookingApi.cancelBooking(bid, reason);
+        }
+        setBookings((prev) => prev.map((b) => {
+          const isMatch = Array.isArray(b.id) ? b.id.some(i => ids.includes(i)) : ids.includes(b.id);
+          return isMatch ? { ...b, status: 'CANCELLED' } : b;
+        }));
+        showSuccess('Booking(s) cancelled successfully.');
+      }
+    } catch (err) {
+      console.error('Cancel failed:', err);
+      showError('Failed to cancel booking.');
+    } finally {
+      setIsCancelling(false);
+      setCancelTarget(null);
+    }
+  };
+
+  return (
+    <PageLayout
+      currentUser={user}
+      selectedDate={selectedDate}
+      onDateChange={(date) => {
+        setSelectedDate(date);
+        setEnableDateFilter(true);
+      }}
+      enableDateFilter={enableDateFilter}
+      onToggleDateFilter={handleToggleDateFilter}
+    >
+      {/* Page wrapper — fills main content area */}
+      <div
+        style={{
+          padding: '1.5rem 2rem',
+          fontFamily: 'var(--font-sans)',
+          color: 'var(--color-text-primary)',
+          height: 'calc(100vh - var(--topbar-height))',
+          overflowY: 'hidden',
+          boxSizing: 'border-box',
+        }}
+      >
+        {/* Filter tabs */}
+        <div style={{ marginBottom: '1.5rem', flexShrink: 0 }}>
+          <StatusFilter
+            activeFilter={activeFilter}
+            onChange={setActiveFilter}
+            counts={counts}
+          />
+        </div>
+
+        {/* Table card */}
+        <div
+          style={{
+            background: 'var(--color-surface-card)',
+            borderRadius: 'var(--radius-lg)',
+            border: '1px solid var(--color-border)',
+            overflowX: 'auto',
+            overflowY: 'auto',
+            maxHeight: 'calc(100vh - 160px)', // Slightly expanded since header is removed
+            boxShadow: 'var(--shadow-card)',
+          }}
+        >
+          <ReservationsTable
+            bookings={filteredBookings}
+            onCancel={setCancelTarget}
+            isLoading={isLoading}
+          />
+        </div>
+      </div>
+
+      {/* Cancel confirmation modal */}
+      <CancelModal
+        booking={cancelTarget}
+        onConfirm={handleCancelConfirm}
+        onClose={() => setCancelTarget(null)}
+        isLoading={isCancelling}
+      />
+    </PageLayout>
+  );
+}
