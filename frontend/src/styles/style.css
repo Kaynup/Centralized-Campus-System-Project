@@ -1,6 +1,26 @@
 @import "tailwindcss" layer(utilities);
+
 @theme {
   --color-forest: #2D6A4F;
   --color-slate: #2E3440;
   --color-gold: #D4AF37;
-} 
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--color-slate);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+}
