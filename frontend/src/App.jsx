@@ -13,118 +13,120 @@ import ErrorBoundary from "./shared/ui/ErrorBoundary";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import Wallet from "./pages/Wallet";
+import { ToastProvider } from "./shared/ui/Toast";
 
 function App() {
   return (
     <AuthProvider>
-      <WalletProvider>
-        <NotificationProvider>
-          <Routes>
+      <ToastProvider>
+        <WalletProvider>
+          <NotificationProvider>
+            <Routes>
 
-            {/*Public Routes*/}
-            <Route path="/" element={<Login />} />
-            <Route path="/login" element={<Login />} />
+              {/*Public Routes*/}
+              <Route path="/" element={<Login />} />
+              <Route path="/login" element={<Login />} />
 
-            {/* Protected Routes*/}
-            <Route element={<ProtectedRoute />}>
+              {/* Protected Routes*/}
+              <Route element={<ProtectedRoute />}>
 
-              {/* Shared Layout */}
-              <Route element={<AppShell />}>
+                {/* Shared Layout */}
+                <Route element={<AppShell />}>
 
-                {/* Dashboard */}
-                <Route
-                  path="/dashboard"
-                  element={
-                    <ErrorBoundary>
-                      <Dashboard />
-                    </ErrorBoundary>
-                  }
-                />
+                  {/* Dashboard */}
+                  <Route
+                    path="/dashboard"
+                    element={
+                      <ErrorBoundary>
+                        <Dashboard />
+                      </ErrorBoundary>
+                    }
+                  />
 
-                {/* Shared Pages */}
+                  {/* Shared Pages */}
 
-                {/* 
-                <Route
-                  path="/wallet"
-                  element={
-                    <ErrorBoundary>
-                      <Wallet />
-                    </ErrorBoundary>
-                  }
-                />
-                */}
+                  <Route
+                    path="/wallet"
+                    element={
+                      <ErrorBoundary>
+                        <Wallet />
+                      </ErrorBoundary>
+                    }
+                  />
 
-                <Route
-                  path="/profile"
-                  element={
-                    <ErrorBoundary>
-                      <Profile />
-                    </ErrorBoundary>
-                  }
-                />
+                  <Route
+                    path="/profile"
+                    element={
+                      <ErrorBoundary>
+                        <Profile />
+                      </ErrorBoundary>
+                    }
+                  />
 
-                {/*
-                <Route
-                  path="/notifications"
-                  element={
-                    <ErrorBoundary>
-                      <Notifications />
-                    </ErrorBoundary>
-                  }
-                />
-                */}
+                  {/*
+                  <Route
+                    path="/notifications"
+                    element={
+                      <ErrorBoundary>
+                        <Notifications />
+                      </ErrorBoundary>
+                    }
+                  />
+                  */}
 
-                {/*Future Modules*/}
+                  {/*Future Modules*/}
 
-                {/*
-                <Route
-                  path="/equipment/*"
-                  element={
-                    <ErrorBoundary>
-                      <EquipmentRoutes />
-                    </ErrorBoundary>
-                  }
-                />
-                */}
+                  {/*
+                  <Route
+                    path="/equipment/*"
+                    element={
+                      <ErrorBoundary>
+                        <EquipmentRoutes />
+                      </ErrorBoundary>
+                    }
+                  />
+                  */}
 
-                {/*
-                <Route
-                  path="/facility/*"
-                  element={
-                    <ErrorBoundary>
-                      <FacilityRoutes />
-                    </ErrorBoundary>
-                  }
-                />
-                */}
+                  {/*
+                  <Route
+                    path="/facility/*"
+                    element={
+                      <ErrorBoundary>
+                        <FacilityRoutes />
+                      </ErrorBoundary>
+                    }
+                  />
+                  */}
 
-                {/*
-                <Route
-                  path="/marketplace/*"
-                  element={
-                    <ErrorBoundary>
-                      <MarketplaceRoutes />
-                    </ErrorBoundary>
-                  }
-                />
-                */}
+                  {/*
+                  <Route
+                    path="/marketplace/*"
+                    element={
+                      <ErrorBoundary>
+                        <MarketplaceRoutes />
+                      </ErrorBoundary>
+                    }
+                  />
+                  */}
 
-                {/*
-                <Route
-                  path="/admin/*"
-                  element={
-                    <ErrorBoundary>
-                      <AdminRoutes />
-                    </ErrorBoundary>
-                  }
-                />
-                */}
+                  {/*
+                  <Route
+                    path="/admin/*"
+                    element={
+                      <ErrorBoundary>
+                        <AdminRoutes />
+                      </ErrorBoundary>
+                    }
+                  />
+                  */}
 
+                </Route>
               </Route>
-            </Route>
-          </Routes>
-        </NotificationProvider>
-      </WalletProvider>
+            </Routes>
+          </NotificationProvider>
+        </WalletProvider>
+      </ToastProvider>
     </AuthProvider>
   );
 }

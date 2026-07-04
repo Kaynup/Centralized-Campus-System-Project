@@ -1,4 +1,4 @@
-import axiosClient from './axiosClient';
+import { walletClient as axiosClient } from "./axiosClient";
 import { ENDPOINTS } from './endpoints';
 
 export const walletService = {

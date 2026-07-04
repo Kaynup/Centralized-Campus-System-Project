@@ -47,3 +47,4 @@ export const authClient = createClient("http://localhost:8000");
 export const equipmentClient = createClient("http://localhost:8001");
 export const facilityClient = createClient("http://localhost:8002");
 export const marketplaceClient = createClient("http://localhost:8003");
+export const walletClient = authClient;

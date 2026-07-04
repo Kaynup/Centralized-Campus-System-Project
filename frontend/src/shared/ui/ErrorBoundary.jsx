@@ -1,24 +1,5 @@
 import { Component } from "react";
 
-/**
- * ErrorBoundary
- * ------------------------------------------------------------------
- * Error boundaries only work as class components — there's no Hook
- * equivalent for componentDidCatch, so this can't be written as a
- * function component.
- *
- * Where to use it: wrap each module's route (not the whole <App/>),
- * so a crash in, say, the Marketplace module shows a contained "this
- * page hit a problem" screen instead of taking down Equipment Rental
- * and Facility Reservation with it. See the module route stubs for
- * the wrapping pattern.
- *
- * This catches render/lifecycle errors only — it does NOT catch
- * errors inside event handlers or async code (login failures, wallet
- * charges, etc.). Those are handled by parseApiError + try/catch at
- * the call site, same as AuthContext and WalletContext already do.
- * ------------------------------------------------------------------
- */
 export default class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
