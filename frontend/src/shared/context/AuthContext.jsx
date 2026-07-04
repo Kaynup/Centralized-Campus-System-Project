@@ -26,8 +26,30 @@ const MOCK_DELAY_MS = 600;
 
 // MOCK ONLY — until /api/auth/* exists.
 const MOCK_USERS = [
-  { loginId: "admin", password: "admin123", user: { id: "u1", name: "Admin User", role: "admin" } },
-  { loginId: "student", password: "student123", user: { id: "u2", name: "Sample Student", role: "student" } },
+  {
+    loginId: "admin",
+    password: "admin123",
+    user: {
+      id: "u1",
+      name: "Admin User",
+      role: "admin",
+      email: "admin@campus.edu",
+      department: "Administration",
+      phone: "9876500001",
+    },
+  },
+  {
+    loginId: "student",
+    password: "student123",
+    user: {
+      id: "u2",
+      name: "Sample Student",
+      role: "student",
+      email: "student@campus.edu",
+      department: "Computer Science",
+      phone: "9876500002",
+    },
+  },
 ];
 
 function wait(ms) {
@@ -113,4 +135,3 @@ export function AuthProvider({ children }) {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-
