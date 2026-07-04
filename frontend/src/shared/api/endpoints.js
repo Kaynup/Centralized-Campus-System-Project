@@ -14,4 +14,9 @@ export const ENDPOINTS = {
   MARKETPLACE: {
     LISTINGS: "/listings",
   },
+  WALLET: {
+    ME: '/api/wallet/me',
+    TRANSACTIONS: '/api/wallet/transactions',
+    TOPUP: '/api/wallet/topup',
+  },
 };
