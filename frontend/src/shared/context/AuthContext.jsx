@@ -26,8 +26,24 @@ const MOCK_DELAY_MS = 600;
 
 // MOCK ONLY — until /api/auth/* exists.
 const MOCK_USERS = [
-  { loginId: "admin", password: "admin123", user: { id: "u1", name: "Admin User", role: "admin" } },
-  { loginId: "student", password: "student123", user: { id: "u2", name: "Sample Student", role: "student" } },
+  {
+    loginId: "admin",
+    password: "admin123",
+    user: {
+      id: 1,
+      name: "Admin User",
+      role: "admin",
+    },
+  },
+  {
+    loginId: "student",
+    password: "student123",
+    user: {
+      id: 2,
+      name: "Sample Student",
+      role: "student",
+    },
+  },
 ];
 
 function wait(ms) {
@@ -39,7 +55,8 @@ export function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useState(null);
   // "checking" | "authenticated" | "unauthenticated"
   const [status, setStatus] = useState("checking");
-  const [sessionInvalidatedMessage, setSessionInvalidatedMessage] = useState(null);
+  const [sessionInvalidatedMessage, setSessionInvalidatedMessage] =
+    useState(null);
 
   // Mirrors GET /api/auth/me — runs once on app load to hydrate the
   // session from the (backend-issued, httpOnly) refresh cookie.
@@ -62,7 +79,7 @@ export function AuthProvider({ children }) {
     await wait(MOCK_DELAY_MS);
 
     const match = MOCK_USERS.find(
-      (entry) => entry.loginId === loginId && entry.password === password
+      (entry) => entry.loginId === loginId && entry.password === password,
     );
 
     if (!match) {
@@ -92,7 +109,9 @@ export function AuthProvider({ children }) {
     setUser(null);
     setAccessToken(null);
     setStatus("unauthenticated");
-    setSessionInvalidatedMessage(message || "You were logged out because you signed in elsewhere.");
+    setSessionInvalidatedMessage(
+      message || "You were logged out because you signed in elsewhere.",
+    );
   }, []);
 
   const clearSessionInvalidatedMessage = useCallback(() => {
@@ -113,4 +132,3 @@ export function AuthProvider({ children }) {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-
