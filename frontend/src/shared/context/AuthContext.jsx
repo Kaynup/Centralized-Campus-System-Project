@@ -1,102 +1,51 @@
 import { createContext, useState, useEffect, useCallback } from "react";
+import * as authService from "../api/authService";
+import { clearAuthToken } from "../api/axiosClient";
+import { parseApiError } from "../utils/parseApiError";
 
 /**
  * AuthContext
  * ------------------------------------------------------------------
- * Owns the auth session for the whole app (Section 8 of the arch doc).
+ * Owns the auth session for the whole app (Section 8 of the arch doc):
+ *   - access token lives in memory only — held by axiosClient.js's
+ *     module-level `authToken` variable via setAuthToken/clearAuthToken,
+ *     never localStorage
+ *   - session persistence across refresh happens by calling
+ *     GET /users/me on load; if there's no valid token yet, this
+ *     simply resolves "logged out" (there is no refresh cookie in this
+ *     backend — a full page refresh always requires logging in again
+ *     until/unless that's added)
+ *   - a distinguishable "session_invalidated" error (Section 5.3) is
+ *     surfaced through `sessionInvalidatedMessage` — axiosClient.js's
+ *     response interceptor currently does NOT call
+ *     handleSessionInvalidated (it hard-redirects on any 401 instead);
+ *     that's a known gap, flagged separately, not fixed here
  *
- * SCHEMA ALIGNMENT (per shared_tables.md):
- *   - `users` table uses `full_name`, not `name`.
- *   - Admins live in a SEPARATE `admin_users` table. Recommended
- *     backend pattern: login checks both tables, returns a
- *     consistent shape with `accountType: "user" | "admin"`.
- *   - Admin accounts additionally carry a `role` of either
- *     "super_admin" or "<domain>_admin" (equipment/facility/
- *     marketplace), plus a `domain` field for sub-admins. Super
- *     Admin has no `domain` — they manage all sub-admins and all
- *     core/shared admin functions.
- *   - `department` and `phone` do NOT exist in the current users
- *     schema — flagged for backend team to add as real columns.
- *
- * MOCK MODE — see login()/logout()/hydrateSession() comments below.
+ * The consumer hook lives separately at shared/hooks/useAuth.js —
+ * this file only exports the context object and the provider.
  * ------------------------------------------------------------------
  */
 
 export const AuthContext = createContext(null);
 
-const MOCK_DELAY_MS = 600;
-
-// MOCK ONLY — until /api/auth/* exists.
-const MOCK_USERS = [
-  {
-    loginId: "superadmin",
-    password: "super123",
-    user: {
-      id: "a1",
-      accountType: "admin",
-      full_name: "Super Admin",
-      role: "super_admin",
-      domain: null, // Super Admin isn't scoped to one domain
-      email: "superadmin@campus.edu",
-    },
-  },
-  {
-    loginId: "facilityadmin",
-    password: "facility123",
-    user: {
-      id: "a2",
-      accountType: "admin",
-      full_name: "Facility Admin",
-      role: "facility_admin",
-      domain: "facility",
-      email: "facilityadmin@campus.edu",
-    },
-  },
-  {
-    loginId: "admin",
-    password: "admin123",
-    user: {
-      id: "a1",
-      accountType: "admin",
-      full_name: "Admin User",
-      role: "super_admin",
-      domain: null,
-      email: "admin@campus.edu",
-    },
-  },
-  {
-    loginId: "student",
-    password: "student123",
-    user: {
-      id: "u2",
-      accountType: "user",
-      full_name: "Sample Student",
-      role: "student",
-      email: "student@campus.edu",
-      // TODO(schema): department/phone don't exist on `users` yet —
-      // confirm with backend team whether these get added as real
-      // columns before wiring this up for real.
-      department: "Computer Science",
-      phone: "9876500002",
-    },
-  },
-];
-
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
+  const [accessToken, setAccessTokenState] = useState(null);
+  // "checking" | "authenticated" | "unauthenticated"
   const [status, setStatus] = useState("checking");
   const [sessionInvalidatedMessage, setSessionInvalidatedMessage] = useState(null);
 
+  // Runs once on app load. There's no refresh-cookie flow in this
+  // backend, and the token lives in memory only — so nothing survives
+  // a page reload regardless. There's genuinely nothing to check here
+  // yet: just resolve "logged out" immediately. Once a real
+  // refresh-token/cookie mechanism exists, THIS is where it gets
+  // wired in — not a blind GET /users/me with no token, which is what
+  // caused an infinite reload loop (see below).
   const hydrateSession = useCallback(async () => {
     setStatus("checking");
-    await wait(MOCK_DELAY_MS);
     setUser(null);
-    setAccessToken(null);
+    setAccessTokenState(null);
     setStatus("unauthenticated");
   }, []);
 
@@ -105,35 +54,35 @@ export function AuthProvider({ children }) {
   }, [hydrateSession]);
 
   const login = useCallback(async ({ loginId, password }) => {
-    await wait(MOCK_DELAY_MS);
-
-    const match = MOCK_USERS.find(
-      (entry) => entry.loginId === loginId && entry.password === password
-    );
-
-    if (!match) {
-      const error = new Error("Invalid login ID or password");
-      error.code = "invalid_credentials";
+    try {
+      const data = await authService.login(loginId, password);
+      // authService.login already calls setAuthToken() internally —
+      // mirror it into React state too so consumers of useAuth() re-render.
+      setAccessTokenState(data.access_token);
+      setUser(data.user);
+      setStatus("authenticated");
+      return data;
+    } catch (err) {
+      const { message, code } = parseApiError(err);
+      const error = new Error(message);
+      error.code = code;
       throw error;
     }
-
-    const fakeToken = `mock.${btoa(loginId)}.${Date.now()}`;
-    setUser(match.user);
-    setAccessToken(fakeToken);
-    setStatus("authenticated");
-    return { accessToken: fakeToken, user: match.user };
   }, []);
 
   const logout = useCallback(async () => {
-    await wait(200);
+    authService.logout();
     setUser(null);
-    setAccessToken(null);
+    setAccessTokenState(null);
     setStatus("unauthenticated");
   }, []);
 
+  // Called once axiosClient.js's interceptor is updated to distinguish
+  // session_invalidated instead of hard-redirecting on every 401.
   const handleSessionInvalidated = useCallback((message) => {
+    clearAuthToken();
     setUser(null);
-    setAccessToken(null);
+    setAccessTokenState(null);
     setStatus("unauthenticated");
     setSessionInvalidatedMessage(message || "You were logged out because you signed in elsewhere.");
   }, []);

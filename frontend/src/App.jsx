@@ -22,6 +22,8 @@ import AdminUserUpload from "./pages/AdminUserUpload";
 import AdminManageStudents from "./pages/AdminManageStudents";
 import AdminRequestsPage from "./pages/AdminRequestsPage";
 import AdminManageAdmins from "./pages/AdminManageAdmins";
+import EquipmentRoutes from "./modules/equipment-rental";
+import MarketplaceRoutes from "./modules/secure-marketplace";
 import { ToastProvider } from "./shared/ui/Toast";
 
 function App() {
@@ -78,6 +80,26 @@ function App() {
                       element={
                         <ErrorBoundary>
                           <Settings />
+                        </ErrorBoundary>
+                      }
+                    />
+
+                    {/* Feature Modules — available to any logged-in user */}
+
+                    <Route
+                      path="/equipment/*"
+                      element={
+                        <ErrorBoundary>
+                          <EquipmentRoutes />
+                        </ErrorBoundary>
+                      }
+                    />
+
+                    <Route
+                      path="/marketplace/*"
+                      element={
+                        <ErrorBoundary>
+                          <MarketplaceRoutes />
                         </ErrorBoundary>
                       }
                     />
@@ -139,38 +161,12 @@ function App() {
                     />
                     */}
 
-                    {/*Future Modules — sub-admin domain pages will
-                        eventually live here too, each guarded to
-                        check user.domain matches the module */}
-
-                    {/*
-                    <Route
-                      path="/equipment/*"
-                      element={
-                        <ErrorBoundary>
-                          <EquipmentRoutes />
-                        </ErrorBoundary>
-                      }
-                    />
-                    */}
-
                     {/*
                     <Route
                       path="/facility/*"
                       element={
                         <ErrorBoundary>
                           <FacilityRoutes />
-                        </ErrorBoundary>
-                      }
-                    />
-                    */}
-
-                    {/*
-                    <Route
-                      path="/marketplace/*"
-                      element={
-                        <ErrorBoundary>
-                          <MarketplaceRoutes />
                         </ErrorBoundary>
                       }
                     />
