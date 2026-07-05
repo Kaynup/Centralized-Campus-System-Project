@@ -1,0 +1,121 @@
+@import "tailwindcss" layer(utilities);
+
+@theme {
+  --color-forest: #2D6A4F;
+  --color-slate: #2E3440;
+  --color-gold: #D4AF37;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--color-slate);
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--color-bg);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+button {
+  font: inherit;
+}
+
+/* ------------------------------------------------------------------
+   Theme variables (light default, dark override via [data-theme])
+------------------------------------------------------------------ */
+:root {
+  --color-bg: #ffffff;
+  --color-surface: #ffffff;
+  --color-text: #2E3440;
+  --color-text-muted: #64748b;
+  --color-border: #e2e8f0;
+}
+
+[data-theme="dark"] {
+  --color-bg: #0f172a;
+  --color-surface: #1e293b;
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+  --color-border: #334155;
+}
+
+/* ------------------------------------------------------------------
+   DARK MODE TEXT/BORDER/INPUT FIXES
+   ------------------------------------------------------------------
+   Many components use Tailwind's `text-slate` utility directly for
+   headings, labels, and table text. `text-slate` is a fixed brand
+   color (#2E3440, a dark navy) — it does NOT change with the theme
+   on its own, which is why text became invisible on dark
+   backgrounds (dark navy text on a dark navy/near-black background).
+
+   These overrides make every `text-slate` / `text-slate/NN` and
+   `border-slate/NN` usage respond to the current theme, without
+   having to hunt down and edit every component individually. Plain
+   inputs/selects/textareas that still use a hardcoded `bg-white`
+   are also patched here so they don't stay white inside a dark card.
+
+   Sidebar is intentionally excluded — it uses `bg-slate` for an
+   always-dark background by design, and its text already uses
+   `text-white`, not `text-slate`, so it's unaffected by this.
+------------------------------------------------------------------ */
+
+[data-theme="dark"] .text-slate {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .text-slate\/80,
+[data-theme="dark"] .text-slate\/70 {
+  color: var(--color-text);
+  opacity: 0.85;
+}
+
+[data-theme="dark"] .text-slate\/60,
+[data-theme="dark"] .text-slate\/50 {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .text-slate\/40,
+[data-theme="dark"] .text-slate\/30,
+[data-theme="dark"] .text-slate\/20 {
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+[data-theme="dark"] .border-slate\/10,
+[data-theme="dark"] .border-slate\/20 {
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .divide-slate\/10 > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--color-border);
+}
+
+/* Plain inputs/selects/textareas/tables that still use bg-white or
+   bg-slate/5 directly, instead of the var(--color-surface) pattern. */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .bg-white {
+  background-color: var(--color-surface);
+}
+
+[data-theme="dark"] .bg-slate\/5 {
+  background-color: rgba(255, 255, 255, 0.06);
+}
