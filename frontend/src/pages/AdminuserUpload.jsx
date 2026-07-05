@@ -2,7 +2,7 @@ import { useState } from "react";
 import { UploadCloud, FileText, Send, CheckCircle2, AlertTriangle } from "lucide-react";
 import { useNotification } from "../shared/hooks/useNotification";
 import { parseApiError } from "../shared/utils/parseApiError";
-import { bulkRegisterUsers, sendWelcomeEmail } from "../shared/api/adminApi";
+import { bulkRegisterUsers, sendWelcomeEmail } from "../shared/api/adminapi";
 
 /**
  * AdminUserUpload.jsx
