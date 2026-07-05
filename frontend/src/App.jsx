@@ -8,6 +8,8 @@ import { WalletProvider } from "./shared/context/WalletContext";
 import { NotificationProvider } from "./shared/context/NotificationContext";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
+import AdminRoute from "./routes/AdminRoute";
+import SuperAdminRoute from "./routes/SuperAdminRoute";
 
 import ErrorBoundary from "./shared/ui/ErrorBoundary";
 
@@ -16,6 +18,10 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Wallet from "./pages/Wallet";
 import Settings from "./pages/Settings";
+import AdminUserUpload from "./pages/AdminUserUpload";
+import AdminManageStudents from "./pages/AdminManageStudents";
+import AdminRequestsPage from "./pages/AdminRequestsPage";
+import AdminManageAdmins from "./pages/AdminManageAdmins";
 import { ToastProvider } from "./shared/ui/Toast";
 
 function App() {
@@ -76,6 +82,52 @@ function App() {
                       }
                     />
 
+                    {/* Admin Pages — guarded by AdminRoute (must be
+                        an admin account at all), then SuperAdminRoute
+                        (must specifically be super_admin) for the
+                        core/shared admin functions below. Sub-admin
+                        domain-specific pages will get their own
+                        guard once those pages exist. */}
+                    <Route element={<AdminRoute />}>
+                      <Route element={<SuperAdminRoute />}>
+                        <Route
+                          path="/admin/upload"
+                          element={
+                            <ErrorBoundary>
+                              <AdminUserUpload />
+                            </ErrorBoundary>
+                          }
+                        />
+
+                        <Route
+                          path="/admin/students"
+                          element={
+                            <ErrorBoundary>
+                              <AdminManageStudents />
+                            </ErrorBoundary>
+                          }
+                        />
+
+                        <Route
+                          path="/admin/requests"
+                          element={
+                            <ErrorBoundary>
+                              <AdminRequestsPage />
+                            </ErrorBoundary>
+                          }
+                        />
+
+                        <Route
+                          path="/admin/admins"
+                          element={
+                            <ErrorBoundary>
+                              <AdminManageAdmins />
+                            </ErrorBoundary>
+                          }
+                        />
+                      </Route>
+                    </Route>
+
                     {/*
                     <Route
                       path="/notifications"
@@ -87,7 +139,9 @@ function App() {
                     />
                     */}
 
-                    {/*Future Modules*/}
+                    {/*Future Modules — sub-admin domain pages will
+                        eventually live here too, each guarded to
+                        check user.domain matches the module */}
 
                     {/*
                     <Route
@@ -117,17 +171,6 @@ function App() {
                       element={
                         <ErrorBoundary>
                           <MarketplaceRoutes />
-                        </ErrorBoundary>
-                      }
-                    />
-                    */}
-
-                    {/*
-                    <Route
-                      path="/admin/*"
-                      element={
-                        <ErrorBoundary>
-                          <AdminRoutes />
                         </ErrorBoundary>
                       }
                     />

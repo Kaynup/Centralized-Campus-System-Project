@@ -1,22 +1,28 @@
 import { useState } from "react";
-import { User, Mail, Building2, Phone, LogOut, Save } from "lucide-react";
+import { User, Mail, Building2, Phone, LogOut, Pencil } from "lucide-react";
 import { useAuth } from "../shared/hooks/useAuth";
 import { useNotification } from "../shared/hooks/useNotification";
-import { parseApiError } from "../shared/utils/parseApiError";
+import ChangeRequestModal from "../components/ChangeRequestModal";
 
 /**
  * Profile.jsx
  * ------------------------------------------------------------------
- * Reads directly from AuthContext (`user`) — no other module's work
- * blocks this from being useful today. The "save" flow is mocked
- * (there's no PATCH /api/profile endpoint yet) but demonstrates the
- * intended error-handling pattern: catch, parseApiError, notify.
+ * Fields are READ-ONLY by design: per project requirements, students
+ * cannot self-edit their profile — any change (name, email,
+ * department, phone) must go through an admin-approved request
+ * (see ChangeRequestModal.jsx + shared/api/adminApi.js).
+ *
+ * SCHEMA NOTE (per shared_tables.md):
+ *   - Uses `full_name`, not `name`, to match the real `users` table.
+ *   - `department` and `phone` do NOT exist in the current schema —
+ *     flagged for the backend team to add as real columns before
+ *     this can be wired up for real.
  * ------------------------------------------------------------------
  */
 
-function getInitials(name) {
-  if (!name) return "?";
-  return name
+function getInitials(fullName) {
+  if (!fullName) return "?";
+  return fullName
     .trim()
     .split(/\s+/)
     .slice(0, 2)
@@ -24,22 +30,15 @@ function getInitials(name) {
     .join("");
 }
 
-function FormField({ id, label, icon: Icon, type = "text", value, onChange, placeholder }) {
+function ReadOnlyField({ label, icon: Icon, value }) {
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-slate">
-        {label}
-      </label>
+      <p className="mb-1.5 text-sm font-medium text-slate">{label}</p>
       <div className="relative">
         <Icon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate/40" />
-        <input
-          id={id}
-          type={type}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder}
-          className="block w-full rounded-lg border border-slate/20 bg-white py-2.5 pl-10 pr-3 text-sm text-slate outline-none transition focus:border-forest focus:ring-2 focus:ring-forest/20"
-        />
+        <div className="block w-full rounded-lg border border-slate/10 bg-slate/5 py-2.5 pl-10 pr-3 text-sm text-slate/80">
+          {value || "—"}
+        </div>
       </div>
     </div>
   );
@@ -48,35 +47,7 @@ function FormField({ id, label, icon: Icon, type = "text", value, onChange, plac
 export default function Profile() {
   const { user, logout } = useAuth();
   const { notify } = useNotification();
-
-  const [displayName, setDisplayName] = useState(user?.name || "");
-  const [email, setEmail] = useState(user?.email || "");
-  const [department, setDepartment] = useState(user?.department || "");
-  const [phone, setPhone] = useState(user?.phone || "");
-  const [isSaving, setIsSaving] = useState(false);
-
-  const hasChanges =
-    displayName !== (user?.name || "") ||
-    email !== (user?.email || "") ||
-    department !== (user?.department || "") ||
-    phone !== (user?.phone || "");
-
-  async function handleSave(event) {
-    event.preventDefault();
-    setIsSaving(true);
-    try {
-      // MOCK — replace with axiosClient.patch("/api/profile", {
-      //   name: displayName, email, department, phone,
-      // })
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      notify.success("Profile updated.");
-    } catch (err) {
-      const { message } = parseApiError(err);
-      notify.error(message);
-    } finally {
-      setIsSaving(false);
-    }
-  }
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   async function handleLogout() {
     await logout();
@@ -84,7 +55,10 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-slate/[0.03] px-6 py-10 sm:px-10">
+    <div
+      className="min-h-screen px-6 py-10 sm:px-10 transition-colors"
+      style={{ backgroundColor: "var(--color-bg)" }}
+    >
       <div className="mx-auto max-w-2xl">
         {/* Page header */}
         <div className="mb-6">
@@ -95,86 +69,59 @@ export default function Profile() {
         </div>
 
         {/* Identity card */}
-        <div className="mb-6 flex items-center gap-4 rounded-2xl border border-slate/10 bg-white p-6 shadow-sm">
+        <div
+          className="mb-6 flex items-center gap-4 rounded-2xl border border-slate/10 p-6 shadow-sm transition-colors"
+          style={{ backgroundColor: "var(--color-surface)" }}
+        >
           <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-forest text-lg font-semibold text-white">
-            {getInitials(user?.name)}
+            {getInitials(user?.full_name)}
           </div>
           <div className="min-w-0">
-            <p className="truncate text-lg font-semibold text-slate">{user?.name || "—"}</p>
+            <p className="truncate text-lg font-semibold text-slate">
+              {user?.full_name || "—"}
+            </p>
             <span className="mt-1 inline-flex items-center rounded-full bg-gold/15 px-2.5 py-0.5 text-xs font-medium capitalize text-slate">
               {user?.role || "—"}
             </span>
           </div>
         </div>
 
-        {/* Editable details card */}
-        <form
-          onSubmit={handleSave}
-          className="rounded-2xl border border-slate/10 bg-white p-6 shadow-sm"
+        {/* Read-only details card */}
+        <div
+          className="rounded-2xl border border-slate/10 p-6 shadow-sm transition-colors"
+          style={{ backgroundColor: "var(--color-surface)" }}
         >
-          <h2 className="mb-1 text-base font-semibold text-slate">Personal information</h2>
-          <p className="mb-5 text-sm text-slate/50">
-            This information may be visible to campus staff.
-          </p>
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+              <h2 className="text-base font-semibold text-slate">Personal information</h2>
+              <p className="mt-0.5 text-sm text-slate/50">
+                Only an admin can update these details.
+              </p>
+            </div>
+          </div>
 
           <div className="grid gap-5 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <FormField
-                id="displayName"
-                label="Display name"
-                icon={User}
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="Your full name"
-              />
+              <ReadOnlyField label="Display name" icon={User} value={user?.full_name} />
             </div>
-
-            <FormField
-              id="email"
-              label="Email"
-              icon={Mail}
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@campus.edu"
-            />
-
-            <FormField
-              id="phone"
-              label="Phone number"
-              icon={Phone}
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="98765 00000"
-            />
-
+            <ReadOnlyField label="Email" icon={Mail} value={user?.email} />
+            <ReadOnlyField label="Phone number" icon={Phone} value={user?.phone} />
             <div className="sm:col-span-2">
-              <FormField
-                id="department"
-                label="Department"
-                icon={Building2}
-                value={department}
-                onChange={(e) => setDepartment(e.target.value)}
-                placeholder="e.g. Computer Science"
-              />
+              <ReadOnlyField label="Department" icon={Building2} value={user?.department} />
             </div>
           </div>
 
-          <div className="mt-6 flex items-center justify-between border-t border-slate/10 pt-5">
-            <span className="text-xs text-slate/40">
-              {hasChanges ? "You have unsaved changes" : "All changes saved"}
-            </span>
+          <div className="mt-6 flex justify-end border-t border-slate/10 pt-5">
             <button
-              type="submit"
-              disabled={isSaving || !hasChanges}
-              className="inline-flex items-center gap-2 rounded-lg bg-forest px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-forest/90 disabled:cursor-not-allowed disabled:opacity-50"
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="inline-flex items-center gap-2 rounded-lg bg-forest px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-forest/90"
             >
-              <Save className="h-4 w-4" />
-              {isSaving ? "Saving…" : "Save changes"}
+              <Pencil className="h-4 w-4" />
+              Request changes
             </button>
           </div>
-        </form>
+        </div>
 
         {/* Danger zone */}
         <div className="mt-6 flex items-center justify-between rounded-2xl border border-red-100 bg-red-50/50 p-5">
@@ -192,6 +139,10 @@ export default function Profile() {
           </button>
         </div>
       </div>
+
+      {isModalOpen && (
+        <ChangeRequestModal user={user} onClose={() => setIsModalOpen(false)} />
+      )}
     </div>
   );
 }

@@ -3,20 +3,22 @@ import { createContext, useState, useEffect, useCallback } from "react";
 /**
  * AuthContext
  * ------------------------------------------------------------------
- * Owns the auth session for the whole app (Section 8 of the arch doc):
- *   - access token lives in memory only (this state), never localStorage
- *   - session persistence across refresh is meant to happen via an
- *     httpOnly refresh cookie + GET /api/auth/me (Section 5.2)
- *   - a distinguishable "session_invalidated" error (Section 5.3) is
- *     surfaced through `sessionInvalidatedMessage` so any component
- *     (e.g. the axios interceptor Person 3 builds) can react to it
+ * Owns the auth session for the whole app (Section 8 of the arch doc).
  *
- * MOCK MODE:
- * Until Person 3's axiosClient / real backend exist, `login`,
- * `logout`, and `hydrateSession` are faked with timeouts. Every mock
- * function mirrors the exact shape the real API is expected to
- * return, so swapping in real axios calls later should only mean
- * replacing the body of these three functions — not their contracts.
+ * SCHEMA ALIGNMENT (per shared_tables.md):
+ *   - `users` table uses `full_name`, not `name`.
+ *   - Admins live in a SEPARATE `admin_users` table. Recommended
+ *     backend pattern: login checks both tables, returns a
+ *     consistent shape with `accountType: "user" | "admin"`.
+ *   - Admin accounts additionally carry a `role` of either
+ *     "super_admin" or "<domain>_admin" (equipment/facility/
+ *     marketplace), plus a `domain` field for sub-admins. Super
+ *     Admin has no `domain` — they manage all sub-admins and all
+ *     core/shared admin functions.
+ *   - `department` and `phone` do NOT exist in the current users
+ *     schema — flagged for backend team to add as real columns.
+ *
+ * MOCK MODE — see login()/logout()/hydrateSession() comments below.
  * ------------------------------------------------------------------
  */
 
@@ -27,15 +29,39 @@ const MOCK_DELAY_MS = 600;
 // MOCK ONLY — until /api/auth/* exists.
 const MOCK_USERS = [
   {
+    loginId: "superadmin",
+    password: "super123",
+    user: {
+      id: "a1",
+      accountType: "admin",
+      full_name: "Super Admin",
+      role: "super_admin",
+      domain: null, // Super Admin isn't scoped to one domain
+      email: "superadmin@campus.edu",
+    },
+  },
+  {
+    loginId: "facilityadmin",
+    password: "facility123",
+    user: {
+      id: "a2",
+      accountType: "admin",
+      full_name: "Facility Admin",
+      role: "facility_admin",
+      domain: "facility",
+      email: "facilityadmin@campus.edu",
+    },
+  },
+  {
     loginId: "admin",
     password: "admin123",
     user: {
-      id: "u1",
-      name: "Admin User",
-      role: "admin",
+      id: "a1",
+      accountType: "admin",
+      full_name: "Admin User",
+      role: "super_admin",
+      domain: null,
       email: "admin@campus.edu",
-      department: "Administration",
-      phone: "9876500001",
     },
   },
   {
@@ -43,9 +69,13 @@ const MOCK_USERS = [
     password: "student123",
     user: {
       id: "u2",
-      name: "Sample Student",
+      accountType: "user",
+      full_name: "Sample Student",
       role: "student",
       email: "student@campus.edu",
+      // TODO(schema): department/phone don't exist on `users` yet —
+      // confirm with backend team whether these get added as real
+      // columns before wiring this up for real.
       department: "Computer Science",
       phone: "9876500002",
     },
@@ -59,17 +89,12 @@ function wait(ms) {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
-  // "checking" | "authenticated" | "unauthenticated"
   const [status, setStatus] = useState("checking");
   const [sessionInvalidatedMessage, setSessionInvalidatedMessage] = useState(null);
 
-  // Mirrors GET /api/auth/me — runs once on app load to hydrate the
-  // session from the (backend-issued, httpOnly) refresh cookie.
-  // Replace the body with a real axiosClient.get("/api/auth/me") call.
   const hydrateSession = useCallback(async () => {
     setStatus("checking");
     await wait(MOCK_DELAY_MS);
-    // MOCK: no persisted session yet — real version checks the cookie result
     setUser(null);
     setAccessToken(null);
     setStatus("unauthenticated");
@@ -79,7 +104,6 @@ export function AuthProvider({ children }) {
     hydrateSession();
   }, [hydrateSession]);
 
-  // Mirrors POST /api/auth/login
   const login = useCallback(async ({ loginId, password }) => {
     await wait(MOCK_DELAY_MS);
 
@@ -100,7 +124,6 @@ export function AuthProvider({ children }) {
     return { accessToken: fakeToken, user: match.user };
   }, []);
 
-  // Mirrors POST /api/auth/logout
   const logout = useCallback(async () => {
     await wait(200);
     setUser(null);
@@ -108,8 +131,6 @@ export function AuthProvider({ children }) {
     setStatus("unauthenticated");
   }, []);
 
-  // Called by the axios interceptor (once built) when a response comes
-  // back as { error: "session_invalidated" } per Section 5.3.
   const handleSessionInvalidated = useCallback((message) => {
     setUser(null);
     setAccessToken(null);
