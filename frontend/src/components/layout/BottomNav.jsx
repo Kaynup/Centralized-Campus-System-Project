@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { Menu } from "lucide-react";
-import { NAV_ITEMS } from "./Sidebar";
+import { NAV_ITEMS } from "./sidebar";
 
 const TAB_ITEMS = NAV_ITEMS.slice(0, 4);
 
@@ -15,8 +15,7 @@ export default function BottomNav({ onOpenMore }) {
           key={to}
           to={to}
           className={({ isActive }) =>
-            `flex flex-1 flex-col items-center justify-center gap-0.5 text-[11px] font-medium ${
-              isActive ? "text-forest" : "text-slate/60"
+            `flex flex-1 flex-col items-center justify-center gap-0.5 text-[11px] font-medium ${isActive ? "text-forest" : "text-slate/60"
             }`
           }
         >

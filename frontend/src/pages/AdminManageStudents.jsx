@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Search, Users, RefreshCw } from "lucide-react";
 import { useNotification } from "../shared/hooks/useNotification";
 import { parseApiError } from "../shared/utils/parseApiError";
-import { getStudents } from "../shared/api/adminApi";
+import { getStudents } from "../shared/api/adminapi";
 
 /**
  * AdminManageStudents.jsx

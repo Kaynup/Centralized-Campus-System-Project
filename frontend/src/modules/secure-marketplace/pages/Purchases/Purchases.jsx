@@ -6,7 +6,7 @@ import {
 } from 'react-icons/fi';
 import TabBar from '../../components/ui/TabBar/TabBar';
 import StatusBadge from '../../components/ui/StatusBadge/StatusBadge';
-import PaymentTimeline from '../../components/ui/PaymentTimeline/PaymentTimeLine';
+import PaymentTimeline from '../../components/ui/PaymentTimeLine/PaymentTimeLine';
 import LoadingState from '../../components/ui/LoadingState/LoadingState';
 import EmptyState from '../../components/ui/EmptyState/EmptyState';
 import { getMyPurchases, confirmDelivery } from '../../services/purchaseService';

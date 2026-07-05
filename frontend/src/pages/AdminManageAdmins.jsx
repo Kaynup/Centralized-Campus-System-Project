@@ -17,7 +17,7 @@ import {
   reactivateSubAdmin,
   reassignSubAdminDomain,
   resetSubAdminPassword,
-} from "../shared/api/adminApi";
+} from "../shared/api/adminapi";
 
 /**
  * AdminManageAdmins.jsx

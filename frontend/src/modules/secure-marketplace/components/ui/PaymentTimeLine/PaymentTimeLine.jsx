@@ -1,5 +1,5 @@
 import { FiCheckCircle } from 'react-icons/fi';
-import './PaymentTimeline.css';
+import './PaymentTimeLine.css';
 
 const STEPS = [
   { id: 'paid',      label: 'Paid' },

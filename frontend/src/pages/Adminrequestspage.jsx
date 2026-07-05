@@ -6,7 +6,7 @@ import {
   getChangeRequests,
   approveChangeRequest,
   rejectChangeRequest,
-} from "../shared/api/adminApi";
+} from "../shared/api/adminapi";
 
 const FIELD_LABELS = {
   name: "Display name",

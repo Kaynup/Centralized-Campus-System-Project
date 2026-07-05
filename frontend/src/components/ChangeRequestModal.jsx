@@ -2,7 +2,7 @@ import { useState } from "react";
 import { X, Send } from "lucide-react";
 import { useNotification } from "../shared/hooks/useNotification";
 import { parseApiError } from "../shared/utils/parseApiError";
-import { submitChangeRequest } from "../shared/api/adminApi";
+import { submitChangeRequest } from "../shared/api/adminapi";
 
 /**
  * ChangeRequestModal.jsx
