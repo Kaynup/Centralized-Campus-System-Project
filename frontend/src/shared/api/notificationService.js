@@ -13,7 +13,7 @@ import { authClient } from './axiosClient';
 
 const BASE_URL = '/api/notifications';
 
-const USE_MOCK_DATA = true; // <-- flip to false once the backend is live
+const USE_MOCK_DATA = false; // <-- flipped to false as backend is live
 
 // Notifications are a cross-domain, user-scoped feed (recipient_id -> a
 // user, spanning equipment/facility/marketplace/core) — same reasoning as

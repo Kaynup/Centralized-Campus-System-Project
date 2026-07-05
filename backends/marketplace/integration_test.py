@@ -221,5 +221,37 @@ class TestMarketplaceIntegration(unittest.TestCase):
         sold_item = services.get_item_by_id(self.conn, item["id"])
         self.assertEqual(sold_item["status"], "sold")
 
+    def test_06_saved_items_bookmarks(self):
+        """Test bookmarking (saving) and unsaving items, and listing saved items."""
+        # 1. List a new book item
+        payload = schemas.ItemCreate(
+            title="Book to Save",
+            description="Testing saved list",
+            price=Decimal("15.00"),
+            listing_channel=schemas.ListingChannel.marketplace,
+            category="Books",
+            condition="New"
+        )
+        item = services.create_item(self.conn, self.seller_id, payload)
+        self.created_items.append(item["id"])
+        
+        # 2. Save/bookmark the item as the buyer
+        current_buyer = {"id": self.buyer_id}
+        save_res = services.save_item(self.conn, item["id"], current_buyer)
+        self.assertTrue(save_res["is_saved"])
+        
+        # 3. Retrieve saved items
+        saved_list = services.get_saved_items(self.conn, current_buyer)
+        self.assertEqual(len(saved_list), 1)
+        self.assertEqual(saved_list[0]["id"], item["id"])
+        
+        # 4. Unsave the item
+        unsave_res = services.unsave_item(self.conn, item["id"], current_buyer)
+        self.assertFalse(unsave_res["is_saved"])
+        
+        # 5. Verify saved list is empty
+        final_list = services.get_saved_items(self.conn, current_buyer)
+        self.assertEqual(len(final_list), 0)
+
 if __name__ == "__main__":
     unittest.main()

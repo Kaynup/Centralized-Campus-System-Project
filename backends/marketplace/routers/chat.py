@@ -143,7 +143,8 @@ def mark_chat_read(
         )
         unread = cursor.fetchall()
         
-        now = datetime.utcnow()
+        from datetime import timezone
+        now = datetime.now(timezone.utc).replace(tzinfo=None)
         for msg in unread:
             cursor.execute(
                 "UPDATE messages SET is_read = TRUE, read_at = %s WHERE id = %s",

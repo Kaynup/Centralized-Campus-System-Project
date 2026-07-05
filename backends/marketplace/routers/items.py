@@ -102,6 +102,14 @@ async def upload_images(
             
     return success({"urls": urls})
 
+@router.get("/saved")
+def get_saved_items(
+    current_user=Depends(get_current_user)
+):
+    with get_db_connection() as conn:
+        items = services.get_saved_items(conn, current_user)
+    return success(items)
+
 @router.get("/me")
 def get_my_listings(
     status: Optional[str] = Query(default=None),

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from database import get_db
 from auth import get_current_user
 import models
@@ -8,7 +8,7 @@ import schemas
 import auth_utils
 
 router = APIRouter(
-    prefix="/auth",
+    prefix="/users",
     tags=["Authentication"]
 )
 
@@ -16,14 +16,19 @@ class LoginRequest(BaseModel):
     login_id: str
     password: str
 
-class LoginResponse(BaseModel):
+class UserResponseWrapper(BaseModel):
+    data: schemas.UserResponse
+
+class LoginResponseData(BaseModel):
     access_token: str
-    token_type: str = "bearer"
     user: schemas.UserResponse
+
+class LoginResponseWrapper(BaseModel):
+    data: LoginResponseData
 
 @router.post(
     "/register",
-    response_model=schemas.UserResponse,
+    response_model=UserResponseWrapper,
     status_code=status.HTTP_201_CREATED,
     summary="Register a new student user"
 )
@@ -57,12 +62,12 @@ def register_user(
         password_hash=hashed_pwd,
         role=payload.role,
         is_active=True,
-        is_verified=True,  # Default verified to enable immediate wallet use
+        is_verified=True,
         preferences=payload.preferences
     )
     
     db.add(db_user)
-    db.flush()  # Generate user ID for wallet relationship
+    db.flush()
     
     # Initialize wallet with 100.00 tokens
     db_wallet = models.Wallet(
@@ -77,11 +82,11 @@ def register_user(
     db.commit()
     db.refresh(db_user)
     
-    return db_user
+    return {"data": db_user}
 
 @router.post(
     "/login",
-    response_model=LoginResponse,
+    response_model=LoginResponseWrapper,
     summary="Authenticate user credentials and issue JWT"
 )
 def login_user(
@@ -104,17 +109,20 @@ def login_user(
     # Generate token
     token = auth_utils.create_access_token(subject=user.id)
     
-    return LoginResponse(
-        access_token=token,
-        user=user
-    )
+    return {
+        "data": {
+            "access_token": token,
+            "user": user
+        }
+    }
 
 @router.get(
-    "/profile",
-    response_model=schemas.UserResponse,
+    "/me",
+    response_model=UserResponseWrapper,
     summary="Get current authenticated user profile"
 )
 def get_profile(
     current_user: models.User = Depends(get_current_user)
 ):
-    return current_user
+    return {"data": current_user}
+

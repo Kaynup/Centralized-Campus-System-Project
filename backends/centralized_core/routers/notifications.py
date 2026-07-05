@@ -47,3 +47,34 @@ def mark_notification_read(
     db.commit()
     db.refresh(notification)
     return notification
+
+@router.patch(
+    "/read-all",
+    summary="Mark all notifications as read for the authenticated user"
+)
+def mark_all_read(
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    db.query(models.Notification).filter(
+        models.Notification.recipient_id == current_user.id,
+        models.Notification.is_read == False
+    ).update({models.Notification.is_read: True}, synchronize_session=False)
+    db.commit()
+    return {"success": True}
+
+@router.delete(
+    "/read",
+    summary="Delete all read notifications for the authenticated user"
+)
+def delete_read_notifications(
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    db.query(models.Notification).filter(
+        models.Notification.recipient_id == current_user.id,
+        models.Notification.is_read == True
+    ).delete(synchronize_session=False)
+    db.commit()
+    return {"success": True}
+

@@ -46,9 +46,9 @@ class TestCentralizedCore(unittest.TestCase):
             "role": "student",
             "is_active": True
         }
-        response = self.client.post("/api/auth/register", json=payload)
+        response = self.client.post("/users/register", json=payload)
         self.assertEqual(response.status_code, 201)
-        data = response.json()
+        data = response.json()["data"]
         self.assertEqual(data["login_id"], self.username)
         self.assertTrue(data["is_verified"])
         
@@ -64,9 +64,9 @@ class TestCentralizedCore(unittest.TestCase):
             "login_id": self.username,
             "password": self.password
         }
-        response = self.client.post("/api/auth/login", json=payload)
+        response = self.client.post("/users/login", json=payload)
         self.assertEqual(response.status_code, 200)
-        data = response.json()
+        data = response.json()["data"]
         self.assertIn("access_token", data)
         self.__class__.token = data["access_token"]
         
@@ -75,19 +75,19 @@ class TestCentralizedCore(unittest.TestCase):
             "login_id": self.username,
             "password": "wrongpassword"
         }
-        response = self.client.post("/api/auth/login", json=payload)
+        response = self.client.post("/users/login", json=payload)
         self.assertEqual(response.status_code, 401)
         
     def test_04_get_profile(self):
         headers = {"Authorization": f"Bearer {self.token}"}
-        response = self.client.get("/api/auth/profile", headers=headers)
+        response = self.client.get("/users/me", headers=headers)
         self.assertEqual(response.status_code, 200)
-        data = response.json()
+        data = response.json()["data"]
         self.assertEqual(data["email"], self.email)
         
     def test_05_get_wallet_balance(self):
         headers = {"Authorization": f"Bearer {self.token}"}
-        response = self.client.get("/api/wallet/balance", headers=headers)
+        response = self.client.get("/wallet/balance", headers=headers)
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertEqual(float(data["token_balance"]), 100.00)
@@ -96,19 +96,19 @@ class TestCentralizedCore(unittest.TestCase):
     def test_06_topup_wallet(self):
         headers = {"Authorization": f"Bearer {self.token}"}
         payload = {"amount": 50.00}
-        response = self.client.post("/api/wallet/topup", json=payload, headers=headers)
+        response = self.client.post("/wallet/topup", json=payload, headers=headers)
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertEqual(float(data["token_amount"]), 50.00)
         self.assertEqual(float(data["token_balance_after"]), 150.00)
         
         # Verify wallet balance updated
-        balance_resp = self.client.get("/api/wallet/balance", headers=headers)
+        balance_resp = self.client.get("/wallet/balance", headers=headers)
         self.assertEqual(float(balance_resp.json()["token_balance"]), 150.00)
         
     def test_07_wallet_history(self):
         headers = {"Authorization": f"Bearer {self.token}"}
-        response = self.client.get("/api/wallet/history", headers=headers)
+        response = self.client.get("/wallet/history", headers=headers)
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertEqual(len(data), 1)
@@ -144,6 +144,21 @@ class TestCentralizedCore(unittest.TestCase):
         read_response = self.client.patch(f"/api/notifications/{notif_id}/read", headers=headers)
         self.assertEqual(read_response.status_code, 200)
         self.assertTrue(read_response.json()["is_read"])
+
+        # Mark all read (bulk)
+        read_all_resp = self.client.patch("/api/notifications/read-all", headers=headers)
+        self.assertEqual(read_all_resp.status_code, 200)
+        self.assertTrue(read_all_resp.json()["success"])
+
+        # Delete read notifications
+        delete_resp = self.client.delete("/api/notifications/read", headers=headers)
+        self.assertEqual(delete_resp.status_code, 200)
+        self.assertTrue(delete_resp.json()["success"])
+
+        # Verify notifications are empty
+        final_resp = self.client.get("/api/notifications/", headers=headers)
+        self.assertEqual(len(final_resp.json()), 0)
+
 
 if __name__ == "__main__":
     unittest.main()

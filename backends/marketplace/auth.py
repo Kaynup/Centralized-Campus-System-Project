@@ -52,11 +52,13 @@ def get_current_user(
 
     # Update last_seen_at locally in the database
     try:
+        from datetime import timezone
+        now_utc = datetime.now(timezone.utc).replace(tzinfo=None)
         with get_db_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
                 "UPDATE users SET last_seen_at = %s WHERE id = %s",
-                (datetime.utcnow(), user_id)
+                (now_utc, user_id)
             )
             conn.commit()
     except Exception:

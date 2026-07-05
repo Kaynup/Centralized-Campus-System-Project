@@ -1,6 +1,6 @@
 import uuid
 from decimal import Decimal
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import HTTPException, status
 import schemas
 from logger import get_logger
@@ -47,7 +47,7 @@ def create_item(conn, seller_id: str, payload: schemas.ItemCreate) -> dict:
     get_user_by_id(conn, seller_id) # Validates seller exists
     item_id = generate_uuid()
     condition = payload.condition or payload.condition_grade or "New"
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
     
     cursor = conn.cursor()
     cursor.execute(
@@ -199,7 +199,7 @@ def purchase_item(conn, payload: schemas.PurchaseRequest) -> dict:
             (id, item_id, buyer_id, seller_id, amount, status, confirmed_at, released_at, refunded_at, created_at, updated_at)
             VALUES (%s, %s, %s, %s, %s, 'holding', NULL, NULL, NULL, %s, %s)
             """,
-            (holding_id, item["id"], payload.buyer_id, item["seller_id"], item_price, datetime.utcnow(), datetime.utcnow())
+            (holding_id, item["id"], payload.buyer_id, item["seller_id"], item_price, datetime.now(timezone.utc).replace(tzinfo=None), datetime.now(timezone.utc).replace(tzinfo=None))
         )
         
         # Step 9: Write transaction to shared ledger
@@ -217,7 +217,7 @@ def purchase_item(conn, payload: schemas.PurchaseRequest) -> dict:
                 -item_price,
                 new_balance,
                 f"Purchase of '{item['title']}' (locked in escrow)",
-                datetime.utcnow()
+                datetime.now(timezone.utc).replace(tzinfo=None)
             )
         )
         
@@ -311,7 +311,7 @@ def confirm_delivery(conn, holding_record_id: str, buyer_id: str) -> dict:
         )
         
         # Step 6: Mark holding record as released
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc).replace(tzinfo=None)
         cursor.execute(
             "UPDATE holding_records SET status = 'released', released_at = %s, updated_at = %s WHERE id = %s",
             (now, now, holding_record_id)
@@ -387,7 +387,7 @@ def validate_chat_participant(conn, item_id: str, sender_id: str) -> bool:
 
 def save_message(conn, item_id: str, payload: schemas.MessageCreate) -> dict:
     msg_id = generate_uuid()
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc).replace(tzinfo=None)
     cursor = conn.cursor()
     cursor.execute(
         """
@@ -601,7 +601,7 @@ def save_item(conn, item_id: str, current_user: dict) -> dict:
         saved_id = generate_uuid()
         cursor.execute(
             "INSERT INTO saved_items (id, user_id, item_id, saved_at) VALUES (%s, %s, %s, %s)",
-            (saved_id, user_id, item_id, datetime.utcnow())
+            (saved_id, user_id, item_id, datetime.now(timezone.utc).replace(tzinfo=None))
         )
         conn.commit()
         
@@ -719,3 +719,40 @@ def update_item_status(conn, item_id: str, new_status: str) -> dict:
     conn.commit()
     cursor.close()
     return {"id": item_id, "status": new_status}
+
+def get_saved_items(conn, current_user: dict) -> list:
+    user_id = current_user["id"]
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(
+        """
+        SELECT i.*, u.full_name AS seller_name
+        FROM items i
+        JOIN saved_items s ON i.id = s.item_id
+        LEFT JOIN users u ON i.seller_id = u.id
+        WHERE s.user_id = %s
+        ORDER BY s.saved_at DESC
+        """,
+        (user_id,)
+    )
+    rows = cursor.fetchall()
+    
+    result = []
+    for row in rows:
+        result.append({
+            "id": row["id"],
+            "seller_id": row["seller_id"],
+            "title": row["title"],
+            "description": row.get("description"),
+            "price": float(row["price"]),
+            "status": row["status"],
+            "listing_channel": row["listing_channel"],
+            "category": row.get("category"),
+            "condition_grade": row.get("condition_grade"),
+            "image_url": row.get("image_url"),
+            "created_at": row["created_at"].isoformat() if row.get("created_at") else None,
+            "updated_at": row["updated_at"].isoformat() if row.get("updated_at") else None,
+            "seller_name": row.get("seller_name") or "Unknown Seller"
+        })
+    cursor.close()
+    return result
+

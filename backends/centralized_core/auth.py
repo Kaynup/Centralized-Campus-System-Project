@@ -42,7 +42,8 @@ def get_current_user(
 
     # Update last seen timestamp
     try:
-        user.last_seen_at = datetime.utcnow()
+        from datetime import timezone
+        user.last_seen_at = datetime.now(timezone.utc).replace(tzinfo=None)
         db.commit()
     except Exception:
         db.rollback()

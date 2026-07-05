@@ -22,9 +22,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers under /api prefix
-app.include_router(auth.router, prefix="/api")
-app.include_router(wallet.router, prefix="/api")
+# Include routers with correct prefixes to align with frontend endpoints
+app.include_router(auth.router)
+app.include_router(wallet.router)
 app.include_router(notifications.router, prefix="/api")
 
 @app.get("/", tags=["Health"])

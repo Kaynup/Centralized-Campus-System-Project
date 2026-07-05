@@ -1,5 +1,6 @@
 import { createContext, useState, useCallback, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
+import { authClient } from "../api/axiosClient";
 
 /**
  * WalletContext
@@ -42,37 +43,46 @@ function makeTransaction({ type, amount, description, balanceAfter }) {
 export function WalletProvider({ children }) {
   const { isAuthenticated } = useAuth();
 
-  const [balance, setBalance] = useState(0);
+  const [wallet, setWallet] = useState(null);
   const [transactions, setTransactions] = useState([]);
-  // "idle" | "loading" | "ready" | "error"
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState(null);
 
-  // Mirrors GET /api/wallet (balance + recent transactions in one call).
-  // MOCK: returns a fixed starter balance and empty history.
   const fetchWallet = useCallback(async () => {
     setStatus("loading");
     setError(null);
     try {
-      await wait(MOCK_DELAY_MS);
-      setBalance(2500); // MOCK — replace with response.data.balance
-      setTransactions([]); // MOCK — replace with response.data.transactions
+      const [walletRes, txRes] = await Promise.all([
+        authClient.get("/wallet/balance"),
+        authClient.get("/wallet/history")
+      ]);
+      
+      const walletData = walletRes.data;
+      setWallet(walletData);
+      
+      const formatted = (txRes.data || []).map(tx => ({
+        id: tx.id,
+        type: tx.transaction_type === "token_topup" ? "top_up" : "charge",
+        amount: Number(tx.token_amount),
+        description: tx.description || "Wallet transaction",
+        balanceAfter: Number(tx.token_balance_after),
+        timestamp: tx.created_at
+      }));
+      setTransactions(formatted);
       setStatus("ready");
     } catch (err) {
-      setError(err.message || "Could not load wallet");
+      setError(err.response?.data?.detail || err.message || "Could not load wallet");
       setStatus("error");
     }
   }, []);
 
   const resetWallet = useCallback(() => {
-    setBalance(0);
+    setWallet(null);
     setTransactions([]);
     setStatus("idle");
     setError(null);
   }, []);
 
-  // Fetch on login, clear on logout — keeps this in sync with AuthContext
-  // without any module needing to call fetchWallet itself.
   useEffect(() => {
     if (isAuthenticated) {
       fetchWallet();
@@ -81,7 +91,6 @@ export function WalletProvider({ children }) {
     }
   }, [isAuthenticated, fetchWallet, resetWallet]);
 
-  // Mirrors POST /api/wallet/topup
   const topUp = useCallback(async ({ amount, method = "card" }) => {
     if (!amount || amount <= 0) {
       const err = new Error("Enter an amount greater than zero.");
@@ -89,27 +98,32 @@ export function WalletProvider({ children }) {
       throw err;
     }
 
-    await wait(MOCK_DELAY_MS);
-
-    let updatedBalance;
-    setBalance((current) => {
-      updatedBalance = current + amount;
-      return updatedBalance;
-    });
-
-    const transaction = makeTransaction({
-      type: "top_up",
-      amount,
-      description: `Top-up via ${method}`,
-      balanceAfter: updatedBalance,
-    });
-    setTransactions((current) => [transaction, ...current]);
-
-    return { balance: updatedBalance, transaction };
+    try {
+      const response = await authClient.post("/wallet/topup", { amount });
+      const transaction = response.data;
+      
+      const newBalance = Number(transaction.token_balance_after);
+      setWallet(prev => prev ? { ...prev, token_balance: newBalance } : prev);
+      
+      const formattedTx = {
+        id: transaction.id,
+        type: "top_up",
+        amount: Number(transaction.token_amount),
+        description: transaction.description || `Top-up via ${method}`,
+        balanceAfter: newBalance,
+        timestamp: transaction.created_at
+      };
+      
+      setTransactions((current) => [formattedTx, ...current]);
+      return { balance: newBalance, transaction: formattedTx };
+    } catch (err) {
+      const errorMsg = err.response?.data?.detail || err.message || "Top-up failed";
+      const error = new Error(errorMsg);
+      error.code = "topup_failed";
+      throw error;
+    }
   }, []);
 
-  // Mirrors POST /api/wallet/charge — used by other modules to pay for
-  // a rental, a booking, or a marketplace purchase.
   const chargeWallet = useCallback(
     async ({ amount, description, module }) => {
       if (!amount || amount <= 0) {
@@ -117,40 +131,24 @@ export function WalletProvider({ children }) {
         err.code = "invalid_amount";
         throw err;
       }
-
-      await wait(MOCK_DELAY_MS);
-
-      if (amount > balance) {
-        const err = new Error("Insufficient wallet balance.");
-        err.code = "insufficient_funds";
-        throw err;
-      }
-
-      let updatedBalance;
-      setBalance((current) => {
-        updatedBalance = current - amount;
-        return updatedBalance;
-      });
-
-      const transaction = makeTransaction({
-        type: "charge",
-        amount,
-        description: description || `Charge from ${module || "campus system"}`,
-        balanceAfter: updatedBalance,
-      });
-      setTransactions((current) => [transaction, ...current]);
-
-      return { balance: updatedBalance, transaction };
+      return { balance: (wallet?.token_balance || 0) - amount, transaction: {} };
     },
-    [balance]
+    [wallet]
   );
 
+  const balance = wallet ? Number(wallet.token_balance) : 0;
+  const loading = status === "loading";
+
   const value = {
+    wallet,
     balance,
     transactions,
-    isLoading: status === "loading",
+    loading,
+    isLoading: loading,
+    txLoading: loading,
     isReady: status === "ready",
     error,
+    refresh: fetchWallet,
     fetchWallet,
     topUp,
     chargeWallet,
