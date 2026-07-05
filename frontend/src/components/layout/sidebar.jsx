@@ -19,6 +19,33 @@ export const NAV_ITEMS = [
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 
+const MARKETPLACE_ITEMS = [
+  {
+    to: "/marketplace",
+    label: "Dashboard",
+  },
+  {
+    to: "/marketplace/browse",
+    label: "Browse",
+  },
+  {
+    to: "/marketplace/list-item",
+    label: "List Item",
+  },
+  {
+    to: "/marketplace/my-listings",
+    label: "My Listings",
+  },
+  {
+    to: "/marketplace/purchases",
+    label: "Purchases",
+  },
+  {
+    to: "/marketplace/messages",
+    label: "Messages",
+  },
+];
+
 export default function Sidebar({ isCollapsed, isMobile, isMobileOpen, onCloseMobile }) {
   const expanded = isMobile ? true : !isCollapsed;
 
