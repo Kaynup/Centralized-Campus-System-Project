@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+mysql-connector-python
+passlib[bcrypt]
+pydantic
+pydantic[email]
+python-dotenv
+bcrypt
+apscheduler
+pytest
+pytest-asyncio
+httpx
+pytest-cov
