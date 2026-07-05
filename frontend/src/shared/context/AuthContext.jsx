@@ -1,72 +1,51 @@
 import { createContext, useState, useEffect, useCallback } from "react";
+import * as authService from "../api/authService";
+import { clearAuthToken } from "../api/axiosClient";
+import { parseApiError } from "../utils/parseApiError";
 
 /**
  * AuthContext
  * ------------------------------------------------------------------
  * Owns the auth session for the whole app (Section 8 of the arch doc):
- *   - access token lives in memory only (this state), never localStorage
- *   - session persistence across refresh is meant to happen via an
- *     httpOnly refresh cookie + GET /api/auth/me (Section 5.2)
+ *   - access token lives in memory only — held by axiosClient.js's
+ *     module-level `authToken` variable via setAuthToken/clearAuthToken,
+ *     never localStorage
+ *   - session persistence across refresh happens by calling
+ *     GET /users/me on load; if there's no valid token yet, this
+ *     simply resolves "logged out" (there is no refresh cookie in this
+ *     backend — a full page refresh always requires logging in again
+ *     until/unless that's added)
  *   - a distinguishable "session_invalidated" error (Section 5.3) is
- *     surfaced through `sessionInvalidatedMessage` so any component
- *     (e.g. the axios interceptor Person 3 builds) can react to it
+ *     surfaced through `sessionInvalidatedMessage` — axiosClient.js's
+ *     response interceptor currently does NOT call
+ *     handleSessionInvalidated (it hard-redirects on any 401 instead);
+ *     that's a known gap, flagged separately, not fixed here
  *
- * MOCK MODE:
- * Until Person 3's axiosClient / real backend exist, `login`,
- * `logout`, and `hydrateSession` are faked with timeouts. Every mock
- * function mirrors the exact shape the real API is expected to
- * return, so swapping in real axios calls later should only mean
- * replacing the body of these three functions — not their contracts.
+ * The consumer hook lives separately at shared/hooks/useAuth.js —
+ * this file only exports the context object and the provider.
  * ------------------------------------------------------------------
  */
 
 export const AuthContext = createContext(null);
 
-const MOCK_DELAY_MS = 600;
-
-// MOCK ONLY — until /api/auth/* exists.
-const MOCK_USERS = [
-  {
-    loginId: "admin",
-    password: "admin123",
-    user: {
-      id: 1,
-      name: "Admin User",
-      role: "admin",
-    },
-  },
-  {
-    loginId: "student",
-    password: "student123",
-    user: {
-      id: 2,
-      name: "Sample Student",
-      role: "student",
-    },
-  },
-];
-
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
+  const [accessToken, setAccessTokenState] = useState(null);
   // "checking" | "authenticated" | "unauthenticated"
   const [status, setStatus] = useState("checking");
-  const [sessionInvalidatedMessage, setSessionInvalidatedMessage] =
-    useState(null);
+  const [sessionInvalidatedMessage, setSessionInvalidatedMessage] = useState(null);
 
-  // Mirrors GET /api/auth/me — runs once on app load to hydrate the
-  // session from the (backend-issued, httpOnly) refresh cookie.
-  // Replace the body with a real axiosClient.get("/api/auth/me") call.
+  // Runs once on app load. There's no refresh-cookie flow in this
+  // backend, and the token lives in memory only — so nothing survives
+  // a page reload regardless. There's genuinely nothing to check here
+  // yet: just resolve "logged out" immediately. Once a real
+  // refresh-token/cookie mechanism exists, THIS is where it gets
+  // wired in — not a blind GET /users/me with no token, which is what
+  // caused an infinite reload loop (see below).
   const hydrateSession = useCallback(async () => {
     setStatus("checking");
-    await wait(MOCK_DELAY_MS);
-    // MOCK: no persisted session yet — real version checks the cookie result
     setUser(null);
-    setAccessToken(null);
+    setAccessTokenState(null);
     setStatus("unauthenticated");
   }, []);
 
@@ -74,44 +53,38 @@ export function AuthProvider({ children }) {
     hydrateSession();
   }, [hydrateSession]);
 
-  // Mirrors POST /api/auth/login
   const login = useCallback(async ({ loginId, password }) => {
-    await wait(MOCK_DELAY_MS);
-
-    const match = MOCK_USERS.find(
-      (entry) => entry.loginId === loginId && entry.password === password,
-    );
-
-    if (!match) {
-      const error = new Error("Invalid login ID or password");
-      error.code = "invalid_credentials";
+    try {
+      const data = await authService.login(loginId, password);
+      // authService.login already calls setAuthToken() internally —
+      // mirror it into React state too so consumers of useAuth() re-render.
+      setAccessTokenState(data.access_token);
+      setUser(data.user);
+      setStatus("authenticated");
+      return data;
+    } catch (err) {
+      const { message, code } = parseApiError(err);
+      const error = new Error(message);
+      error.code = code;
       throw error;
     }
-
-    const fakeToken = `mock.${btoa(loginId)}.${Date.now()}`;
-    setUser(match.user);
-    setAccessToken(fakeToken);
-    setStatus("authenticated");
-    return { accessToken: fakeToken, user: match.user };
   }, []);
 
-  // Mirrors POST /api/auth/logout
   const logout = useCallback(async () => {
-    await wait(200);
+    authService.logout();
     setUser(null);
-    setAccessToken(null);
+    setAccessTokenState(null);
     setStatus("unauthenticated");
   }, []);
 
-  // Called by the axios interceptor (once built) when a response comes
-  // back as { error: "session_invalidated" } per Section 5.3.
+  // Called once axiosClient.js's interceptor is updated to distinguish
+  // session_invalidated instead of hard-redirecting on every 401.
   const handleSessionInvalidated = useCallback((message) => {
+    clearAuthToken();
     setUser(null);
-    setAccessToken(null);
+    setAccessTokenState(null);
     setStatus("unauthenticated");
-    setSessionInvalidatedMessage(
-      message || "You were logged out because you signed in elsewhere.",
-    );
+    setSessionInvalidatedMessage(message || "You were logged out because you signed in elsewhere.");
   }, []);
 
   const clearSessionInvalidatedMessage = useCallback(() => {
