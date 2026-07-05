@@ -2,11 +2,14 @@ import { Routes, Route } from "react-router-dom";
 
 import AppShell from "./components/layout/AppShell";
 
+import { ThemeProvider } from "./shared/context/ThemeContext";
 import { AuthProvider } from "./shared/context/AuthContext";
 import { WalletProvider } from "./shared/context/WalletContext";
 import { NotificationProvider } from "./shared/context/NotificationContext";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
+import AdminRoute from "./routes/AdminRoute";
+import SuperAdminRoute from "./routes/SuperAdminRoute";
 
 import ErrorBoundary from "./shared/ui/ErrorBoundary";
 
@@ -14,119 +17,168 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Wallet from "./pages/Wallet";
-import Notifications from './pages/Notifications';
+import Notifications from "./pages/Notifications";
+import Settings from "./pages/Settings";
+import AdminUserUpload from "./pages/AdminUserUpload";
+import AdminManageStudents from "./pages/AdminManageStudents";
+import AdminRequestsPage from "./pages/AdminRequestsPage";
+import AdminManageAdmins from "./pages/AdminManageAdmins";
 import EquipmentRoutes from "./modules/equipment-rental";
 import MarketplaceRoutes from "./modules/secure-marketplace";
 import { ToastProvider } from "./shared/ui/Toast";
 
 function App() {
   return (
-    <AuthProvider>
-      <ToastProvider>
-        <WalletProvider>
-          <NotificationProvider>
-            <Routes>
+    <ThemeProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <WalletProvider>
+            <NotificationProvider>
+              <Routes>
 
-              {/*Public Routes*/}
-              <Route path="/" element={<Login />} />
-              <Route path="/login" element={<Login />} />
+                {/*Public Routes*/}
+                <Route path="/" element={<Login />} />
+                <Route path="/login" element={<Login />} />
 
-              {/* Protected Routes*/}
-              <Route element={<ProtectedRoute />}>
+                {/* Protected Routes*/}
+                <Route element={<ProtectedRoute />}>
 
-                {/* Shared Layout */}
-                <Route element={<AppShell />}>
+                  {/* Shared Layout */}
+                  <Route element={<AppShell />}>
 
-                  {/* Dashboard */}
-                  <Route
-                    path="/dashboard"
-                    element={
-                      <ErrorBoundary>
-                        <Dashboard />
-                      </ErrorBoundary>
-                    }
-                  />
+                    {/* Dashboard */}
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <ErrorBoundary>
+                          <Dashboard />
+                        </ErrorBoundary>
+                      }
+                    />
 
-                  {/* Shared Pages */}
+                    {/* Shared Pages */}
 
-                  <Route
-                    path="/wallet"
-                    element={
-                      <ErrorBoundary>
-                        <Wallet />
-                      </ErrorBoundary>
-                    }
-                  />
+                    <Route
+                      path="/wallet"
+                      element={
+                        <ErrorBoundary>
+                          <Wallet />
+                        </ErrorBoundary>
+                      }
+                    />
 
-                  <Route
-                    path="/profile"
-                    element={
-                      <ErrorBoundary>
-                        <Profile />
-                      </ErrorBoundary>
-                    }
-                  />
+                    <Route
+                      path="/profile"
+                      element={
+                        <ErrorBoundary>
+                          <Profile />
+                        </ErrorBoundary>
+                      }
+                    />
 
-                  <Route
-                    path="/notifications"
-                    element={
-                      <ErrorBoundary>
-                        <Notifications />
-                      </ErrorBoundary>
-                    }
-                  />
-                  
-                  {/*Future Modules*/}
+                    <Route
+                      path="/notifications"
+                      element={
+                        <ErrorBoundary>
+                          <Notifications />
+                        </ErrorBoundary>
+                      }
+                    />
 
-                  <Route
-                    path="/equipment/*"
-                    element={
-                      <ErrorBoundary>
-                        <EquipmentRoutes />
-                      </ErrorBoundary>
-                    }
-                  />
+                    <Route
+                      path="/settings"
+                      element={
+                        <ErrorBoundary>
+                          <Settings />
+                        </ErrorBoundary>
+                      }
+                    />
 
-                  {/*
-                  <Route
-                    path="/facility/*"
-                    element={
-                      <ErrorBoundary>
-                        <FacilityRoutes />
-                      </ErrorBoundary>
-                    }
-                  />
-                  */}
+                    {/* Feature Modules — available to any logged-in user */}
 
-                  
-                  <Route
-                    path="/marketplace/*"
-                    element={
-                      <ErrorBoundary>
-                        <MarketplaceRoutes />
-                      </ErrorBoundary>
-                    }
-                  />
-                 
+                    <Route
+                      path="/equipment/*"
+                      element={
+                        <ErrorBoundary>
+                          <EquipmentRoutes />
+                        </ErrorBoundary>
+                      }
+                    />
 
-                  {/*
-                  <Route
-                    path="/admin/*"
-                    element={
-                      <ErrorBoundary>
-                        <AdminRoutes />
-                      </ErrorBoundary>
-                    }
-                  />
-                  */}
+                    <Route
+                      path="/marketplace/*"
+                      element={
+                        <ErrorBoundary>
+                          <MarketplaceRoutes />
+                        </ErrorBoundary>
+                      }
+                    />
 
+                    {/* Admin Pages — guarded by AdminRoute (must be
+                        an admin account at all), then SuperAdminRoute
+                        (must specifically be super_admin) for the
+                        core/shared admin functions below. Sub-admin
+                        domain-specific pages will get their own
+                        guard once those pages exist. */}
+                    <Route element={<AdminRoute />}>
+                      <Route element={<SuperAdminRoute />}>
+                        <Route
+                          path="/admin/upload"
+                          element={
+                            <ErrorBoundary>
+                              <AdminUserUpload />
+                            </ErrorBoundary>
+                          }
+                        />
+
+                        <Route
+                          path="/admin/students"
+                          element={
+                            <ErrorBoundary>
+                              <AdminManageStudents />
+                            </ErrorBoundary>
+                          }
+                        />
+
+                        <Route
+                          path="/admin/requests"
+                          element={
+                            <ErrorBoundary>
+                              <AdminRequestsPage />
+                            </ErrorBoundary>
+                          }
+                        />
+
+                        <Route
+                          path="/admin/admins"
+                          element={
+                            <ErrorBoundary>
+                              <AdminManageAdmins />
+                            </ErrorBoundary>
+                          }
+                        />
+                      </Route>
+                    </Route>
+
+                    {/*
+                    <Route
+                      path="/facility/*"
+                      element={
+                        <ErrorBoundary>
+                          <FacilityRoutes />
+                        </ErrorBoundary>
+                      }
+                    />
+                    */}
+
+                  </Route>
                 </Route>
-              </Route>
-            </Routes>
-          </NotificationProvider>
-        </WalletProvider>
-      </ToastProvider>
-    </AuthProvider>
+              </Routes>
+            </NotificationProvider>
+          </WalletProvider>
+        </ToastProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

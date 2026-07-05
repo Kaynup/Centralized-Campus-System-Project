@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Menu,
-  Bell,
   Wallet as WalletIcon,
   ChevronDown,
   User,
@@ -11,10 +10,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../shared/hooks/useAuth";
 import { useWallet } from "../../shared/hooks/useWallet";
-import NotificationBell from '../../shared/notifications/NotificationBell';
-
-// inside the navbar's right-hand icon group:
-<NotificationBell />
+import NotificationBell from "../../shared/notifications/NotificationBell";
 
 export default function Navbar({ onToggleSidebar }) {
   const { user, logout } = useAuth();
@@ -49,7 +45,10 @@ export default function Navbar({ onToggleSidebar }) {
   };
 
   return (
-    <header className="flex items-center h-16 px-4 md:px-6 border-b border-slate/10 bg-white shrink-0">
+    <header
+      className="flex items-center h-16 px-4 md:px-6 border-b border-slate/10 shrink-0 transition-colors"
+      style={{ backgroundColor: "var(--color-surface)" }}
+    >
       <button
         onClick={onToggleSidebar}
         className="p-2 rounded-lg hover:bg-slate/5 text-slate"
@@ -90,7 +89,10 @@ export default function Navbar({ onToggleSidebar }) {
           </button>
 
           {isMenuOpen && (
-            <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-lg border border-slate/10 py-1 z-50">
+            <div
+              className="absolute right-0 mt-2 w-52 rounded-lg shadow-lg border border-slate/10 py-1 z-50 transition-colors"
+              style={{ backgroundColor: "var(--color-surface)" }}
+            >
               <div className="px-3 py-2 border-b border-slate/10">
                 <p className="text-sm font-medium text-slate truncate">
                   {user?.name ?? "Guest"}
