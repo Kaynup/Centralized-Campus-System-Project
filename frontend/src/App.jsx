@@ -14,6 +14,8 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Wallet from "./pages/Wallet";
+import EquipmentRoutes from "./modules/equipment-rental";
+import MarketplaceRoutes from "./modules/secure-marketplace";
 import { ToastProvider } from "./shared/ui/Toast";
 
 function App() {
@@ -77,7 +79,6 @@ function App() {
 
                   {/*Future Modules*/}
 
-                  {/*
                   <Route
                     path="/equipment/*"
                     element={
@@ -86,7 +87,6 @@ function App() {
                       </ErrorBoundary>
                     }
                   />
-                  */}
 
                   {/*
                   <Route
@@ -99,7 +99,7 @@ function App() {
                   />
                   */}
 
-                  {/*
+                  
                   <Route
                     path="/marketplace/*"
                     element={
@@ -108,7 +108,7 @@ function App() {
                       </ErrorBoundary>
                     }
                   />
-                  */}
+                 
 
                   {/*
                   <Route
