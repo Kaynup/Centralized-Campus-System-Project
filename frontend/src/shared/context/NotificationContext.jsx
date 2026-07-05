@@ -1,42 +1,22 @@
-import { createContext, useState, useCallback } from "react";
-
-/**
- * NotificationContext
- * ------------------------------------------------------------------
- * Two separate concerns live here, both "notifications" in the
- * everyday sense but different in shape:
- *
- * 1. TOASTS — transient, client-only messages ("Signed in from
- *    another device", "Wallet top-up successful", "Insufficient
- *    funds"). Any module calls notify.error(...) / notify.success(...)
- *    without needing to render its own toast markup — Person 3's
- *    <Toast/> component just renders whatever's in `toasts`.
- *
- * 2. FEED — the persisted, backend-driven notification list for the
- *    bell icon in the Navbar and the full pages/Notifications.jsx
- *    inbox (GET /api/notifications/*, Section 5.1). Mocked for now.
- *
- * This is the natural home for reacting to parseApiError results:
- * whenever a context catches a "session_invalidated" or
- * "insufficient_funds" error, it can call notify.error(message)
- * instead of every component managing its own error banner.
- * ------------------------------------------------------------------
- */
+import { createContext, useState, useCallback, useEffect, useRef } from "react";
+import { useAuth } from "../hooks/useAuth";
+import {
+  fetchNotifications,
+  markNotificationRead,
+  markAllNotificationsRead,
+  clearReadNotifications,
+} from "../api/notificationService";
 
 export const NotificationContext = createContext(null);
 
-const MOCK_DELAY_MS = 400;
 const DEFAULT_TOAST_DURATION_MS = 4000;
-
-function wait(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
+const FEED_POLL_INTERVAL_MS = 30000;
 
 export function NotificationProvider({ children }) {
+  // ---------------------------------------------------------------
+  // 1. TOASTS — client-only, no backend involved
+  // ---------------------------------------------------------------
   const [toasts, setToasts] = useState([]);
-  const [feed, setFeed] = useState([]);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [isLoadingFeed, setIsLoadingFeed] = useState(false);
 
   const dismissToast = useCallback((id) => {
     setToasts((current) => current.filter((toast) => toast.id !== id));
@@ -61,33 +41,151 @@ export function NotificationProvider({ children }) {
     info: (message, options) => pushToast("info", message, options),
   };
 
-  // Mirrors GET /api/notifications — mocked for now.
-  const fetchFeed = useCallback(async () => {
-    setIsLoadingFeed(true);
-    await wait(MOCK_DELAY_MS);
-    setFeed([]); // MOCK — replace with response.data.notifications
-    setUnreadCount(0); // MOCK — replace with response.data.unreadCount
-    setIsLoadingFeed(false);
+  // ---------------------------------------------------------------
+  // 2. FEED — backend-driven notification inbox
+  // ---------------------------------------------------------------
+  const { user } = useAuth();
+
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [backendUpdated, setBackendUpdated] = useState(false);
+
+  const latestIdRef = useRef(null);
+  const pollTimerRef = useRef(null);
+
+  const unreadCount = notifications.reduce(
+    (count, item) => (item.is_read ? count : count + 1),
+    0
+  );
+
+  // `silent` is used by the polling loop so background refreshes
+  // don't flash the shared loading state or the dropdown/page spinner.
+  const load = useCallback(async ({ silent = false } = {}) => {
+    if (!silent) setLoading(true);
+    setError(null);
+
+    try {
+      const data = await fetchNotifications();
+      const newestId = data?.[0]?.id ?? null;
+
+      if (
+        silent &&
+        latestIdRef.current !== null &&
+        newestId !== null &&
+        newestId !== latestIdRef.current
+      ) {
+        setBackendUpdated(true);
+      }
+
+      latestIdRef.current = newestId;
+      setNotifications(data ?? []);
+    } catch (err) {
+      const message =
+        err?.response?.data?.message || "Unable to load notifications right now.";
+      setError(message);
+      if (!silent) notify.error(message);
+    } finally {
+      if (!silent) setLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Mirrors PATCH /api/notifications/:id/read — mocked for now.
-  const markAsRead = useCallback(async (notificationId) => {
-    await wait(150);
-    setFeed((current) =>
-      current.map((item) => (item.id === notificationId ? { ...item, read: true } : item))
-    );
-    setUnreadCount((current) => Math.max(0, current - 1));
-  }, []);
+  const refreshNotifications = useCallback(() => load({ silent: false }), [load]);
+
+  const markAsRead = useCallback(
+    async (id) => {
+      const previous = notifications;
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
+      );
+
+      try {
+        await markNotificationRead(id);
+      } catch (err) {
+        setNotifications(previous);
+        notify.error(
+          err?.response?.data?.message || "Could not mark that notification as read."
+        );
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [notifications]
+  );
+
+  const markAllAsRead = useCallback(async () => {
+    const previous = notifications;
+    setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
+
+    try {
+      await markAllNotificationsRead();
+    } catch (err) {
+      setNotifications(previous);
+      notify.error(err?.response?.data?.message || "Could not mark all as read.");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notifications]);
+
+  const clearRead = useCallback(async () => {
+    const previous = notifications;
+    setNotifications((prev) => prev.filter((n) => !n.is_read));
+
+    try {
+      await clearReadNotifications();
+    } catch (err) {
+      setNotifications(previous);
+      notify.error(err?.response?.data?.message || "Could not clear read notifications.");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notifications]);
+
+  const dismissUpdateBanner = useCallback(() => setBackendUpdated(false), []);
+
+  // Load immediately when a user session exists, then poll every 30s.
+  // Stops on logout (user becomes falsy) and on unmount.
+  useEffect(() => {
+    if (!user) {
+      setNotifications([]);
+      setError(null);
+      setBackendUpdated(false);
+      latestIdRef.current = null;
+      if (pollTimerRef.current) {
+        clearInterval(pollTimerRef.current);
+        pollTimerRef.current = null;
+      }
+      return undefined;
+    }
+
+    load({ silent: false });
+
+    pollTimerRef.current = setInterval(() => {
+      load({ silent: true });
+    }, FEED_POLL_INTERVAL_MS);
+
+    return () => {
+      if (pollTimerRef.current) {
+        clearInterval(pollTimerRef.current);
+        pollTimerRef.current = null;
+      }
+    };
+  }, [user, load]);
 
   const value = {
+    // toasts
     toasts,
     notify,
     dismissToast,
-    feed,
+    // feed
+    notifications,
+    loading,
+    error,
     unreadCount,
-    isLoadingFeed,
-    fetchFeed,
+    backendUpdated,
+    refreshNotifications,
     markAsRead,
+    markAllAsRead,
+    clearRead,
+    dismissUpdateBanner,
   };
 
   return (

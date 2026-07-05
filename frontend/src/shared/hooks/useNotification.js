@@ -8,3 +8,5 @@ export function useNotification() {
   }
   return context;
 }
+
+export default useNotification;

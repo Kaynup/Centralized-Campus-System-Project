@@ -14,6 +14,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Wallet from "./pages/Wallet";
+import Notifications from './pages/Notifications';
 import { ToastProvider } from "./shared/ui/Toast";
 
 function App() {
@@ -64,7 +65,6 @@ function App() {
                     }
                   />
 
-                  {/*
                   <Route
                     path="/notifications"
                     element={
@@ -73,8 +73,7 @@ function App() {
                       </ErrorBoundary>
                     }
                   />
-                  */}
-
+                  
                   {/*Future Modules*/}
 
                   {/*
