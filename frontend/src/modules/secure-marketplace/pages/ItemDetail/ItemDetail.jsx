@@ -11,8 +11,9 @@ import LoadingState from '../../components/ui/LoadingState/LoadingState';
 import { getItemById, saveItem, unsaveItem, incrementView } from "../../services/itemService";
 import { purchaseItem } from "../../services/purchaseService";
 import { useAuth } from "../../../../shared/hooks/useAuth";
-// import { useWallet } from "../../../../shared/hooks/useWallet";
-// import { parseApiError } from "../../../../shared/utils/parseApiError";
+import { useWallet } from "../../../../shared/hooks/useWallet";
+import { parseApiError } from "../../../../shared/utils/parseApiError";
+import { useNotification } from "../../../../shared/hooks/useNotification";
 import './ItemDetail.css';
 
 function PurchaseSheet({ item, onClose, onConfirm, userBalance, purchasing }) {
@@ -112,8 +113,9 @@ export default function ItemDetail() {
   const [purchaseError, setPurchaseError] = useState(null);
   const [error, setError] = useState(null);
 
-  // const { balance } = useWallet();
-  // const { notify } = useNotification();
+  
+  const { balance } = useWallet();
+  const { notify } = useNotification();
   const currentUserId = user?.id;
   useEffect(() => {
     const fetchAll = async () => {
