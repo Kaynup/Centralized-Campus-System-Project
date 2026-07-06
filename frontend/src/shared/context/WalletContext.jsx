@@ -62,11 +62,12 @@ export function WalletProvider({ children }) {
       
       const formatted = (txRes.data || []).map(tx => ({
         id: tx.id,
-        type: tx.transaction_type === "token_topup" ? "top_up" : "charge",
-        amount: Number(tx.token_amount),
+        transaction_type: tx.transaction_type,
+        reference_type: tx.reference_type,
+        token_amount: Number(tx.token_amount),
         description: tx.description || "Wallet transaction",
-        balanceAfter: Number(tx.token_balance_after),
-        timestamp: tx.created_at
+        token_balance_after: Number(tx.token_balance_after),
+        created_at: tx.created_at
       }));
       setTransactions(formatted);
       setStatus("ready");
@@ -107,11 +108,12 @@ export function WalletProvider({ children }) {
       
       const formattedTx = {
         id: transaction.id,
-        type: "top_up",
-        amount: Number(transaction.token_amount),
+        transaction_type: transaction.transaction_type,
+        reference_type: transaction.reference_type,
+        token_amount: Number(transaction.token_amount),
         description: transaction.description || `Top-up via ${method}`,
-        balanceAfter: newBalance,
-        timestamp: transaction.created_at
+        token_balance_after: newBalance,
+        created_at: transaction.created_at
       };
       
       setTransactions((current) => [formattedTx, ...current]);

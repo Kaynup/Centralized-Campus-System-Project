@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 import * as authService from "../api/authService";
-import { clearAuthToken } from "../api/axiosClient";
+import { setAuthToken, clearAuthToken } from "../api/axiosClient";
 import { parseApiError } from "../utils/parseApiError";
 
 /**
@@ -35,18 +35,32 @@ export function AuthProvider({ children }) {
   const [status, setStatus] = useState("checking");
   const [sessionInvalidatedMessage, setSessionInvalidatedMessage] = useState(null);
 
-  // Runs once on app load. There's no refresh-cookie flow in this
-  // backend, and the token lives in memory only — so nothing survives
-  // a page reload regardless. There's genuinely nothing to check here
-  // yet: just resolve "logged out" immediately. Once a real
-  // refresh-token/cookie mechanism exists, THIS is where it gets
-  // wired in — not a blind GET /users/me with no token, which is what
-  // caused an infinite reload loop (see below).
+  // Runs once on app load. Hydrates session using the stored token from localStorage.
   const hydrateSession = useCallback(async () => {
     setStatus("checking");
-    setUser(null);
-    setAccessTokenState(null);
-    setStatus("unauthenticated");
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (!token) {
+      setUser(null);
+      setAccessTokenState(null);
+      setStatus("unauthenticated");
+      return;
+    }
+
+    try {
+      setAuthToken(token);
+      const userProfile = await authService.getProfile();
+      setAccessTokenState(token);
+      setUser(userProfile);
+      setStatus("authenticated");
+    } catch (err) {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("token");
+      }
+      clearAuthToken();
+      setUser(null);
+      setAccessTokenState(null);
+      setStatus("unauthenticated");
+    }
   }, []);
 
   useEffect(() => {

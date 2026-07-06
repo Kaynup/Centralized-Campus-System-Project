@@ -37,6 +37,11 @@ export async function changePassword(
   return response.data.data;
 }
 
+export async function getProfile() {
+  const response = await authClient.get(ENDPOINTS.AUTH.ME);
+  return response.data.data;
+}
+
 export function logout() {
   clearAuthToken();
 }

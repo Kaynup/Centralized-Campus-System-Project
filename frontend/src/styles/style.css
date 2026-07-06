@@ -6,18 +6,22 @@
   --color-gold: #D4AF37;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
 }
 
 body {
   margin: 0;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  color: var(--color-slate);
+  color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   background-color: var(--color-bg);
   transition: background-color 0.2s ease, color 0.2s ease;
@@ -93,7 +97,7 @@ button {
   border-color: var(--color-border);
 }
 
-[data-theme="dark"] .divide-slate\/10 > :not([hidden]) ~ :not([hidden]) {
+[data-theme="dark"] .divide-slate\/10> :not([hidden])~ :not([hidden]) {
   border-color: var(--color-border);
 }
 
