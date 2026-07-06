@@ -26,18 +26,20 @@ function createClient(baseURL) {
     return config;
   });
 
-  client.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (error.response?.status === 401) {
-        clearAuthToken();
-        localStorage.removeItem("token");
-        window.location.href = "/login";
-      }
+ client.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      clearAuthToken();
 
-      return Promise.reject(error);
+      window.dispatchEvent(
+        new CustomEvent("auth-unauthorized")
+      );
     }
-  );
+
+    return Promise.reject(error);
+  }
+);
 
   return client;
 }

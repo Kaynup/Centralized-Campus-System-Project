@@ -70,12 +70,37 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const logout = useCallback(async () => {
-    authService.logout();
-    setUser(null);
-    setAccessTokenState(null);
-    setStatus("unauthenticated");
-  }, []);
+const logout = useCallback(async () => {
+  try {
+    await authService.logout();
+  } catch {
+    // Ignore logout failures—we still want to clear local state.
+  }
+
+  clearAuthToken();
+
+  setUser(null);
+  setAccessTokenState(null);
+  setStatus("unauthenticated");
+}, []);
+
+useEffect(() => {
+  const handleUnauthorized = () => {
+    logout();
+  };
+
+  window.addEventListener(
+    "auth-unauthorized",
+    handleUnauthorized
+  );
+
+  return () => {
+    window.removeEventListener(
+      "auth-unauthorized",
+      handleUnauthorized
+    );
+  };
+}, [logout]);
 
   // Called once axiosClient.js's interceptor is updated to distinguish
   // session_invalidated instead of hard-redirecting on every 401.

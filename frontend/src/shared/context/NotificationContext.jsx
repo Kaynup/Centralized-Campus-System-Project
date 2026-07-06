@@ -38,6 +38,7 @@ export function NotificationProvider({ children }) {
   const notify = {
     success: (message, options) => pushToast("success", message, options),
     error: (message, options) => pushToast("error", message, options),
+    warning: (message, options) => pushToast("warning", message, options),
     info: (message, options) => pushToast("info", message, options),
   };
 
