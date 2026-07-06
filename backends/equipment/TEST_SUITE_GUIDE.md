@@ -1,493 +1,252 @@
-# Equipment Rental Backend - Complete Test Suite
+# Equipment Rental Backend — Test Suite Guide
 
-## Overview
-A comprehensive test suite for the Equipment Rental microservice with:
-- **20 Unit Tests** ✅ (All Passing)
-- **50+ Integration Tests** (Ready for MySQL execution)
-- **Database Schema Validation**
-- **API Endpoint Coverage**
+> **Status after integration refactor:** All test files have been corrected to align with the live API routes and the centralized-core auth architecture.
 
 ---
 
-## Directory Structure
+## Architecture Context
+
+The Equipment Rental service (`backends/equipment`, port **8001**) is one of four microservices in the Campus Hub platform:
+
+| Service | Port | Auth | Database |
+|---|---|---|---|
+| Centralized Core | 8000 | bcrypt + JWT (HS256) | `campus_central_db` |
+| Equipment Rental | 8001 | SHA-256 (legacy) | `campus_central_db` (shared) |
+| Marketplace | 8003 | JWT (shared secret) | `campus_central_db` |
+
+**Key integration facts:**
+- Students are stored in the **shared** `users` table owned by the Centralized Core.
+- `student_id` values are **UUID strings** (`VARCHAR(36)`), not integers.
+- `wallets`, `transactions`, and `rental_records` are all in `campus_central_db`.
+- The equipment service does **not** issue JWT tokens; the frontend uses the token from the Centralized Core.
+
+---
+
+## Directory Layout
 
 ```
 backends/equipment/
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py                          # Shared fixtures and database setup
-│   ├── unit/
-│   │   ├── __init__.py
-│   │   └── test_models.py                   # Pydantic model validation (20 tests)
-│   └── integration/
-│       ├── __init__.py
-│       ├── test_auth_integration.py          # Authentication flows (8 tests)
-│       ├── test_checkout_integration.py      # Checkout & Inventory (9 tests)
-│       ├── test_rental_integration.py        # Rentals & Wallet (10 tests)
-│       └── test_admin_integration.py         # Admin operations (12 tests)
-├── pytest.ini                               # Pytest configuration
-└── TEST_REPORT.md                           # Detailed test report
+├── pytest.ini                                  # pytest configuration
+├── routes/
+│   ├── auth.py                                 # POST /auth/register, /auth/login, /auth/forgot-password
+│   ├── checkout.py                             # POST /checkout
+│   ├── rentals.py                              # POST /return, GET /rentals/{id}, GET /rentals/{id}/active
+│   ├── wallet.py                               # GET /wallet/{id}, GET /wallet/{id}/transactions
+│   ├── inventory.py                            # GET /inventory, GET /inventory/{id}
+│   └── admin.py                                # (excluded from integration tests — not done yet)
+└── tests/
+    ├── conftest.py                             # Shared pytest fixtures
+    ├── unit/
+    │   └── test_models.py                      # Pydantic model validation (no DB needed)
+    └── integration/
+        ├── test_auth_integration.py            # Auth endpoints
+        ├── test_checkout_integration.py        # Inventory + checkout endpoint
+        ├── test_rental_integration.py          # Wallet + rental list + return
+        ├── test_checkout_flow.py               # Full end-to-end lifecycle tests
+        └── test_admin_integration.py           # (Admin — skipped until feature complete)
 ```
 
 ---
 
-## Unit Tests (test_models.py) ✅ 20/20 PASSING
-
-All model validation tests pass without requiring database connection.
-
-### StudentCreate Model (4 tests)
-```python
-✅ test_valid_student_creation
-✅ test_student_missing_login_id
-✅ test_student_invalid_email
-✅ test_student_missing_password
-```
-
-Validates:
-- Required fields: login_id, full_name, email, password
-- Email format validation
-- Password minimum length
-
-### EquipmentCreate Model (4 tests)
-```python
-✅ test_valid_equipment_creation
-✅ test_equipment_missing_name
-✅ test_equipment_invalid_deposit
-✅ test_equipment_invalid_quantity
-```
-
-Validates:
-- Required fields: name, category, deposit_amount, quantity
-- Positive value constraints
-- Field types
-
-### EquipmentUpdate Model (2 tests)
-```python
-✅ test_valid_equipment_update
-✅ test_equipment_update_partial
-```
-
-Validates:
-- All fields optional
-- Partial updates allowed
-- Type safety
-
-### AdminLogin Model (3 tests)
-```python
-✅ test_valid_admin_login
-✅ test_admin_login_missing_admin_id
-✅ test_admin_login_missing_password
-```
-
-Validates:
-- Required fields: admin_id, password
-- Field presence validation
-
-### BalanceAdd Model (2 tests)
-```python
-✅ test_valid_balance_add
-✅ test_balance_add_invalid_amount
-```
-
-Validates:
-- Required fields: student_id, amount
-- Positive amount constraint
-
-### CheckoutRequest Model (2 tests)
-```python
-✅ test_valid_checkout_request
-✅ test_checkout_invalid_duration
-```
-
-Validates:
-- Required fields: student_id, equipment_id, rental_duration_days
-- Positive integer constraints
-
-### ReturnRequest Model (3 tests)
-```python
-✅ test_valid_return_request
-✅ test_return_missing_student_id
-✅ test_return_missing_rental_id
-```
-
-Validates:
-- Required fields: student_id, rental_id
-- Integer constraints
-
----
-
-## Integration Tests (Ready for Execution)
-
-Integration tests validate complete workflows with database interactions. Run after starting MySQL server.
-
-### test_auth_integration.py (8 tests)
-```python
-test_student_registration
-test_student_registration_duplicate_login
-test_student_login
-test_student_login_invalid_password
-test_student_login_user_not_found
-test_forgot_password
-test_forgot_password_user_not_found
-test_wallet_created_on_registration
-```
-
-Covers:
-- Student registration with validation
-- Login with JWT/token response
-- Password reset functionality
-- Wallet auto-creation on registration
-- Duplicate login prevention
-- User existence checks
-
-### test_checkout_integration.py (9 tests)
-```python
-test_list_available_equipment
-test_get_equipment_by_category
-test_search_equipment
-test_successful_checkout
-test_checkout_insufficient_balance
-test_checkout_out_of_stock
-test_checkout_nonexistent_equipment
-test_checkout_nonexistent_student
-test_checkout_tokens_reserved
-```
-
-Covers:
-- Equipment listing and filtering
-- Deposit amount locking
-- Stock availability validation
-- Balance verification
-- Equipment and student existence checks
-- Reserved token tracking
-
-### test_rental_integration.py (10 tests)
-```python
-test_get_wallet_balance
-test_get_wallet_nonexistent_student
-test_get_transaction_history
-test_wallet_reserved_tokens_tracking
-test_get_student_rentals
-test_get_active_rentals
-test_return_equipment_no_late_fee
-test_return_equipment_with_late_fee
-test_return_nonexistent_rental
-test_equipment_availability_restored_after_return
-```
-
-Covers:
-- Wallet balance retrieval
-- Transaction history
-- Rental listing (all and active)
-- Equipment return processing
-- Late fee calculation
-- Stock restoration
-- Reserved token management
-
-### test_admin_integration.py (12 tests)
-```python
-test_admin_login
-test_admin_login_invalid_password
-test_add_student_by_admin
-test_add_equipment_by_admin
-test_get_all_students
-test_get_dashboard_stats
-test_get_all_rentals_admin
-test_get_late_rentals
-test_add_student_balance_by_admin
-test_update_equipment_by_admin
-test_deactivate_student_by_admin
-test_get_all_transactions_admin
-```
-
-Covers:
-- Admin authentication
-- Admin student/equipment creation
-- Student management (list, deactivate)
-- Equipment management (update, listing)
-- Balance management
-- Dashboard statistics
-- Rental reporting (all, late)
-- Transaction tracking
-
----
-
-## Test Fixtures (conftest.py)
-
-### Database Setup Fixture
-```python
-@pytest.fixture
-def setup_database():
-    """Auto-creates test database tables"""
-```
-
-Creates:
-- users, wallets, admin_users
-- equipments, rental_records
-- transactions
-
-Cleans up after each test.
-
-### Data Creation Fixtures
-```python
-@pytest.fixture
-def create_test_student()     # Creates student with wallet
-@pytest.fixture
-def create_test_equipment()   # Creates equipment item
-@pytest.fixture
-def create_test_admin()       # Creates admin user
-```
-
-Each returns dictionary with:
-- Database IDs
-- Test credentials
-- Default values
-
----
-
-## Running the Tests
+## Quick Start
 
 ### Prerequisites
 ```bash
+# 1. Initialize the shared database (run once)
+cd backends/centralized_core
+python init_db.py
+
+# 2. Install equipment dependencies
 cd backends/equipment
 pip install -r requirements.txt
-# Includes: pytest, pytest-asyncio, httpx, pytest-cov
 ```
 
-### Unit Tests (No Database Required)
+### Running Tests
 ```bash
-# Run all unit tests
+cd backends/equipment
+
+# All unit tests (no DB required)
 python -m pytest tests/unit/ -v
 
-# Run specific test class
-python -m pytest tests/unit/test_models.py::TestStudentCreateModel -v
+# All integration tests (excludes admin)
+python -m pytest tests/integration/ -v -k "not admin"
 
-# Run specific test
-python -m pytest tests/unit/test_models.py::TestStudentCreateModel::test_valid_student_creation -v
+# Full end-to-end flow tests only
+python -m pytest tests/integration/test_checkout_flow.py -v
+
+# Everything at once (excludes admin)
+python -m pytest tests/ -v -k "not admin"
 ```
 
-### Integration Tests (Requires MySQL)
-```bash
-# Start MySQL server first
-# Windows: net start MySQL80  or service mysql start
-# macOS: brew services start mysql
-# Linux: sudo systemctl start mysql
+### Environment Variables
+Tests use the same DB config as the service (defaults shown):
 
-# Then run integration tests
-python -m pytest tests/integration/ -v
+| Variable | Default |
+|---|---|
+| `DB_HOST` | `localhost` |
+| `DB_USER` | `root` |
+| `DB_PASSWORD` | `root` |
+| `DB_NAME` | `campus_central_db` |
 
-# Run specific integration test file
-python -m pytest tests/integration/test_auth_integration.py -v
+---
 
-# Run with detailed output
-python -m pytest tests/integration/ -vv --tb=long
-```
+## Test Files
 
-### All Tests with Coverage
-```bash
-# Run all tests with coverage report
-python -m pytest tests/ -v --cov=. --cov-report=html
+### `tests/unit/test_models.py` — Pydantic Model Validation
 
-# View coverage report
-open htmlcov/index.html  # macOS
-# or browse to htmlcov/index.html in Windows/Linux
-```
+No database connection required. Validates all request models.
 
-### Quick Test Commands
-```bash
-# Just run passing unit tests (fast)
-pytest tests/unit/ -q
+| Test | What it checks |
+|---|---|
+| `TestStudentCreateModel` | Required fields, email format, min-length constraints |
+| `TestEquipmentCreateModel` | `deposit_amount > 0`, `quantity > 0`, name required |
+| `TestEquipmentUpdateModel` | Partial updates (all fields optional) |
+| `TestAdminLoginModel` | Required `admin_id` and `password` |
+| `TestBalanceAddModel` | `amount > 0` enforced |
+| `TestCheckoutRequestModel` | `student_id` is a UUID string, `equipment_id > 0`, `rental_duration_days > 0` |
+| `TestReturnRequestModel` | `student_id` UUID string, `rental_id > 0` |
 
-# Run with stop-on-first-failure
-pytest tests/unit/ -x
+---
 
-# Run and show print statements
-pytest tests/unit/ -v -s
+### `tests/integration/test_auth_integration.py` — Auth Endpoints
 
-# Run specific test by keyword
-pytest tests/ -k "test_student_login" -v
+> Covers `POST /auth/register`, `POST /auth/login`, `POST /auth/forgot-password`
+
+| Test | Scenario |
+|---|---|
+| `test_register_new_student` | New student registers successfully |
+| `test_register_creates_wallet` | Wallet is auto-created with 0.00 balance |
+| `test_register_existing_student_upserts` | Same `student_id` re-registers (upsert semantics) |
+| `test_login_success` | Valid credentials return `id`, `student_id`, `wallet_balance`, `wallet_reserved` |
+| `test_login_wrong_password_returns_401` | Wrong password → 401 |
+| `test_login_nonexistent_student_returns_401` | Unknown student → 401 |
+| `test_login_inactive_student_returns_403` | Deactivated account → 403 |
+| `test_forgot_password_success` | Reset password; old password invalid, new password works |
+| `test_forgot_password_wrong_email_returns_404` | Email mismatch → 404 |
+| `test_forgot_password_nonexistent_student_returns_404` | Unknown student → 404 |
+
+**Request schema (actual):**
+```json
+// POST /auth/register
+{ "student_id": "...", "email": "...", "password": "..." }
+
+// POST /auth/login
+{ "student_id": "...", "password": "..." }
+
+// POST /auth/forgot-password
+{ "student_id": "...", "email": "...", "new_password": "..." }
 ```
 
 ---
 
-## Test Execution Flow
+### `tests/integration/test_checkout_integration.py` — Inventory + Checkout
 
-### Unit Tests
-```
-conftest.py loads models.py
-→ Each test validates Pydantic schema
-→ No database required
-→ Execution: ~0.2 seconds
-```
+> Covers `GET /inventory`, `GET /inventory/{id}`, `POST /checkout`
 
-### Integration Tests
-```
-conftest.py creates database connection
-→ setup_database fixture creates tables
-→ Test executes API endpoint via TestClient
-→ Database records created/modified
-→ Cleanup fixture truncates tables
-→ Execution: ~1-5 seconds per test (requires DB)
+| Test | Scenario |
+|---|---|
+| `test_list_available_equipment_returns_200` | Inventory returns items with stock > 0 |
+| `test_list_available_equipment_excludes_zero_stock` | Out-of-stock items not shown |
+| `test_get_single_equipment_by_id` | Single equipment detail |
+| `test_get_nonexistent_equipment_returns_404` | Unknown ID → 404 |
+| `test_successful_checkout` | Valid checkout returns `rental_record_id`, `due_date`, `deposit_locked` |
+| `test_checkout_reserves_deposit_in_wallet` | `reserved_tokens` increases by deposit amount |
+| `test_checkout_decrements_available_quantity` | `available_quantity` drops by 1 |
+| `test_checkout_insufficient_balance_returns_400` | Zero balance → 400 |
+| `test_checkout_out_of_stock_returns_400` | No stock → 400 |
+| `test_checkout_nonexistent_equipment_returns_404` | Unknown equipment → 404 |
+| `test_checkout_nonexistent_student_returns_404` | Unknown student → 404 |
+| `test_checkout_duplicate_borrow_returns_400` | Borrowing same item twice → 400 |
+| `test_checkout_creates_transaction_record` | `deposit_lock` transaction in ledger |
+
+---
+
+### `tests/integration/test_rental_integration.py` — Wallet + Rentals + Return
+
+> Covers `GET /wallet/{id}`, `GET /wallet/{id}/transactions`, `GET /rentals/{id}`, `GET /rentals/{id}/active`, `POST /return`
+
+| Test | Scenario |
+|---|---|
+| `test_get_wallet_balance` | Returns `available_balance`, `reserved_balance`, `total_balance` |
+| `test_get_wallet_nonexistent_student_returns_404` | Unknown student → 404 |
+| `test_get_transaction_history` | Returns transaction list |
+| `test_transaction_history_empty_for_new_student` | Fresh student has empty history |
+| `test_get_student_rentals` | Rental history listed |
+| `test_get_active_rentals` | Only `Borrowed`/`Late` statuses returned |
+| `test_returned_rental_not_in_active` | `Returned` records excluded from active list |
+| `test_return_on_time_no_late_fee` | Return before due date → full deposit refund, 0 late fee |
+| `test_return_overdue_charges_late_fee` | Return after due date → `late_fee > 0`, `refund_amount < deposit` |
+| `test_return_restores_equipment_availability` | `available_quantity` incremented after return |
+| `test_return_nonexistent_rental_returns_404` | Unknown rental → 404 |
+| `test_return_writes_transaction_records` | `deposit_unlock` written to transactions table |
+
+**Response key reference:**
+```python
+# GET /wallet/{student_id}
+{
+  "student_id": "...",
+  "available_balance": 950.00,    # spendable balance
+  "reserved_balance": 50.00,      # locked as deposit
+  "total_balance": 1000.00
+}
 ```
 
 ---
 
-## Database Schema Tested
+### `tests/integration/test_checkout_flow.py` — End-to-End Lifecycle Tests
 
-### users table
-- id (UUID) - Primary key
-- login_id (unique) - Student identifier
-- email (unique) - Email address
-- password_hash - SHA256 hash
-- role (enum) - student/admin
-- is_active - Account status
-- is_verified - Email verification
+Full multi-step flows that exercise real state transitions across checkout and return.
 
-### wallets table
-- id (UUID) - Primary key
-- user_id (FK to users) - Owner
-- token_balance - Available tokens
-- reserved_tokens - Locked tokens
-- facility_tokens_used - Usage tracking
-- rental_tokens_used - Usage tracking
-
-### admin_users table
-- id (UUID) - Primary key
-- admin_id (unique) - Admin identifier
-- email (unique) - Email address
-- password_hash - SHA256 hash
-- role (enum) - super_admin/moderator
-- is_active - Account status
-
-### equipments table
-- id (int) - Primary key
-- name - Equipment name
-- category - Classification
-- deposit_amount - Decimal amount
-- quantity - Total units
-- available_quantity - Rentable units
-- is_active - Listing status
-
-### rental_records table
-- id (int) - Primary key
-- student_id (FK to users) - Renter
-- equipment_id (FK to equipments) - Equipment
-- borrow_date - Checkout time
-- due_date - Return deadline
-- return_date - Actual return time
-- status (enum) - Borrowed/Late/Returned
-- late_fee - Decimal penalty
-- deposit_amount - Locked amount
-
-### transactions table
-- id (UUID) - Primary key
-- user_id (FK to users) - Account
-- reference_type - rental/booking/etc
-- reference_id - Link to related record
-- transaction_type - deposit_lock/unlock/etc
-- token_amount - Decimal value
-- token_balance_after - State tracking
-- created_at - Timestamp
+| Test | Scenario |
+|---|---|
+| `test_full_checkout_then_return_on_time` | Checkout → verify wallet/qty state → return on time → verify full refund + qty restored |
+| `test_checkout_then_return_with_late_fee` | Checkout overdue rental → return → verify late fee and partial refund |
+| `test_late_fee_capped_at_deposit` | 10-day overdue (500 fee) capped at deposit (50) |
+| `test_checkout_blocks_double_borrow_same_item` | Second borrow of same item rejected |
+| `test_insufficient_balance_prevents_checkout` | Balance just below deposit → 400 |
+| `test_return_marks_rental_as_returned` | `rental_records.status` = `'Returned'` after return |
+| `test_return_late_fee_transaction_written` | `late_fee_deduction` transaction entry verified in DB |
 
 ---
 
-## Current Test Status
+## Bug Fixes Applied
 
-### ✅ Unit Tests
-- **Status**: All Passing
-- **Count**: 20/20
-- **Coverage**: All 7 Pydantic models
-- **Duration**: ~0.2 seconds
-- **No Database Required**: Yes
+The following bugs existed in the original source code and test files and have been fixed as part of this integration:
 
-### 🔄 Integration Tests
-- **Status**: Created and Ready
-- **Count**: 39 tests across 4 files
-- **Coverage**: All 18 API endpoints
-- **Requires**: MySQL Server running
-- **Expected Duration**: ~3-5 seconds per test
+### Source Code Bugs
 
-### 📊 Test Categories
-- Authentication (8 tests)
-- Inventory & Checkout (9 tests)
-- Rentals & Wallet (10 tests)
-- Admin Operations (12 tests)
+| File | Bug | Fix |
+|---|---|---|
+| `routes/checkout.py` | `student_id: int` — wrong type for UUID string users | Changed to `str` |
+| `routes/checkout.py` | `transactions` INSERT missing required `id` column | Added `str(uuid.uuid4())` |
+| `routes/rentals.py` | Both transaction INSERTs missing `id` column | Added `str(uuid.uuid4())` to both |
 
----
+### Test Bugs
 
-## Troubleshooting
-
-### "MySQL server refused connection"
-```bash
-# Ensure MySQL is running
-# Windows:
-net start MySQL80
-
-# macOS:
-brew services start mysql
-
-# Linux:
-sudo systemctl start mysql
-
-# Verify connection:
-mysql -u root -p
-```
-
-### "ModuleNotFoundError: No module named 'mysql'"
-```bash
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### "Can't import models from main"
-This is expected for unit tests - use `pytest tests/unit/` only.
-Integration tests handle imports correctly.
-
-### "Database permission denied"
-```bash
-# Check database user has correct permissions:
-mysql -u root -p
-mysql> GRANT ALL PRIVILEGES ON campus_central_db.* TO 'root'@'localhost';
-mysql> FLUSH PRIVILEGES;
-```
+| File | Bug | Fix |
+|---|---|---|
+| `test_auth_integration.py` | Used `login_id`/`full_name` — fields not in route schema | Changed to `student_id` |
+| `test_auth_integration.py` | Asserted `"user_id"` and `"token_balance"` in login response | Fixed to `"id"`, `"wallet_balance"`, `"wallet_reserved"` |
+| `test_auth_integration.py` | `forgot-password` missing `email` field | Added required `email` |
+| `test_checkout_integration.py` | URL `/inventory/list` does not exist | Changed to `/inventory` |
+| `test_checkout_integration.py` | URL `/checkout/checkout` does not exist | Changed to `/checkout` |
+| `test_checkout_integration.py` | Sent `rental_duration_days` not in `CheckoutRequest` model | Removed field |
+| `test_rental_integration.py` | URL `/wallet/balance/{id}` does not exist | Changed to `/wallet/{id}` |
+| `test_rental_integration.py` | URL `/wallet/transactions/{id}` does not exist | Changed to `/wallet/{id}/transactions` |
+| `test_rental_integration.py` | Asserted `token_balance` / `total` in wallet response | Fixed to `available_balance` / `total_balance` |
+| `test_rental_integration.py` | URL `/rentals/rentals/{id}` and `/rentals/return` wrong | Fixed to `/rentals/{id}` and `/return` |
+| `test_models.py` | `student_id="student123"` (string OK, but semantically wrong) | Updated to UUID-format string |
 
 ---
 
-## Next Steps
+## Fixtures (conftest.py)
 
-1. **Start MySQL Server** - Required for integration tests
-2. **Run Unit Tests** - `pytest tests/unit/ -v` (already passing)
-3. **Run Integration Tests** - `pytest tests/integration/ -v`
-4. **Generate Coverage** - `pytest tests/ --cov=. --cov-report=html`
-5. **Review Results** - Check generated HTML coverage report
-
----
-
-## Continuous Integration
-
-Add to CI/CD pipeline (GitHub Actions, GitLab CI, etc.):
-
-```yaml
-- name: Run Unit Tests
-  run: pytest tests/unit/ -v
-
-- name: Run Integration Tests (with MySQL)
-  run: |
-    # Start MySQL
-    sudo systemctl start mysql
-    pytest tests/integration/ -v
-    
-- name: Generate Coverage Report
-  run: pytest tests/ --cov=. --cov-report=html --cov-report=term
-```
-
----
-
-## Summary
-
-✅ **Comprehensive test suite created with 59 total tests**
-- 20 unit tests: **ALL PASSING**
-- 39 integration tests: Ready for execution
-- Full API endpoint coverage
-- Database schema validation
-- Ready for CI/CD integration
+| Fixture | Scope | Description |
+|---|---|---|
+| `client` | session | FastAPI `TestClient` wrapping the app |
+| `setup_database` | function | Creates tables if missing; truncates all test data after each test |
+| `create_test_student` | function | Inserts a student + wallet (1000.00 token_balance) |
+| `create_test_equipment` | function | Inserts a `Laptop Dell` with deposit 50.00, qty 5 |
+| `create_test_admin` | function | Inserts an admin user (for admin tests) |
+| `test_user_id` | function | Returns a fresh `uuid.uuid4()` string |
+| `test_equipment_id` | function | Returns `1` (static, use `create_test_equipment` for DB-backed ID) |

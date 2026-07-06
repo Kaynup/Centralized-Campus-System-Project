@@ -172,11 +172,11 @@ class TestCheckoutRequestModel:
     def test_valid_checkout_request(self):
         """Test valid checkout request"""
         request = CheckoutRequest(
-            student_id="student123",
+            student_id="3fa85f64-5717-4562-b3fc-2c963f66afa6",
             equipment_id=1,
             rental_duration_days=7
         )
-        assert request.student_id == "student123"
+        assert request.student_id == "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         assert request.equipment_id == 1
         assert request.rental_duration_days == 7
     
@@ -195,10 +195,10 @@ class TestReturnRequestModel:
     def test_valid_return_request(self):
         """Test valid return request"""
         request = ReturnRequest(
-            student_id="student123",
+            student_id="3fa85f64-5717-4562-b3fc-2c963f66afa6",
             rental_id=1
         )
-        assert request.student_id == "student123"
+        assert request.student_id == "3fa85f64-5717-4562-b3fc-2c963f66afa6"
         assert request.rental_id == 1
     
     def test_return_missing_student_id(self):

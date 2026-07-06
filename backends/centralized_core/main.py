@@ -8,19 +8,39 @@ app = FastAPI(
     version="0.8.0"
 )
 
-# CORS Setup
+import logging
+import time
+from fastapi import Request
+from fastapi.responses import JSONResponse
+
+# Setup standard logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger("centralized_core")
+
+# CORS Setup - allowing all origins temporarily or explicitly adding * to avoid 400s
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origin_regex="https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start_time = time.time()
+    try:
+        response = await call_next(request)
+        process_time = time.time() - start_time
+        logger.info(f"{request.method} {request.url.path} - Status: {response.status_code} - {process_time:.3f}s")
+        return response
+    except Exception as e:
+        process_time = time.time() - start_time
+        logger.error(f"{request.method} {request.url.path} - ERROR: {str(e)} - {process_time:.3f}s", exc_info=True)
+        return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
 
 # Include routers with correct prefixes to align with frontend endpoints
 app.include_router(auth.router)

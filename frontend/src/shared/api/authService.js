@@ -17,6 +17,10 @@ export async function login(loginId, password) {
 
   const data = response.data.data;
 
+  if (data.user && data.user.full_name && !data.user.name) {
+    data.user.name = data.user.full_name;
+  }
+
   setAuthToken(data.access_token);
 
   return data;
@@ -39,7 +43,11 @@ export async function changePassword(
 
 export async function getProfile() {
   const response = await authClient.get(ENDPOINTS.AUTH.ME);
-  return response.data.data;
+  const data = response.data.data;
+  if (data && data.full_name && !data.name) {
+    data.name = data.full_name;
+  }
+  return data;
 }
 
 export function logout() {

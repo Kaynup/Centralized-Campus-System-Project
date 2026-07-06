@@ -8,288 +8,260 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 
 from database import get_connection
 
+
 class TestWalletIntegration:
-    """Integration tests for wallet endpoints"""
-    
+    """Integration tests for GET /wallet/{student_id} and /wallet/{student_id}/transactions."""
+
     def test_get_wallet_balance(self, client, setup_database, create_test_student):
-        """Test getting wallet balance"""
+        """GET /wallet/{student_id} returns correct balance keys."""
         student_id = create_test_student["user_id"]
-        
-        # Add some balance
+
+        # Set a known balance
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(
-            "UPDATE wallets SET token_balance = 1000.00 WHERE user_id = %s",
+            "UPDATE wallets SET token_balance = 1000.00, reserved_tokens = 50.00 WHERE user_id = %s",
             (student_id,)
         )
         conn.commit()
         cursor.close()
         conn.close()
-        
-        # Get wallet
-        response = client.get(f"/wallet/balance/{student_id}")
-        
-        assert response.status_code == 200
-        data = response.json()
-        assert data["student_id"] == create_test_student["login_id"]
-        assert float(data["token_balance"]) == 1000.00
-        assert float(data["reserved_tokens"]) == 0.00
-    
-    def test_get_wallet_nonexistent_student(self, client, setup_database):
-        """Test getting wallet for non-existent student fails"""
-        response = client.get(f"/wallet/balance/{str(uuid.uuid4())}")
-        
-        assert response.status_code == 404
-    
+
+        resp = client.get(f"/wallet/{student_id}")
+        assert resp.status_code == 200
+        data = resp.json()
+        # Actual keys: student_id, available_balance, reserved_balance, total_balance
+        assert "student_id" in data
+        assert float(data["available_balance"]) == 1000.00
+        assert float(data["reserved_balance"]) == 50.00
+        assert float(data["total_balance"]) == 1050.00
+
+    def test_get_wallet_nonexistent_student_returns_404(self, client, setup_database):
+        """GET /wallet/{student_id} with unknown ID returns 404."""
+        resp = client.get(f"/wallet/{str(uuid.uuid4())}")
+        assert resp.status_code == 404
+
     def test_get_transaction_history(self, client, setup_database, create_test_student):
-        """Test getting transaction history"""
+        """GET /wallet/{student_id}/transactions returns the list of transactions."""
         student_id = create_test_student["user_id"]
-        
-        # Create a test transaction
+
+        # Insert a mock transaction
         conn = get_connection()
         cursor = conn.cursor()
-        transaction_id = str(uuid.uuid4())
+        tx_id = str(uuid.uuid4())
         cursor.execute("""
-            INSERT INTO transactions 
+            INSERT INTO transactions
             (id, user_id, reference_type, reference_id, transaction_type, token_amount, token_balance_after)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """, (transaction_id, student_id, "manual_adjustment", "test", "token_topup", 100.00, 100.00))
+        """, (tx_id, student_id, "manual_adjustment", "test", "token_topup", 100.00, 100.00))
         conn.commit()
         cursor.close()
         conn.close()
-        
-        # Get transactions
-        response = client.get(f"/wallet/transactions/{student_id}")
-        
-        assert response.status_code == 200
-        data = response.json()
+
+        resp = client.get(f"/wallet/{student_id}/transactions")
+        assert resp.status_code == 200
+        data = resp.json()
         assert "transactions" in data
         assert len(data["transactions"]) > 0
-    
-    def test_wallet_reserved_tokens_tracking(self, client, setup_database, create_test_student):
-        """Test that reserved tokens are properly tracked"""
+
+    def test_transaction_history_empty_for_new_student(self, client, setup_database, create_test_student):
+        """A freshly created student has no transactions."""
         student_id = create_test_student["user_id"]
-        
-        # Set balance
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute(
-            "UPDATE wallets SET token_balance = 500.00, reserved_tokens = 50.00 WHERE user_id = %s",
-            (student_id,)
-        )
-        conn.commit()
-        cursor.close()
-        conn.close()
-        
-        response = client.get(f"/wallet/balance/{student_id}")
-        assert response.status_code == 200
-        
-        data = response.json()
-        assert float(data["reserved_tokens"]) == 50.00
-        assert float(data["token_balance"]) == 500.00
-        assert float(data["total"]) == 550.00
+
+        resp = client.get(f"/wallet/{student_id}/transactions")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["transactions"] == []
+
 
 class TestRentalIntegration:
-    """Integration tests for rental operations"""
-    
-    def test_get_student_rentals(self, client, setup_database, create_test_student, create_test_equipment):
-        """Test getting student's rental history"""
-        student_id = create_test_student["user_id"]
-        
-        # Create a rental record
+    """Integration tests for rental list, active rental, and return endpoints."""
+
+    def _insert_rental(self, student_id: str, equipment_id: int, status: str = "Borrowed",
+                       days_borrowed: int = 2, days_until_due: int = 5,
+                       deposit: float = 50.00) -> int:
+        """Helper: directly insert a rental record and return its id."""
+        borrow_date = datetime.now() - timedelta(days=days_borrowed)
+        due_date = datetime.now() + timedelta(days=days_until_due)
         conn = get_connection()
         cursor = conn.cursor()
-        borrow_date = datetime.now()
-        due_date = borrow_date + timedelta(days=7)
-        
         cursor.execute("""
             INSERT INTO rental_records
             (student_id, equipment_id, borrow_date, due_date, deposit_amount, status)
             VALUES (%s, %s, %s, %s, %s, %s)
-        """, (student_id, create_test_equipment["id"], borrow_date, due_date, 50.00, "Borrowed"))
-        
+        """, (student_id, equipment_id, borrow_date, due_date, deposit, status))
+        conn.commit()
+        rental_id = cursor.lastrowid
+        cursor.close()
+        conn.close()
+        return rental_id
+
+    def _set_wallet(self, student_id: str, balance: float, reserved: float = 0.00):
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE wallets SET token_balance = %s, reserved_tokens = %s WHERE user_id = %s",
+            (balance, reserved, student_id)
+        )
         conn.commit()
         cursor.close()
         conn.close()
-        
-        # Get rentals
-        response = client.get(f"/rentals/rentals/{student_id}")
-        
-        assert response.status_code == 200
-        data = response.json()
+
+    # ------------------------------------------------------------------
+    # Rental history
+    # ------------------------------------------------------------------
+
+    def test_get_student_rentals(self, client, setup_database, create_test_student, create_test_equipment):
+        """GET /rentals/{student_id} lists rental history for the student."""
+        student_id = create_test_student["user_id"]
+        self._insert_rental(student_id, create_test_equipment["id"])
+
+        resp = client.get(f"/rentals/{student_id}")
+        assert resp.status_code == 200
+        data = resp.json()
         assert "rentals" in data
         assert len(data["rentals"]) > 0
-    
+
     def test_get_active_rentals(self, client, setup_database, create_test_student, create_test_equipment):
-        """Test getting active rentals"""
+        """GET /rentals/{student_id}/active returns only Borrowed/Late rentals."""
         student_id = create_test_student["user_id"]
-        
-        # Create an active rental
-        conn = get_connection()
-        cursor = conn.cursor()
-        borrow_date = datetime.now()
-        due_date = borrow_date + timedelta(days=7)
-        
-        cursor.execute("""
-            INSERT INTO rental_records
-            (student_id, equipment_id, borrow_date, due_date, deposit_amount, status)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (student_id, create_test_equipment["id"], borrow_date, due_date, 50.00, "Borrowed"))
-        
-        conn.commit()
-        cursor.close()
-        conn.close()
-        
-        # Get active rentals
-        response = client.get(f"/rentals/rentals/{student_id}/active")
-        
-        assert response.status_code == 200
-        data = response.json()
+        self._insert_rental(student_id, create_test_equipment["id"], status="Borrowed")
+
+        resp = client.get(f"/rentals/{student_id}/active")
+        assert resp.status_code == 200
+        data = resp.json()
         assert "active_rentals" in data
-    
-    def test_return_equipment_no_late_fee(self, client, setup_database, create_test_student, create_test_equipment):
-        """Test returning equipment before due date"""
+        assert any(r["status"] in ("Borrowed", "Late") for r in data["active_rentals"])
+
+    def test_returned_rental_not_in_active(self, client, setup_database, create_test_student, create_test_equipment):
+        """Returned rentals do not appear in active rentals list."""
         student_id = create_test_student["user_id"]
-        
-        # Set up wallet with balance
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute(
-            "UPDATE wallets SET token_balance = 100.00, reserved_tokens = 50.00 WHERE user_id = %s",
-            (student_id,)
-        )
-        
-        # Create rental that's not overdue
-        borrow_date = datetime.now() - timedelta(days=2)
-        due_date = datetime.now() + timedelta(days=5)
-        
-        cursor.execute("""
-            INSERT INTO rental_records
-            (student_id, equipment_id, borrow_date, due_date, deposit_amount, status)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (student_id, create_test_equipment["id"], borrow_date, due_date, 50.00, "Borrowed"))
-        
-        conn.commit()
-        rental_id = cursor.lastrowid
-        cursor.close()
-        conn.close()
-        
-        # Return equipment
-        response = client.post("/rentals/return", json={
-            "student_id": student_id,
-            "rental_id": rental_id
-        })
-        
-        assert response.status_code == 200
-        data = response.json()
-        assert data["late_fee"] == 0.0
-        assert float(data["refund_amount"]) == 50.00
-    
-    def test_return_equipment_with_late_fee(self, client, setup_database, create_test_student, create_test_equipment):
-        """Test returning equipment after due date incurs late fee"""
-        student_id = create_test_student["user_id"]
-        
-        # Set up wallet
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute(
-            "UPDATE wallets SET token_balance = 100.00, reserved_tokens = 50.00 WHERE user_id = %s",
-            (student_id,)
-        )
-        
-        # Create overdue rental
+        # Insert an already-returned rental
         borrow_date = datetime.now() - timedelta(days=10)
-        due_date = datetime.now() - timedelta(days=2)  # Overdue by 2 days
-        
+        due_date = datetime.now() - timedelta(days=3)
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO rental_records
+            (student_id, equipment_id, borrow_date, due_date, deposit_amount, status, return_date)
+            VALUES (%s, %s, %s, %s, 50.00, 'Returned', %s)
+        """, (student_id, create_test_equipment["id"], borrow_date, due_date, datetime.now()))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        resp = client.get(f"/rentals/{student_id}/active")
+        assert resp.status_code == 200
+        data = resp.json()
+        statuses = [r["status"] for r in data["active_rentals"]]
+        assert "Returned" not in statuses
+
+    # ------------------------------------------------------------------
+    # Return
+    # ------------------------------------------------------------------
+
+    def test_return_on_time_no_late_fee(self, client, setup_database, create_test_student, create_test_equipment):
+        """POST /return before due date refunds full deposit with no late fee."""
+        student_id = create_test_student["user_id"]
+        deposit = 50.00
+        self._set_wallet(student_id, 100.00, deposit)
+        rental_id = self._insert_rental(student_id, create_test_equipment["id"],
+                                        days_borrowed=2, days_until_due=5, deposit=deposit)
+
+        resp = client.post("/return", json={
+            "student_id": student_id,
+            "rental_id": rental_id
+        })
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["late_fee"] == 0.0
+        assert float(data["refund_amount"]) == deposit
+
+    def test_return_overdue_charges_late_fee(self, client, setup_database, create_test_student, create_test_equipment):
+        """POST /return after due date incurs a positive late fee."""
+        student_id = create_test_student["user_id"]
+        deposit = 50.00
+        self._set_wallet(student_id, 100.00, deposit)
+
+        # Create rental that is 3 days overdue
+        borrow_date = datetime.now() - timedelta(days=10)
+        due_date = datetime.now() - timedelta(days=3)
+        conn = get_connection()
+        cursor = conn.cursor()
         cursor.execute("""
             INSERT INTO rental_records
             (student_id, equipment_id, borrow_date, due_date, deposit_amount, status)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (student_id, create_test_equipment["id"], borrow_date, due_date, 50.00, "Late"))
-        
+            VALUES (%s, %s, %s, %s, %s, 'Late')
+        """, (student_id, create_test_equipment["id"], borrow_date, due_date, deposit))
         conn.commit()
         rental_id = cursor.lastrowid
         cursor.close()
         conn.close()
-        
-        # Return equipment
-        response = client.post("/rentals/return", json={
+
+        resp = client.post("/return", json={
             "student_id": student_id,
             "rental_id": rental_id
         })
-        
-        assert response.status_code == 200
-        data = response.json()
+        assert resp.status_code == 200
+        data = resp.json()
         assert data["late_fee"] > 0
-    
-    def test_return_nonexistent_rental(self, client, setup_database, create_test_student):
-        """Test returning non-existent rental fails"""
-        response = client.post("/rentals/return", json={
+        assert float(data["refund_amount"]) < deposit
+
+    def test_return_restores_equipment_availability(self, client, setup_database, create_test_student, create_test_equipment):
+        """After return, equipment available_quantity is incremented by 1."""
+        student_id = create_test_student["user_id"]
+        eq_id = create_test_equipment["id"]
+        deposit = 50.00
+        self._set_wallet(student_id, 100.00, deposit)
+
+        # Decrement available_quantity (simulate prior checkout)
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT available_quantity FROM equipments WHERE id = %s", (eq_id,))
+        before_qty = cursor.fetchone()["available_quantity"]
+        cursor.execute("UPDATE equipments SET available_quantity = available_quantity - 1 WHERE id = %s", (eq_id,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        rental_id = self._insert_rental(student_id, eq_id, deposit=deposit)
+
+        client.post("/return", json={"student_id": student_id, "rental_id": rental_id})
+
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT available_quantity FROM equipments WHERE id = %s", (eq_id,))
+        after_qty = cursor.fetchone()["available_quantity"]
+        cursor.close()
+        conn.close()
+
+        assert after_qty == before_qty
+
+    def test_return_nonexistent_rental_returns_404(self, client, setup_database, create_test_student):
+        """POST /return with a non-existent rental_id returns 404."""
+        resp = client.post("/return", json={
             "student_id": create_test_student["user_id"],
             "rental_id": 99999
         })
-        
-        assert response.status_code == 404
-    
-    def test_equipment_availability_restored_after_return(self, client, setup_database, create_test_student, create_test_equipment):
-        """Test that equipment availability is restored after return"""
+        assert resp.status_code == 404
+
+    def test_return_writes_transaction_records(self, client, setup_database, create_test_student, create_test_equipment):
+        """After a successful return, a deposit_unlock transaction is written."""
         student_id = create_test_student["user_id"]
-        
-        # Set up
+        deposit = 50.00
+        self._set_wallet(student_id, 100.00, deposit)
+        rental_id = self._insert_rental(student_id, create_test_equipment["id"], deposit=deposit)
+
+        client.post("/return", json={"student_id": student_id, "rental_id": rental_id})
+
         conn = get_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
         cursor.execute(
-            "UPDATE wallets SET token_balance = 100.00, reserved_tokens = 50.00 WHERE user_id = %s",
+            "SELECT * FROM transactions WHERE user_id = %s AND transaction_type = 'deposit_unlock'",
             (student_id,)
         )
-        
-        # Get initial availability
-        cursor.execute(
-            "SELECT available_quantity FROM equipments WHERE id = %s",
-            (create_test_equipment["id"],)
-        )
-        initial_available = cursor.fetchone()[0]
-        
-        # Create rental
-        borrow_date = datetime.now() - timedelta(days=2)
-        due_date = datetime.now() + timedelta(days=5)
-        
-        cursor.execute("""
-            INSERT INTO rental_records
-            (student_id, equipment_id, borrow_date, due_date, deposit_amount, status)
-            VALUES (%s, %s, %s, %s, %s, %s)
-        """, (student_id, create_test_equipment["id"], borrow_date, due_date, 50.00, "Borrowed"))
-        
-        conn.commit()
-        rental_id = cursor.lastrowid
-        
-        # Check availability after checkout (should be reduced)
-        cursor.execute(
-            "SELECT available_quantity FROM equipments WHERE id = %s",
-            (create_test_equipment["id"],)
-        )
-        after_checkout = cursor.fetchone()[0]
-        
+        tx = cursor.fetchone()
         cursor.close()
         conn.close()
-        
-        assert after_checkout == initial_available - 1
-        
-        # Return equipment
-        client.post("/rentals/return", json={
-            "student_id": student_id,
-            "rental_id": rental_id
-        })
-        
-        # Verify availability is restored
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute(
-            "SELECT available_quantity FROM equipments WHERE id = %s",
-            (create_test_equipment["id"],)
-        )
-        after_return = cursor.fetchone()[0]
-        cursor.close()
-        conn.close()
-        
-        assert after_return == initial_available
+
+        assert tx is not None

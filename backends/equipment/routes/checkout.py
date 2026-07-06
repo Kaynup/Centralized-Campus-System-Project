@@ -1,10 +1,11 @@
 from fastapi import APIRouter, HTTPException, status
-from ..database import get_connection
+from database import get_connection
 from pydantic import BaseModel
 from typing import Any
 from datetime import datetime, timedelta
 import logging
 import math
+import uuid
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -14,7 +15,7 @@ RENTAL_PERIOD_DAYS = 7
 
 
 class CheckoutRequest(BaseModel):
-    student_id: int
+    student_id: str   # UUID string from centralized core JWT
     equipment_id: int
 
 
@@ -102,10 +103,10 @@ def checkout(data: CheckoutRequest):
 
         cursor.execute(
             """
-            INSERT INTO transactions (user_id, reference_type, reference_id, transaction_type, token_amount, token_balance_after)
-            VALUES (%s, 'rental', %s, 'deposit_lock', %s, %s)
+            INSERT INTO transactions (id, user_id, reference_type, reference_id, transaction_type, token_amount, token_balance_after)
+            VALUES (%s, %s, 'rental', %s, 'deposit_lock', %s, %s)
             """,
-            (student["id"], str(rental_record_id), deposit_amount, new_balance)  # type: ignore
+            (str(uuid.uuid4()), student["id"], str(rental_record_id), deposit_amount, new_balance)  # type: ignore
         )
 
         conn.commit()
