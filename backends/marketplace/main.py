@@ -19,16 +19,28 @@ app = FastAPI(
 # CORS Middleware setup
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origin_regex="https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+import time
+from fastapi import Request
+from fastapi.responses import JSONResponse
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    start_time = time.time()
+    try:
+        response = await call_next(request)
+        process_time = time.time() - start_time
+        logger.info(f"{request.method} {request.url.path} - Status: {response.status_code} - {process_time:.3f}s")
+        return response
+    except Exception as e:
+        process_time = time.time() - start_time
+        logger.error(f"{request.method} {request.url.path} - ERROR: {str(e)} - {process_time:.3f}s", exc_info=True)
+        return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
 
 # Mount the static uploads directory
 app.mount("/static", StaticFiles(directory="static"), name="static")

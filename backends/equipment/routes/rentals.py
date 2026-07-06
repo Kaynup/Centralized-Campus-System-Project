@@ -1,10 +1,11 @@
 from fastapi import APIRouter, HTTPException, status
-from ..database import get_connection
+from database import get_connection
 from pydantic import BaseModel
 from typing import Any
 from datetime import datetime
 import logging
 import math
+import uuid
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -13,7 +14,7 @@ LATE_FEE_PER_DAY = 50.0
 
 
 class ReturnRequest(BaseModel):
-    student_id: int
+    student_id: str
     rental_id: int
 
 
@@ -131,19 +132,19 @@ def return_item(data: ReturnRequest):
             cursor.execute(
                 """
                 INSERT INTO transactions
-                (user_id, reference_type, reference_id, transaction_type, token_amount, token_balance_after)
-                VALUES (%s,'rental',%s,'late_fee_deduction',%s,%s)
+                (id, user_id, reference_type, reference_id, transaction_type, token_amount, token_balance_after)
+                VALUES (%s,%s,'rental',%s,'late_fee_deduction',%s,%s)
                 """,
-                (student["id"], str(rental["id"]), late_fee, wallet_balance)
+                (str(uuid.uuid4()), student["id"], str(rental["id"]), late_fee, wallet_balance)
             )
 
         cursor.execute(
             """
             INSERT INTO transactions
-            (user_id, reference_type, reference_id, transaction_type, token_amount, token_balance_after)
-            VALUES (%s,'rental',%s,'deposit_unlock',%s,%s)
+            (id, user_id, reference_type, reference_id, transaction_type, token_amount, token_balance_after)
+            VALUES (%s,%s,'rental',%s,'deposit_unlock',%s,%s)
             """,
-            (student["id"], str(rental["id"]), refund_amount, new_balance)
+            (str(uuid.uuid4()), student["id"], str(rental["id"]), refund_amount, new_balance)
         )
 
         conn.commit()

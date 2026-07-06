@@ -1,5 +1,5 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-from .database import get_connection
+from database import get_connection
 import logging
 
 logger = logging.getLogger(__name__)

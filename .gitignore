@@ -106,3 +106,6 @@ Thumbs.db
 *.db
 *.sqlite3
 /backends/marketplace/static/uploads/
+
+# Facility component (WIP)
+/backends/facility/
