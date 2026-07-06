@@ -40,49 +40,49 @@ def init_db():
     try:
         hashed_pwd = get_password_hash("password123")
         
+        # Delete existing mock students to update to valid UUID formats
+        db.query(models.User).filter(models.User.login_id.in_(["student1", "student2"])).delete(synchronize_session=False)
+        db.commit()
+        
         # Student 1: student1 / password123
-        student1 = db.query(models.User).filter(models.User.login_id == "student1").first()
-        if not student1:
-            s1 = models.User(
-                id="test-student1-uuid-1111-2222-333333",
-                login_id="student1",
-                full_name="Student A",
-                email="student_a@mail.com",
-                password_hash=hashed_pwd,
-                role=models.UserRole.student,
-                is_active=True,
-                is_verified=True
-            )
-            db.add(s1)
-            db.flush()
-            db.add(models.Wallet(
-                user_id=s1.id,
-                token_balance=500.00,
-                reserved_tokens=0.00
-            ))
-            print("Seeded student1 / password123 with 500.00 tokens.")
-            
+        s1 = models.User(
+            id="380d6bda-a0e2-45e3-9993-41c305c48b2a",
+            login_id="student1",
+            full_name="Student A",
+            email="student_a@mail.com",
+            password_hash=hashed_pwd,
+            role=models.UserRole.student,
+            is_active=True,
+            is_verified=True
+        )
+        db.add(s1)
+        db.flush()
+        db.add(models.Wallet(
+            user_id=s1.id,
+            token_balance=500.00,
+            reserved_tokens=0.00
+        ))
+        print("Seeded student1 / password123 with 500.00 tokens.")
+        
         # Student 2: student2 / password123
-        student2 = db.query(models.User).filter(models.User.login_id == "student2").first()
-        if not student2:
-            s2 = models.User(
-                id="test-student2-uuid-1111-2222-333333",
-                login_id="student2",
-                full_name="Student B",
-                email="student_b@mail.com",
-                password_hash=hashed_pwd,
-                role=models.UserRole.student,
-                is_active=True,
-                is_verified=True
-            )
-            db.add(s2)
-            db.flush()
-            db.add(models.Wallet(
-                user_id=s2.id,
-                token_balance=500.00,
-                reserved_tokens=0.00
-            ))
-            print("Seeded student2 / password123 with 500.00 tokens.")
+        s2 = models.User(
+            id="7484df23-b1d6-4447-aa72-a42603c4f74d",
+            login_id="student2",
+            full_name="Student B",
+            email="student_b@mail.com",
+            password_hash=hashed_pwd,
+            role=models.UserRole.student,
+            is_active=True,
+            is_verified=True
+        )
+        db.add(s2)
+        db.flush()
+        db.add(models.Wallet(
+            user_id=s2.id,
+            token_balance=500.00,
+            reserved_tokens=0.00
+        ))
+        print("Seeded student2 / password123 with 500.00 tokens.")
             
         db.commit()
     except Exception as e:

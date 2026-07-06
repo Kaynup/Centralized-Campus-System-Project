@@ -25,12 +25,12 @@ export default function TopUpModal({ isOpen, onClose }) {
     setValidationError(null);
     setSubmitting(true);
     try {
-      await topUp(Number(amount)); // context refreshes wallet + transactions
+      await topUp({ amount: Number(amount) }); // context refreshes wallet + transactions
       showToast({ type: 'success', message: 'Top-up successful.' });
       setAmount('');
       onClose();
     } catch (e) {
-      showToast({ type: 'error', message: e?.response?.data?.message || 'Top-up failed. Please try again.' });
+      showToast({ type: 'error', message: e.message || 'Top-up failed. Please try again.' });
     } finally {
       setSubmitting(false);
     }
