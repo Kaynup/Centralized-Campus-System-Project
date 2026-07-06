@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Wrench,
@@ -12,6 +12,12 @@ import {
   UserCog,
   X,
   GraduationCap,
+  Calendar,
+  ClipboardList,
+  User,
+  ClipboardCheck,
+  FileClock,
+  UserPlus,
 } from "lucide-react";
 import { useAuth } from "../../shared/hooks/useAuth";
 
@@ -32,29 +38,54 @@ export const SUPER_ADMIN_NAV_ITEMS = [
   { to: "/admin/admins", label: "Manage admins", icon: UserCog },
 ];
 
-// Not yet wired into this sidebar's rendering — likely intended for
-// an expandable Marketplace submenu. Kept as-is from centralized-frontend.
+// WIRED IN (was previously defined but unused). Rendered as an
+// indented sub-list under "Marketplace" whenever the active route is
+// under /marketplace — same pattern now used for Facility below.
 const MARKETPLACE_ITEMS = [
-  { to: "/marketplace", label: "Dashboard" },
-  { to: "/marketplace/browse", label: "Browse" },
-  { to: "/marketplace/list-item", label: "List Item" },
-  { to: "/marketplace/my-listings", label: "My Listings" },
-  { to: "/marketplace/purchases", label: "Purchases" },
-  { to: "/marketplace/messages", label: "Messages" },
+  { to: "/marketplace", label: "Dashboard", icon: LayoutDashboard, end: true },
+  { to: "/marketplace/browse", label: "Browse", icon: Store },
+  { to: "/marketplace/list-item", label: "List Item", icon: ClipboardList },
+  { to: "/marketplace/my-listings", label: "My Listings", icon: ClipboardList },
+  { to: "/marketplace/purchases", label: "Purchases", icon: Inbox },
+];
+
+// Routes confirmed from StudentDashboard.jsx's own navigate() calls.
+const EQUIPMENT_ITEMS = [
+  { to: "/equipment", label: "Dashboard", icon: LayoutDashboard, end: true },
+  { to: "/equipment/inventory", label: "Browse Equipment", icon: Wrench },
+  { to: "/equipment/rentals", label: "My Rentals", icon: ClipboardList },
+];
+
+// Migrated from Facility's own Sidebar.jsx, which used to render a
+// second, competing fixed-position sidebar. Paths corrected to include
+// the /facility prefix — the original had /admin/logs and
+// /admin/users/upload without it, pointing outside this module entirely.
+const FACILITY_ITEMS = [
+  { to: "/facility/calendar", label: "Calendar", icon: Calendar },
+  { to: "/facility/reservations", label: "My Reservations", icon: ClipboardList },
+  { to: "/facility/profile", label: "Profile", icon: User },
+];
+
+const FACILITY_ADMIN_ITEMS = [
+  { to: "/facility/admin/approvals", label: "Approvals", icon: ClipboardCheck },
+  { to: "/facility/admin/logs", label: "System Logs", icon: FileClock },
+  { to: "/facility/admin/users/upload", label: "User Entries", icon: UserPlus },
 ];
 
 export default function Sidebar({ isCollapsed, isMobile, isMobileOpen, onCloseMobile }) {
   const { user } = useAuth();
+  const location = useLocation();
   const expanded = isMobile ? true : !isCollapsed;
 
-  // SCHEMA NOTE: admins live in a separate `admin_users` table per
-  // shared_tables.md. `role` distinguishes super_admin from the
-  // domain-scoped sub-admin roles (equipment_admin, facility_admin,
-  // marketplace_admin). Core/shared admin pages (student
-  // registration, change requests, sub-admin management) are
-  // Super-Admin-only — sub-admins will get their own domain-specific
-  // admin pages once those exist.
   const isSuperAdmin = user?.accountType === "admin" && user?.role === "super_admin";
+  // Matches the SCHEMA NOTE convention above (domain-scoped sub-admin
+  // roles) rather than Facility's old generic `role === 'admin'` check,
+  // which predates that convention being established.
+  const isFacilityAdmin = isSuperAdmin || user?.role === "facility_admin";
+
+  const isOnFacility = location.pathname.startsWith("/facility");
+  const isOnMarketplace = location.pathname.startsWith("/marketplace");
+  const isOnEquipment = location.pathname.startsWith("/equipment");
 
   const baseClasses =
     "flex flex-col bg-slate text-white shrink-0 transition-all duration-200 ease-in-out";
@@ -65,25 +96,33 @@ export default function Sidebar({ isCollapsed, isMobile, isMobileOpen, onCloseMo
       }`
     : `relative ${isCollapsed ? "w-[72px]" : "w-64"}`;
 
-  function renderLink({ to, label, icon: Icon }) {
+  function renderLink({ to, label, icon: Icon, end }, { indented = false } = {}) {
     return (
       <NavLink
         key={to}
         to={to}
+        end={end}
         onClick={isMobile ? onCloseMobile : undefined}
         title={!expanded ? label : undefined}
         className={({ isActive }) =>
-          `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+          `flex items-center gap-3 rounded-lg py-2 text-sm font-medium transition-colors ${
+            indented ? "pl-9 pr-3" : "px-3 py-2.5"
+          } ${
             isActive
               ? "bg-forest text-white"
               : "text-white/70 hover:bg-white/10 hover:text-white"
           } ${!expanded ? "justify-center" : ""}`
         }
       >
-        <Icon className="w-5 h-5 shrink-0" />
+        <Icon className={indented ? "w-4 h-4 shrink-0" : "w-5 h-5 shrink-0"} />
         {expanded && <span className="truncate">{label}</span>}
       </NavLink>
     );
+  }
+
+  function renderSubsection(items) {
+    if (!expanded) return null; // sub-items only make sense expanded — collapsed shows just the parent icon
+    return <div className="ml-1 mt-1 space-y-1 border-l border-white/10">{items.map((item) => renderLink(item, { indented: true }))}</div>;
   }
 
   return (
@@ -105,7 +144,24 @@ export default function Sidebar({ isCollapsed, isMobile, isMobileOpen, onCloseMo
 
       {/* Nav links */}
       <nav className="app-shell-scroll flex-1 overflow-y-auto py-4 px-2 space-y-1">
-        {NAV_ITEMS.map(renderLink)}
+        {NAV_ITEMS.map((item) => (
+          <div key={item.to}>
+            {renderLink(item)}
+            {item.to === "/facility" && isOnFacility && renderSubsection(FACILITY_ITEMS)}
+            {item.to === "/facility" && isOnFacility && isFacilityAdmin && (
+              <>
+                {expanded && (
+                  <div className="ml-9 mt-2 mb-1 text-[10px] font-semibold uppercase tracking-wide text-white/40">
+                    Admin
+                  </div>
+                )}
+                {renderSubsection(FACILITY_ADMIN_ITEMS)}
+              </>
+            )}
+            {item.to === "/marketplace" && isOnMarketplace && renderSubsection(MARKETPLACE_ITEMS)}
+            {item.to === "/equipment" && isOnEquipment && renderSubsection(EQUIPMENT_ITEMS)}
+          </div>
+        ))}
 
         {isSuperAdmin && (
           <>
@@ -116,14 +172,9 @@ export default function Sidebar({ isCollapsed, isMobile, isMobileOpen, onCloseMo
             >
               {expanded ? "Super Admin" : "•"}
             </div>
-            {SUPER_ADMIN_NAV_ITEMS.map(renderLink)}
+            {SUPER_ADMIN_NAV_ITEMS.map((item) => renderLink(item))}
           </>
         )}
-
-        {/* Sub-admin domain pages will go here once built — each
-            sub-admin should only see their own domain's admin link,
-            e.g. equipment_admin sees only an "Equipment Admin" link
-            pointing at /equipment/admin, etc. */}
       </nav>
     </aside>
   );

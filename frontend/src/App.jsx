@@ -25,6 +25,7 @@ import AdminRequestsPage from "./pages/Adminrequestspage";
 import AdminManageAdmins from "./pages/AdminManageAdmins";
 import EquipmentRoutes from "./modules/equipment-rental";
 import MarketplaceRoutes from "./modules/secure-marketplace";
+import FacilityRoutes from "./modules/facility-reservation";
 import { ToastProvider } from "./shared/ui/Toast";
 
 function App() {
@@ -160,7 +161,7 @@ function App() {
                       </Route>
                     </Route>
 
-                    {/*
+                    
                     <Route
                       path="/facility/*"
                       element={
@@ -169,7 +170,7 @@ function App() {
                         </ErrorBoundary>
                       }
                     />
-                    */}
+                   
 
                   </Route>
                 </Route>
