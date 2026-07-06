@@ -235,9 +235,6 @@ export default function Login() {
             </div>
           )}
 
-          <p className="mt-8 text-xs text-white/40">
-            Demo credentials (mock only): admin / admin123 or student / student123
-          </p>
         </div>
       </div>
     </div>

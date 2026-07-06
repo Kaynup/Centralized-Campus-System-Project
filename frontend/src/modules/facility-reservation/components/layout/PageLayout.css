@@ -1,0 +1,156 @@
+/* PageLayout.css — styles for the rewritten, in-flow calendar toolbar.
+   No position: fixed anywhere here — this content lives inside the
+   central AppShell's <main>, which already handles page chrome. */
+
+.facility-page {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.facility-update-banner {
+  background-color: var(--color-reserved);
+  color: white;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.facility-update-banner__refresh {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.facility-update-banner__dismiss {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0;
+}
+
+.calendar-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.calendar-toolbar__date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.calendar-toolbar__date-label {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  min-width: 6ch;
+  text-align: center;
+}
+
+.calendar-toolbar__nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-subtle);
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.calendar-toolbar__nav-btn:hover {
+  background: var(--color-surface-hover);
+}
+
+.calendar-toolbar__stats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.calendar-toolbar__popup-anchor {
+  position: relative;
+  display: inline-flex;
+}
+
+.calendar-toolbar__popup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+}
+
+.calendar-toolbar__popup-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 100;
+  padding: 1rem;
+  background: var(--color-facility-header-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  width: 280px;
+}
+
+.calendar-toolbar__filter-toggle {
+  margin-top: 0.75rem;
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.calendar-toolbar__filter-toggle.is-on {
+  background: var(--color-available);
+  color: #fff;
+}
+
+.calendar-toolbar__filter-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #6b7280;
+  display: inline-block;
+}
+
+.calendar-toolbar__filter-toggle.is-on .calendar-toolbar__filter-dot {
+  background: #10b981;
+}
+
+.facility-page__content {
+  min-width: 0;
+}
