@@ -5,7 +5,10 @@ import { facilityClient } from "../../../shared/api/axiosClient";
  */
 export const fetchPendingApprovals = async () => {
   // TODO: move to ENDPOINTS.FACILITY once that section exists
-  const { data } = await facilityClient.get("/api/v1/approvals/pending");
+  const { data } = await facilityClient.get("/api/v1/reservations");
+  if (Array.isArray(data)) {
+    return data.filter(r => r.status === 'PENDING');
+  }
   return data;
 };
 
@@ -15,7 +18,7 @@ export const fetchPendingApprovals = async () => {
 export const approveBooking = async (bookingId, notesId) => {
   // TODO: move to ENDPOINTS.FACILITY once that section exists
   const { data } = await facilityClient.post(
-    `/api/v1/bookings/${bookingId}/approve`,
+    `/api/v1/reservations/${bookingId}/approve`,
     {
       notes: notesId,
     }
@@ -30,7 +33,7 @@ export const approveBooking = async (bookingId, notesId) => {
 export const rejectBooking = async (bookingId, notesId) => {
   // TODO: move to ENDPOINTS.FACILITY once that section exists
   const { data } = await facilityClient.post(
-    `/api/v1/bookings/${bookingId}/reject`,
+    `/api/v1/reservations/${bookingId}/reject`,
     {
       notes: notesId,
     }

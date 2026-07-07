@@ -8,3 +8,6 @@ cryptography==48.0.0
 uvicorn==0.48.0
 httpx==0.28.1
 email-validator==2.2.0
+python-dotenv==1.0.1
+pytest==8.2.2
+alembic==1.13.1

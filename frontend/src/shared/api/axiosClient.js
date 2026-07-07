@@ -40,11 +40,14 @@ function createClient(baseURL) {
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      clearAuthToken();
-
-      window.dispatchEvent(
-        new CustomEvent("auth-unauthorized")
-      );
+      // Don't fire the global unauthorized event for the login endpoint itself
+      // (wrong password returns 401 and should be handled by the login form).
+      const url = error.config?.url || "";
+      const isLoginRequest = url.includes("/login");
+      if (!isLoginRequest) {
+        clearAuthToken();
+        window.dispatchEvent(new CustomEvent("auth-unauthorized"));
+      }
     }
 
     return Promise.reject(error);
