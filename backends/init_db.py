@@ -78,8 +78,18 @@ def init_db():
             check=True
         )
         print("      Facility migrations completed.")
+        
+        # Run seed data script
+        subprocess.run(
+            "source venv/bin/activate && python -m app.seed",
+            shell=True,
+            cwd=facility_dir,
+            executable="/bin/bash",
+            check=True
+        )
+        print("      Facility seeded.")
     except subprocess.CalledProcessError as e:
-        print(f"      Error running Facility migrations: {e}")
+        print(f"      Error running Facility migrations or seed: {e}")
 
     print("\n[6/6] Seeding Mock Users and Wallets...")
     db = SessionLocal()

@@ -1,5 +1,7 @@
 from fastapi import FastAPI
-from app.routers import facilities, reservations, health
+from app.routers import facilities, reservations, health, admin
+
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     title="Facility Service",
@@ -7,10 +9,17 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-app.include_router(facilities.router)
-app.include_router(reservations.router)
-app.include_router(health.router)
+app.include_router(facilities.router, prefix="/api/v1")
+app.include_router(reservations.router, prefix="/api/v1")
+app.include_router(health.router, prefix="/api/v1")
+app.include_router(admin.router, prefix="/api/v1")
 
 
 

@@ -3,6 +3,7 @@ import { Lock, Bell, Moon, Sun, Save } from "lucide-react";
 import { useNotification } from "../shared/hooks/useNotification";
 import { useTheme } from "../shared/context/ThemeContext";
 import { parseApiError } from "../shared/utils/parseApiError";
+import { authClient } from "../shared/api/axiosClient";
 
 /**
  * Settings.jsx
@@ -11,7 +12,6 @@ import { parseApiError } from "../shared/utils/parseApiError";
  * personal info like name/email/department/phone).
  *
  * MOCK MODE — no real endpoints yet:
- *   - Change password  -> replace with axiosClient.post("/api/auth/change-password", {...})
  *   - Notifications     -> replace with axiosClient.patch("/api/settings/notifications", {...})
  *   - Theme              -> real, backed by ThemeContext (persists to localStorage,
  *                            applies data-theme="dark" on <html> app-wide)
@@ -82,10 +82,10 @@ export default function Settings() {
 
     setIsSavingPassword(true);
     try {
-      // MOCK — replace with axiosClient.post("/api/auth/change-password", {
-      //   currentPassword, newPassword,
-      // })
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await authClient.post("/users/change-password", {
+        current_password: currentPassword,
+        new_password: newPassword,
+      });
       notify.success("Password updated.");
       setCurrentPassword("");
       setNewPassword("");

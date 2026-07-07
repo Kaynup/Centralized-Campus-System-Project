@@ -28,17 +28,11 @@ const KNOWN_ERROR_MESSAGES = {
 };
 
 export function parseApiError(err) {
-  // Mock/local errors thrown directly (e.g. from AuthContext, WalletContext)
-  if (err instanceof Error && err.code) {
-    return {
-      code: err.code,
-      message: err.message || KNOWN_ERROR_MESSAGES[err.code] || KNOWN_ERROR_MESSAGES.unknown_error,
-    };
-  }
-
-  // Real axios error once axiosClient exists — backend envelope lives at
-  // err.response.data per Section 5.4.
+  // Check axios response data first — backend detail/message takes priority
+  // over any generic Error properties that axios sets (like err.code = "ERR_BAD_RESPONSE").
   const payload = err?.response?.data;
+
+  // Frontend envelope format: { error: "code", message: "human readable" }
   if (payload?.error) {
     return {
       code: payload.error,
@@ -47,9 +41,26 @@ export function parseApiError(err) {
     };
   }
 
+  // FastAPI default error format: { detail: "human readable message" }
+  if (payload?.detail) {
+    return {
+      code: "api_error",
+      message: typeof payload.detail === "string" ? payload.detail : KNOWN_ERROR_MESSAGES.unknown_error,
+    };
+  }
+
   // No response at all — request never reached the backend.
   if (err?.request && !err?.response) {
     return { code: "network_error", message: KNOWN_ERROR_MESSAGES.network_error };
+  }
+
+  // Mock/local errors thrown directly (e.g. from AuthContext, WalletContext)
+  // NOTE: checked AFTER axios response data to avoid axios's own err.code ("ERR_BAD_RESPONSE") winning.
+  if (err instanceof Error && err.code && !err.code.startsWith("ERR_")) {
+    return {
+      code: err.code,
+      message: err.message || KNOWN_ERROR_MESSAGES[err.code] || KNOWN_ERROR_MESSAGES.unknown_error,
+    };
   }
 
   // Plain Error with no code, or anything else unexpected.

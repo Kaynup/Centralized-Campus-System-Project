@@ -6,7 +6,7 @@ import { facilityClient } from "../../../shared/api/axiosClient";
 export const createBooking = async (payload) => {
   // TODO: move to ENDPOINTS.FACILITY once that section exists
   const { data } = await facilityClient.post(
-    "/api/v1/bookings",
+    "/api/v1/reservations",
     payload
   );
 
@@ -23,7 +23,7 @@ export const fetchMyBookings = async (statusFilter) => {
     : {};
 
   const { data } = await facilityClient.get(
-    "/api/v1/bookings",
+    "/api/v1/reservations",
     { params }
   );
 
@@ -38,7 +38,7 @@ export const fetchBookingById = async (
 ) => {
   // TODO: move to ENDPOINTS.FACILITY once that section exists
   const { data } = await facilityClient.get(
-    `/api/v1/bookings/${bookingId}`
+    `/api/v1/reservations/${bookingId}`
   );
 
   return data;
@@ -52,7 +52,7 @@ export const previewCancellation = async (
 ) => {
   // TODO: move to ENDPOINTS.FACILITY once that section exists
   const { data } = await facilityClient.get(
-    `/api/v1/bookings/preview-cancel/${bookingId}`
+    `/api/v1/reservations/preview-cancel/${bookingId}`
   );
 
   return data;
@@ -66,12 +66,10 @@ export const cancelBooking = async (
   cancelReason
 ) => {
   // TODO: move to ENDPOINTS.FACILITY once that section exists
-  const { data } = await facilityClient.delete(
-    `/api/v1/bookings/${bookingId}`,
+  const { data } = await facilityClient.post(
+    `/api/v1/reservations/${bookingId}/cancel`,
     {
-      data: cancelReason
-        ? { reason: cancelReason }
-        : undefined,
+      reason: cancelReason ? cancelReason : null
     }
   );
 

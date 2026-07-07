@@ -3649,3 +3649,209 @@ mysql.connector.errors.DatabaseError: 2059 (HY000): Authentication plugin 'mysql
 2026-07-07 11:03:52,113 | INFO | Added job "update_overdue_rentals" to job store "default"
 2026-07-07 11:03:52,113 | INFO | Scheduler started
 2026-07-07 11:03:52,113 | INFO | Overdue rental scheduler started
+2026-07-07 11:05:41,819 | INFO | POST /admin/equipments - Status: 200 - 0.060s
+2026-07-07 11:05:41,820 | INFO | HTTP Request: POST http://testserver/admin/equipments "HTTP/1.1 200 OK"
+2026-07-07 11:05:42,158 | INFO | GET /admin/equipments - Status: 200 - 0.051s
+2026-07-07 11:05:42,159 | INFO | HTTP Request: GET http://testserver/admin/equipments "HTTP/1.1 200 OK"
+2026-07-07 11:05:42,464 | INFO | GET /admin/dashboard - Status: 200 - 0.057s
+2026-07-07 11:05:42,465 | INFO | HTTP Request: GET http://testserver/admin/dashboard "HTTP/1.1 200 OK"
+2026-07-07 11:05:42,774 | INFO | GET /admin/rentals - Status: 200 - 0.053s
+2026-07-07 11:05:42,775 | INFO | HTTP Request: GET http://testserver/admin/rentals "HTTP/1.1 200 OK"
+2026-07-07 11:05:43,086 | INFO | GET /admin/rentals/late - Status: 200 - 0.053s
+2026-07-07 11:05:43,087 | INFO | HTTP Request: GET http://testserver/admin/rentals/late "HTTP/1.1 200 OK"
+2026-07-07 11:05:43,415 | INFO | PUT /admin/equipments/1 - Status: 200 - 0.060s
+2026-07-07 11:05:43,416 | INFO | HTTP Request: PUT http://testserver/admin/equipments/1 "HTTP/1.1 200 OK"
+2026-07-07 11:05:43,749 | INFO | GET /admin/transactions - Status: 200 - 0.056s
+2026-07-07 11:05:43,750 | INFO | HTTP Request: GET http://testserver/admin/transactions "HTTP/1.1 200 OK"
+2026-07-07 11:05:44,131 | INFO | CHECKOUT | login_id=student_c25fb515 | item_id=1 | deposit_amount=50.0
+2026-07-07 11:05:44,132 | INFO | POST /checkout - Status: 200 - 0.059s
+2026-07-07 11:05:44,133 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-07 11:05:44,221 | INFO | POST /return - Status: 200 - 0.056s
+2026-07-07 11:05:44,221 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-07 11:05:44,666 | INFO | POST /return - Status: 200 - 0.061s
+2026-07-07 11:05:44,667 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-07 11:05:45,083 | INFO | POST /return - Status: 200 - 0.055s
+2026-07-07 11:05:45,084 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-07 11:05:45,449 | INFO | CHECKOUT | login_id=student_341dbaf3 | item_id=1 | deposit_amount=50.0
+2026-07-07 11:05:45,449 | INFO | POST /checkout - Status: 200 - 0.066s
+2026-07-07 11:05:45,450 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-07 11:05:45,506 | INFO | POST /checkout - Status: 400 - 0.054s
+2026-07-07 11:05:45,507 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-07 11:05:45,849 | INFO | POST /checkout - Status: 400 - 0.059s
+2026-07-07 11:05:45,850 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-07 11:05:46,199 | INFO | CHECKOUT | login_id=student_ffb8024d | item_id=1 | deposit_amount=50.0
+2026-07-07 11:05:46,200 | INFO | POST /checkout - Status: 200 - 0.061s
+2026-07-07 11:05:46,201 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-07 11:05:46,263 | INFO | POST /return - Status: 200 - 0.061s
+2026-07-07 11:05:46,264 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-07 11:05:46,692 | INFO | POST /return - Status: 200 - 0.065s
+2026-07-07 11:05:46,693 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-07 11:05:46,996 | INFO | GET /inventory - Status: 200 - 0.019s
+2026-07-07 11:05:46,997 | INFO | HTTP Request: GET http://testserver/inventory "HTTP/1.1 200 OK"
+2026-07-07 11:05:47,266 | INFO | GET /inventory - Status: 200 - 0.016s
+2026-07-07 11:05:47,267 | INFO | HTTP Request: GET http://testserver/inventory "HTTP/1.1 200 OK"
+2026-07-07 11:05:47,545 | INFO | GET /inventory/1 - Status: 200 - 0.015s
+2026-07-07 11:05:47,546 | INFO | HTTP Request: GET http://testserver/inventory/1 "HTTP/1.1 200 OK"
+2026-07-07 11:05:47,811 | INFO | GET /inventory/99999 - Status: 404 - 0.018s
+2026-07-07 11:05:47,812 | INFO | HTTP Request: GET http://testserver/inventory/99999 "HTTP/1.1 404 Not Found"
+2026-07-07 11:05:48,115 | INFO | CHECKOUT | login_id=student_f92e114d | item_id=1 | deposit_amount=50.0
+2026-07-07 11:05:48,116 | INFO | POST /checkout - Status: 200 - 0.058s
+2026-07-07 11:05:48,117 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-07 11:05:48,440 | INFO | CHECKOUT | login_id=student_7945d186 | item_id=1 | deposit_amount=50.0
+2026-07-07 11:05:48,441 | INFO | POST /checkout - Status: 200 - 0.059s
+2026-07-07 11:05:48,442 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-07 11:05:48,783 | INFO | CHECKOUT | login_id=student_655b8473 | item_id=1 | deposit_amount=50.0
+2026-07-07 11:05:48,784 | INFO | POST /checkout - Status: 200 - 0.056s
+2026-07-07 11:05:48,784 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-07 11:05:49,121 | INFO | POST /checkout - Status: 400 - 0.050s
+2026-07-07 11:05:49,122 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-07 11:05:49,467 | INFO | POST /checkout - Status: 400 - 0.051s
+2026-07-07 11:05:49,467 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-07 11:05:49,769 | INFO | POST /checkout - Status: 404 - 0.048s
+2026-07-07 11:05:49,770 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 404 Not Found"
+2026-07-07 11:05:50,074 | INFO | POST /checkout - Status: 404 - 0.055s
+2026-07-07 11:05:50,075 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 404 Not Found"
+2026-07-07 11:05:50,405 | INFO | CHECKOUT | login_id=student_20cb1634 | item_id=1 | deposit_amount=50.0
+2026-07-07 11:05:50,406 | INFO | POST /checkout - Status: 200 - 0.056s
+2026-07-07 11:05:50,407 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-07 11:05:50,454 | INFO | POST /checkout - Status: 400 - 0.046s
+2026-07-07 11:05:50,455 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-07 11:05:50,776 | INFO | CHECKOUT | login_id=student_66c985be | item_id=1 | deposit_amount=50.0
+2026-07-07 11:05:50,776 | INFO | POST /checkout - Status: 200 - 0.058s
+2026-07-07 11:05:50,777 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-07 11:05:51,085 | INFO | GET /wallet/8b2c8c77-4d43-40cd-992a-7fd6bc9403db - Status: 200 - 0.049s
+2026-07-07 11:05:51,086 | INFO | HTTP Request: GET http://testserver/wallet/8b2c8c77-4d43-40cd-992a-7fd6bc9403db "HTTP/1.1 200 OK"
+2026-07-07 11:05:51,368 | INFO | GET /wallet/dbb5b03c-941d-494b-8d14-ce169ab520ab - Status: 404 - 0.051s
+2026-07-07 11:05:51,369 | INFO | HTTP Request: GET http://testserver/wallet/dbb5b03c-941d-494b-8d14-ce169ab520ab "HTTP/1.1 404 Not Found"
+2026-07-07 11:05:51,656 | INFO | GET /wallet/705f9704-05ee-4d25-87b2-814ca1bda611/transactions - Status: 200 - 0.051s
+2026-07-07 11:05:51,657 | INFO | HTTP Request: GET http://testserver/wallet/705f9704-05ee-4d25-87b2-814ca1bda611/transactions "HTTP/1.1 200 OK"
+2026-07-07 11:05:51,989 | INFO | GET /wallet/1d7158e8-695c-482f-addd-9ad198dd618a/transactions - Status: 200 - 0.082s
+2026-07-07 11:05:51,990 | INFO | HTTP Request: GET http://testserver/wallet/1d7158e8-695c-482f-addd-9ad198dd618a/transactions "HTTP/1.1 200 OK"
+2026-07-07 11:05:52,309 | INFO | GET /rentals/b7b6a7db-4103-408d-862b-b037d80e0a1b - Status: 200 - 0.051s
+2026-07-07 11:05:52,310 | INFO | HTTP Request: GET http://testserver/rentals/b7b6a7db-4103-408d-862b-b037d80e0a1b "HTTP/1.1 200 OK"
+2026-07-07 11:05:52,638 | INFO | GET /rentals/c3193ad3-c0d3-4f61-9aaf-5dd6043e1cea/active - Status: 200 - 0.053s
+2026-07-07 11:05:52,639 | INFO | HTTP Request: GET http://testserver/rentals/c3193ad3-c0d3-4f61-9aaf-5dd6043e1cea/active "HTTP/1.1 200 OK"
+2026-07-07 11:05:52,979 | INFO | GET /rentals/3a467c85-8644-4705-8910-ba8928a6df81/active - Status: 200 - 0.053s
+2026-07-07 11:05:52,980 | INFO | HTTP Request: GET http://testserver/rentals/3a467c85-8644-4705-8910-ba8928a6df81/active "HTTP/1.1 200 OK"
+2026-07-07 11:05:53,332 | INFO | POST /return - Status: 200 - 0.062s
+2026-07-07 11:05:53,333 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-07 11:05:53,735 | INFO | POST /return - Status: 200 - 0.065s
+2026-07-07 11:05:53,736 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-07 11:05:54,141 | INFO | POST /return - Status: 200 - 0.062s
+2026-07-07 11:05:54,142 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-07 11:05:54,486 | INFO | POST /return - Status: 404 - 0.066s
+2026-07-07 11:05:54,487 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 404 Not Found"
+2026-07-07 11:05:54,872 | INFO | POST /return - Status: 200 - 0.062s
+2026-07-07 11:05:54,873 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-07 11:10:48,899 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-07 11:10:48,899 | INFO | Added job "update_overdue_rentals" to job store "default"
+2026-07-07 11:10:48,899 | INFO | Scheduler started
+2026-07-07 11:10:48,900 | INFO | Overdue rental scheduler started
+2026-07-07 11:15:16,052 | INFO | OPTIONS /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.000s
+2026-07-07 11:15:16,053 | INFO | OPTIONS /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.000s
+2026-07-07 11:15:16,054 | INFO | OPTIONS /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.000s
+2026-07-07 11:15:16,054 | INFO | OPTIONS /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.001s
+2026-07-07 11:15:16,092 | ERROR | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - ERROR: 2059 (HY000): Authentication plugin 'mysql_native_password' cannot be loaded: it is already loaded - 0.038s
+Traceback (most recent call last):
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/mysql/connector/connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Authentication plugin 'mysql_native_password' cannot be loaded: it is already loaded
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/main.py", line 36, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 1773, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 1264, in handle
+    await app(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 136, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 473, in app
+    solved_result = await solve_dependencies(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/dependencies/utils.py", line 680, in solve_dependencies
+    solved = await run_in_threadpool(call, **solved_result.values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/anyio/to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2596, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/auth.py", line 38, in get_current_user
+    conn = get_connection()
+           ^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/database.py", line 11, in get_connection
+    return mysql.connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/mysql/connector/pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/mysql/connector/connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/mysql/connector/abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/mysql/connector/connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 2059 (HY000): Authentication plugin 'mysql_native_password' cannot be loaded: it is already loaded
+2026-07-07 11:15:16,142 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.083s
+2026-07-07 11:15:16,169 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.067s
+2026-07-07 11:15:16,194 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.051s
+2026-07-07 11:19:51,526 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.084s
+2026-07-07 11:19:51,527 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.086s
+2026-07-07 11:19:51,603 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.074s
+2026-07-07 11:19:51,603 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.075s
+2026-07-07 11:23:53,886 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 401 - 0.001s
+2026-07-07 12:14:38,721 | WARNING | Run time of job "update_overdue_rentals (trigger: interval[1:00:00], next run at: 2026-07-07 12:10:48 UTC)" was missed by 0:03:49.820899
+2026-07-07 12:46:23,741 | INFO | OPTIONS /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.012s
+2026-07-07 12:46:23,747 | INFO | OPTIONS /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.010s
+2026-07-07 12:46:23,747 | INFO | OPTIONS /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.009s
+2026-07-07 12:46:23,748 | INFO | OPTIONS /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.009s
+2026-07-07 12:46:23,922 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.172s
+2026-07-07 12:46:23,926 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.161s
+2026-07-07 12:46:23,991 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.068s
+2026-07-07 12:46:23,997 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.069s
+2026-07-07 12:46:31,762 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.093s
+2026-07-07 12:46:31,763 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.095s
+2026-07-07 12:46:31,850 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.086s
+2026-07-07 12:46:31,851 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.088s

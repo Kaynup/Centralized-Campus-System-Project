@@ -33,12 +33,12 @@ export async function changePassword(
   const response = await authClient.post(
     ENDPOINTS.AUTH.CHANGE_PASSWORD,
     {
-      old_password: currentPassword,
+      current_password: currentPassword,
       new_password: newPassword,
     }
   );
 
-  return response.data.data;
+  return response.data;
 }
 
 export async function getProfile() {

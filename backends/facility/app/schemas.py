@@ -135,8 +135,4 @@ class BookingCreate(BaseModel):
     start_slot_id: int
     end_slot_id: int
 
-class CancellationRequest(BaseModel):
-    reason: Optional[int] = None
 
-class ApproveRejectPayload(BaseModel):
-    notes: Optional[int] = None

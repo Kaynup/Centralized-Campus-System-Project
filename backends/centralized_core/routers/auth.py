@@ -126,3 +126,28 @@ def get_profile(
 ):
     return {"data": current_user}
 
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+@router.post(
+    "/change-password",
+    response_model=dict,
+    summary="Change user password"
+)
+def change_password(
+    payload: ChangePasswordRequest,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    if not auth_utils.verify_password(payload.current_password, current_user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect current password."
+        )
+    
+    current_user.password_hash = auth_utils.get_password_hash(payload.new_password)
+    db.commit()
+    return {"message": "Password updated successfully"}
+

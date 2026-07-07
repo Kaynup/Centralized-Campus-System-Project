@@ -36,7 +36,7 @@ def create_booking(db: Session, user_id: str, facility_id: int, booking_date: da
         models.Booking.booking_date == booking_date,
         models.Booking.start_slot_id <= end_slot_id,
         models.Booking.end_slot_id >= start_slot_id,
-        models.Booking.status.in_([models.BookingStatus.PENDING, models.BookingStatus.ACTIVE, models.BookingStatus.RESERVED])
+        models.Booking.status.in_([models.BookingStatus.PENDING, models.BookingStatus.RESERVED, models.BookingStatus.COMPLETED])
     ).first()
     if existing:
         raise SlotUnavailableError("Slot already booked")
@@ -110,11 +110,21 @@ def create_booking(db: Session, user_id: str, facility_id: int, booking_date: da
     return booking
 
 
-def action_approval(db: Session, approval_id: int, approver_id: str, approve: bool, notes_id: int = None):
+def action_approval(db: Session, approval_id: int, approver_id: str, approve: bool, notes: str = None):
     """Approve or reject a booking."""
     approval = db.query(models.Approval).filter(models.Approval.id == approval_id).first()
     if not approval:
         raise NotFoundError("Approval not found")
+
+    notes_id = None
+    if notes:
+        reason = models.ActionReason(
+            action_label=f"CUSTOM_NOTE_{uuid.uuid4().hex[:8]}",
+            reason_statement=notes[:255]
+        )
+        db.add(reason)
+        db.flush()
+        notes_id = reason.id
 
     approval.approver_id = approver_id
     approval.status = models.ApprovalStatus.APPROVED if approve else models.ApprovalStatus.REJECTED
@@ -122,7 +132,7 @@ def action_approval(db: Session, approval_id: int, approver_id: str, approve: bo
 
     # Update booking status
     booking = approval.booking
-    booking.status = models.BookingStatus.ACTIVE if approve else models.BookingStatus.REJECTED
+    booking.status = models.BookingStatus.RESERVED if approve else models.BookingStatus.REJECTED
 
     if not approve:
         # Refund deposit
@@ -192,10 +202,21 @@ def preview_cancellation(db: Session, booking_id: int, user_id: str):
     }
 
 
-def execute_cancellation(db: Session, booking_id: int, user_id: str, reason_id: int = None):
+def execute_cancellation(db: Session, booking_id: int, user_id: str, reason: str = None):
     """Cancel a booking and apply refund/penalty."""
     preview = preview_cancellation(db, booking_id, user_id)
     booking = db.query(models.Booking).filter(models.Booking.id == booking_id).first()
+    
+    reason_id = None
+    if reason:
+        action_reason = models.ActionReason(
+            action_label=f"USER_CANCEL_{uuid.uuid4().hex[:8]}",
+            reason_statement=reason[:255]
+        )
+        db.add(action_reason)
+        db.flush()
+        reason_id = action_reason.id
+        
     booking.status = models.BookingStatus.CANCELLED
     booking.cancellation_reason_id = reason_id
     
@@ -260,11 +281,49 @@ def get_facilities(db: Session, group: str = None, active_only: bool = True):
         query = query.filter(models.Facility.is_active == True)
     return query.all()
 
-
 def get_slots_for_date(db: Session, facility_id: int, target_date: date, current_user=None):
     """Get slots for a facility on a given date."""
-    slots = db.query(models.Slot).filter(
-        models.Slot.facility_id == facility_id,
-        models.Slot.date == target_date
+    all_slots = db.query(models.Slot).order_by(models.Slot.start_time_of_day).all()
+    
+    bookings = db.query(models.Booking).filter(
+        models.Booking.facility_id == facility_id,
+        models.Booking.booking_date == target_date,
+        models.Booking.status.in_([models.BookingStatus.PENDING, models.BookingStatus.RESERVED, models.BookingStatus.COMPLETED])
     ).all()
-    return slots
+    
+    unavailabilities = db.query(models.Unavailability).filter(
+        models.Unavailability.facility_id == facility_id,
+        models.Unavailability.booking_date == target_date
+    ).all()
+    
+    result = []
+    for slot in all_slots:
+        status = "AVAILABLE"
+        booking_id = None
+        deposit = None
+        
+        for unavail in unavailabilities:
+            if unavail.start_slot_id <= slot.id <= unavail.end_slot_id:
+                status = "MAINTENANCE"
+                break
+                
+        if status == "AVAILABLE":
+            for b in bookings:
+                if b.start_slot_id <= slot.id <= b.end_slot_id:
+                    status = "BOOKED"
+                    booking_id = b.id
+                    deposit = b.deposit_paid
+                    break
+                    
+        result.append({
+            "id": slot.id,
+            "start_time_of_day": slot.start_time_of_day,
+            "end_time_of_day": slot.end_time_of_day,
+            "is_peak_hour": slot.is_peak_hour,
+            "status": status,
+            "booking_id": booking_id,
+            "user_name": None,
+            "deposit": deposit
+        })
+        
+    return result
