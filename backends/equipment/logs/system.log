@@ -2752,3 +2752,110 @@ mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'campus_central_db.
 2026-07-06 16:12:25,634 | INFO | Added job "update_overdue_rentals" to job store "default"
 2026-07-06 16:12:25,634 | INFO | Scheduler started
 2026-07-06 16:12:25,635 | INFO | Overdue rental scheduler started
+2026-07-07 02:46:52,302 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-07 02:46:52,303 | INFO | Added job "update_overdue_rentals" to job store "default"
+2026-07-07 02:46:52,303 | INFO | Scheduler started
+2026-07-07 02:46:52,304 | INFO | Overdue rental scheduler started
+2026-07-07 02:50:16,994 | INFO | OPTIONS /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.000s
+2026-07-07 02:50:16,996 | INFO | OPTIONS /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.000s
+2026-07-07 02:50:16,996 | INFO | OPTIONS /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.001s
+2026-07-07 02:50:16,996 | INFO | OPTIONS /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.001s
+2026-07-07 02:50:17,050 | ERROR | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - ERROR: 2059 (HY000): Authentication plugin 'mysql_native_password' cannot be loaded: it is already loaded - 0.042s
+Traceback (most recent call last):
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/mysql/connector/connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Authentication plugin 'mysql_native_password' cannot be loaded: it is already loaded
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/main.py", line 36, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/middleware/cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 2683, in app
+    await route.handle(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 1753, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 2738, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 1773, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 1264, in handle
+    await app(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 150, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 136, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/routing.py", line 473, in app
+    solved_result = await solve_dependencies(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/fastapi/dependencies/utils.py", line 680, in solve_dependencies
+    solved = await run_in_threadpool(call, **solved_result.values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/starlette/concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/anyio/to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2596, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/auth.py", line 38, in get_current_user
+    conn = get_connection()
+           ^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/database.py", line 11, in get_connection
+    return mysql.connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/mysql/connector/pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/mysql/connector/connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/mysql/connector/abstracts.py", line 1604, in connect
+    self._open_connection()
+  File "/home/remitpe/MAIN/InternshipProjectIntegration/backends/equipment/venv/lib/python3.12/site-packages/mysql/connector/connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 2059 (HY000): Authentication plugin 'mysql_native_password' cannot be loaded: it is already loaded
+2026-07-07 02:50:17,105 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.103s
+2026-07-07 02:50:17,138 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.078s
+2026-07-07 02:50:17,183 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.076s
+2026-07-07 02:50:17,203 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.064s
+2026-07-07 02:57:27,072 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.083s
+2026-07-07 02:57:27,073 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.083s
+2026-07-07 02:57:27,158 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.082s
+2026-07-07 02:57:27,159 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.083s
+2026-07-07 02:59:14,244 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.083s
+2026-07-07 02:59:14,244 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.084s
+2026-07-07 02:59:14,319 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.072s
+2026-07-07 02:59:14,320 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.072s
+2026-07-07 02:59:36,681 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.075s
+2026-07-07 02:59:36,682 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.076s
+2026-07-07 02:59:36,756 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.073s
+2026-07-07 02:59:36,757 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.074s
