@@ -1,8 +1,6 @@
 import os
 import sys
 import mysql.connector
-from dotenv import load_dotenv
-load_dotenv()
 
 # Add local path to sys.path
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
