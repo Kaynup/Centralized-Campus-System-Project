@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.db import db
+from app import db
 
 router = APIRouter(tags=["Health"])
 

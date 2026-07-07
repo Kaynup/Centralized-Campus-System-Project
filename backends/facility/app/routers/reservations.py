@@ -2,8 +2,8 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Body
 from sqlalchemy.orm import Session
 
-from app.db import db, schemas, models
-from app.services import services
+from app import db, schemas, models
+from app import services
 from app.core.security import get_current_user, require_professor_or_admin
 from app.utils.exceptions import (
     NotFoundError,
@@ -21,7 +21,7 @@ router = APIRouter(prefix="/reservations", tags=["Reservations"])
 
 @router.post(
     "",
-    response_model=schemas.BookingOut,
+    response_model=schemas.BookingResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Create a reservation"
 )
@@ -48,7 +48,7 @@ def create_reservation(
 
 @router.get(
     "",
-    response_model=List[schemas.BookingListOut],
+    response_model=List[schemas.BookingListResponse],
     summary="List reservations"
 )
 def list_reservations(

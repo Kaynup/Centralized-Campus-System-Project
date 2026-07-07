@@ -2,16 +2,16 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.db import db, schemas
+from app import db, schemas
 from app.core.security import get_current_user
-from app.db import models
+from app import models
 
 router = APIRouter(prefix="/notifications", tags=["Notifications"])
 
 
 @router.get(
     "",
-    response_model=List[schemas.NotificationOut],
+    response_model=List[schemas.NotificationResponse],
     response_model_by_alias=True,
     summary="List notifications"
 )
@@ -29,7 +29,7 @@ def list_notifications(
 
 @router.post(
     "/{notification_id}/read",
-    response_model=schemas.NotificationOut,
+    response_model=schemas.NotificationResponse,
     response_model_by_alias=True,
     summary="Mark notification as read"
 )

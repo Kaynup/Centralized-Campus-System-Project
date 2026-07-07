@@ -5,7 +5,7 @@ from datetime import date as _date
 
 from app.db import db
 from app.db import models, schemas
-from app.services import services
+from app import services
 from app.core.security import require_admin, get_current_user_optional
 
 router = APIRouter(prefix="/facilities", tags=["Facilities"])
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/facilities", tags=["Facilities"])
 
 @router.get(
     "",
-    response_model=List[schemas.FacilityOut],
+    response_model=List[schemas.FacilityResponse],
     response_model_by_alias=True,
     summary="List facilities",
     responses={400: {"description": "Bad request"}}
@@ -30,7 +30,7 @@ def list_facilities(
 
 @router.get(
     "/{facility_id}",
-    response_model=schemas.FacilityOut,
+    response_model=schemas.FacilityResponse,
     response_model_by_alias=True,
     summary="Get facility by id",
     responses={404: {"description": "Facility not found"}}
@@ -48,7 +48,7 @@ def get_facility(
 
 @router.get(
     "/{facility_id}/slots",
-    response_model=List[schemas.FacilityCalendarSlotOut],
+    response_model=List[schemas.FacilityCalendarSlotResponse],
     response_model_by_alias=True,
     summary="Get slots for facility on a date",
     responses={400: {"description": "Invalid date format"}}
@@ -72,7 +72,7 @@ def get_facility_slots(
 @router.post(
     "",
     status_code=status.HTTP_201_CREATED,
-    response_model=schemas.FacilityOut,
+    response_model=schemas.FacilityResponse,
     response_model_by_alias=True,
     summary="Create a facility (admin)",
     responses={403: {"description": "Admin access required"}}
@@ -92,7 +92,7 @@ def create_facility(
 
 @router.patch(
     "/{facility_id}",
-    response_model=schemas.FacilityOut,
+    response_model=schemas.FacilityResponse,
     response_model_by_alias=True,
     summary="Update facility (admin)",
     responses={403: {"description": "Admin access required"}, 404: {"description": "Facility not found"}}
