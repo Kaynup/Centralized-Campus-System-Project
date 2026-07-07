@@ -3,6 +3,8 @@ import Modal from '../ui/Modal';
 import Button from '../ui/Button';
 import { useToast } from '../ui/Toast'; 
 import { useWallet } from '../hooks/useWallet';
+import { convertUsdToTokens } from './walletUtils';
+import { USD_TO_TOKEN_RATE } from './constants';
 
 export default function TopUpModal({ isOpen, onClose }) {
   const { topUp } = useWallet();
@@ -48,6 +50,13 @@ export default function TopUpModal({ isOpen, onClose }) {
         placeholder="Enter amount"
         disabled={submitting}
       />
+      
+      {amount && !isNaN(Number(amount)) && Number(amount) > 0 && (
+        <p className="mt-1 text-sm text-slate/60">
+          ≈ {convertUsdToTokens(amount, USD_TO_TOKEN_RATE)} tokens (rate: 1 USD = {USD_TO_TOKEN_RATE} tokens)
+        </p>
+      )}
+      
       {validationError && <p className="mt-1 text-sm text-red-600">{validationError}</p>}
       <div className="mt-4 flex justify-end gap-2">
         <Button variant="ghost" onClick={onClose} disabled={submitting}>Cancel</Button>

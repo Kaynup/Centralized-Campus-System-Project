@@ -8,3 +8,6 @@ export const computeRemaining = (used, max) => Math.max(Number(max) - Number(use
 
 export const computePercentUsed = (used, max) =>
   max > 0 ? Math.min((Number(used ?? 0) / max) * 100, 100) : 0;
+
+export const convertUsdToTokens = (usdAmount, rate) =>
+  (Number(usdAmount || 0) * Number(rate)).toFixed(2);

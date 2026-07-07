@@ -1,6 +1,13 @@
 import os
 import sys
-import mysql.connector
+try:
+    import mysql.connector as mysql_connector
+except ImportError:
+    # Fall back to pymysql if mysql-connector-python isn't available in the environment
+    try:
+        import pymysql as mysql_connector  # type: ignore
+    except ImportError:
+        mysql_connector = None
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -15,7 +22,10 @@ DB_NAME = os.getenv("DB_NAME", "campus_central_db")
 def init_db():
     print(f"Connecting to MySQL server at {DB_HOST}...")
     # 1. Create Database if not exists
-    conn = mysql.connector.connect(
+    if mysql_connector is None:
+        raise ImportError("No MySQL driver found. Install 'mysql-connector-python' or 'pymysql'.")
+
+    conn = mysql_connector.connect(
         host=DB_HOST,
         user=DB_USER,
         password=DB_PASSWORD
