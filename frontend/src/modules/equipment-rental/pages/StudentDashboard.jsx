@@ -37,11 +37,6 @@ export default function StudentDashboard() {
     fetchData();
   }, [studentId]);
 
-  async function handleLogout() {
-    await logout();
-    navigate("/login", { replace: true });
-  }
-
   function formatDate(dateStr) {
     return new Date(dateStr).toLocaleDateString("en-IN", {
       day: "numeric",

@@ -13,24 +13,36 @@ router = APIRouter(
     tags=["Items"]
 )
 
-@router.post(
-    "/",
-    response_model=schemas.ItemResponse,
-    status_code=201,
-    summary="List a new item for sale"
-)
+# @router.post(
+#     "/",
+#     response_model=schemas.ItemResponse,
+#     status_code=201,
+#     summary="List a new item for sale"
+# )
+# def create_item(
+#     payload: schemas.ItemCreate,
+#     seller_id: str = Query(..., description="ID of the seller"),
+#     current_user=Depends(get_current_user)
+# ):
+#     if current_user["id"] != seller_id:
+#         raise HTTPException(
+#             status_code=status.HTTP_403_FORBIDDEN,
+#             detail="You cannot list items on behalf of another user."
+#         )
+#     with get_db_connection() as conn:
+#         item = services.create_item(conn, seller_id, payload)
+#     return item
+
+@router.post("/", response_model=schemas.ItemResponse, status_code=201)
 def create_item(
     payload: schemas.ItemCreate,
-    seller_id: str = Query(..., description="ID of the seller"),
     current_user=Depends(get_current_user)
 ):
-    if current_user["id"] != seller_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You cannot list items on behalf of another user."
-        )
+    seller_id = current_user["id"]
+
     with get_db_connection() as conn:
         item = services.create_item(conn, seller_id, payload)
+
     return item
 
 @router.get(

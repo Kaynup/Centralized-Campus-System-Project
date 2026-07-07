@@ -1,6 +1,8 @@
 import mysql.connector
 import os
 from contextlib import contextmanager
+from dotenv import load_dotenv
+load_dotenv()
 
 DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_USER = os.getenv("DB_USER", "root")

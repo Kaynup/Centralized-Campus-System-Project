@@ -16,7 +16,7 @@ export async function createItem(itemData) {
     const response = await API.post(ENDPOINTS.MARKETPLACE.ITEMS, itemData);
     return response.data;
   } catch (err) {
-    console.error("Create item failed:", err.response?.data);
+    console.log(JSON.stringify(err.response.data, null, 2));
     throw err;
   }
 }

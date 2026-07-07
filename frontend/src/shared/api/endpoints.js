@@ -16,7 +16,7 @@ export const ENDPOINTS = {
   },
 
   MARKETPLACE: {
-    DASHBOARD: "/marketplace/dashboard",
+    // DASHBOARD: "/marketplace/dashboard",
 
     ITEMS: "/marketplace/items",
 
