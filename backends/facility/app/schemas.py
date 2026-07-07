@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any
+from pydantic import ConfigDict
 from datetime import datetime, date, time
 from uuid import UUID
 from app.models import FacilityGroup, BookingStatus, ApprovalStatus, LogLevel
@@ -50,3 +51,35 @@ class SystemLogBase(BaseModel):
 class SystemLogResponse(SystemLogBase):
     id: int
     created_at: datetime
+class ActionReasonBase(BaseModel):
+    action_label: str = Field(..., max_length=100)
+    reason_statement: str = Field(..., max_length=255)
+
+class ActionReasonResponse(ActionReasonBase):
+    id: int
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+class ApprovalBase(BaseModel):
+    booking_id: int
+    approver_id: Optional[UUID] = None
+    status: ApprovalStatus = ApprovalStatus.PENDING
+    notes_id: Optional[int] = None
+
+class ApprovalResponse(ApprovalBase):
+    id: int
+    requested_at: datetime
+    actioned_at: Optional[datetime] = None
+    model_config = ConfigDict(from_attributes=True)
+
+class UnavailabilityBase(BaseModel):
+    facility_id: int
+    booking_date: date
+    start_slot_id: int
+    end_slot_id: int
+    reason_id: Optional[int] = None
+
+class UnavailabilityResponse(UnavailabilityBase):
+    id: int
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
