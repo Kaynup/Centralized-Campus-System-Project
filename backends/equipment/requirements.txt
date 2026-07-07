@@ -11,3 +11,4 @@ pytest
 pytest-asyncio
 httpx
 pytest-cov
+python-jose[cryptography]==3.5.0
