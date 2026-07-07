@@ -61,9 +61,9 @@ export default function Login() {
       {/* Brand panel — signature element lives here, form stays quiet */}
       <div className="relative hidden w-1/2 flex-col overflow-hidden bg-slate lg:flex">
         {/* Layered gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-forest via-forest/90 to-slate" />
-        <div className="absolute -left-24 -top-24 h-80 w-80 rounded-full bg-gold/20 blur-3xl" />
-        <div className="absolute -bottom-32 -right-16 h-96 w-96 rounded-full bg-slate/60 blur-3xl" />
+        <div className="absolute inset-0 bg-gradient-to-br from-forest via-forest/90 to-gold/70" />
+        <div className="absolute -left-24 -top-24 h-80 w-80 rounded-full bg-slate/60 blur-3xl" />
+        <div className="absolute -bottom-32 -right-16 h-96 w-96 rounded-full bg-gold/50 blur-3xl" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate/40 via-transparent to-transparent" />
 
         {/* Content */}
