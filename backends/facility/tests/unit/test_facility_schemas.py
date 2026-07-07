@@ -1,36 +1,29 @@
 import pytest
-from decimal import Decimal
+from datetime import date
 from pydantic import ValidationError
-from schemas import BookingCreate, ApprovalRequest
+from app.schemas import BookingCreate, ApproveRejectPayload
 
 class TestFacilitySchemas:
     def test_booking_create_valid(self):
         booking = BookingCreate(
-            user_id="user123",
             facility_id=1,
-            booking_date="2026-07-07",
+            booking_date=date(2026, 7, 7),
             start_slot_id=1,
-            end_slot_id=2,
-            status="PENDING"
+            end_slot_id=2
         )
-        assert booking.user_id == "user123"
-        assert booking.status == "PENDING"
+        assert booking.facility_id == 1
 
     def test_booking_create_invalid(self):
         with pytest.raises(ValidationError):
             BookingCreate(
-                user_id="user123",
-                facility_id=1,
+                facility_id="not-an-int",
                 booking_date="invalid-date",
                 start_slot_id=1,
-                end_slot_id=2,
-                status="PENDING"
+                end_slot_id=2
             )
 
     def test_approval_request_valid(self):
-        approval = ApprovalRequest(
-            booking_id=1,
-            approver_id="approver123",
-            status="APPROVED"
+        approval = ApproveRejectPayload(
+            notes=5
         )
-        assert approval.status == "APPROVED"
+        assert approval.notes == 5

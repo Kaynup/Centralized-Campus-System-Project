@@ -107,6 +107,11 @@ if __name__ == "__main__":
         "STEP 2: facility (facilities, slots, bookings, approvals...)",
         lambda: run_service_init("facility", "app.init_db", use_module=True),
     )
+    
+    run_step(
+        "STEP 2.5: facility seeding (facilities, static slots, reasons)",
+        lambda: run_service_init("facility", "app.seed", use_module=True),
+    )
 
     # 3. Equipment: 
     run_step(

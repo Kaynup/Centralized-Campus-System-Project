@@ -1,13 +1,15 @@
 import os
 import sys
-try:
-    import mysql.connector as mysql_connector
-except ImportError:
-    # Fall back to pymysql if mysql-connector-python isn't available in the environment
+import importlib
+
+mysql_connector = None
+for module_name in ("mysql.connector", "pymysql"):
     try:
-        import pymysql as mysql_connector  # type: ignore
+        mysql_connector = importlib.import_module(module_name)
+        break
     except ImportError:
         mysql_connector = None
+
 from dotenv import load_dotenv
 load_dotenv()
 

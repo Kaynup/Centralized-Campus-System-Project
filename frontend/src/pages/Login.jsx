@@ -24,8 +24,6 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [showForgotPanel, setShowForgotPanel] = useState(false);
-  const [resetEmail, setResetEmail] = useState("");
-  const [resetStatus, setResetStatus] = useState("idle"); // idle | sending | sent
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -45,15 +43,6 @@ export default function Login() {
     } finally {
       setIsSubmitting(false);
     }
-  }
-
-  async function handleResetRequest(event) {
-    event.preventDefault();
-    if (!resetEmail.trim()) return;
-    setResetStatus("sending");
-    // MOCK — replace with axiosClient.post("/api/auth/forgot-password", { email })
-    await new Promise((resolve) => setTimeout(resolve, 700));
-    setResetStatus("sent");
   }
 
   return (
@@ -199,39 +188,22 @@ export default function Login() {
             </button>
           </form>
 
-          {/* Inline forgot-password panel — swap for shared Modal once available */}
+          {/* Inline forgot-password panel */}
           {showForgotPanel && (
             <div className="mt-6 rounded-md border border-white/10 bg-white/5 p-4">
-              {resetStatus === "sent" ? (
-                <p className="text-sm text-white/80">
-                  If an account exists for <span className="font-medium text-white">{resetEmail}</span>,
-                  a reset link is on its way.
-                </p>
-              ) : (
-                <form onSubmit={handleResetRequest} className="space-y-3">
-                  <div>
-                    <label htmlFor="resetEmail" className="block text-sm font-medium text-white/80">
-                      Campus email
-                    </label>
-                    <input
-                      id="resetEmail"
-                      type="email"
-                      autoComplete="email"
-                      value={resetEmail}
-                      onChange={(event) => setResetEmail(event.target.value)}
-                      className="mt-1.5 block w-full rounded-md border border-white/15 bg-white/5 px-3 py-2 text-sm text-white placeholder-white/30 outline-none transition focus:border-gold focus:ring-1 focus:ring-gold"
-                      placeholder="you@campus.edu"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={resetStatus === "sending"}
-                    className="w-full rounded-md border border-gold px-3 py-2 text-sm font-semibold text-gold transition hover:bg-gold/10 disabled:opacity-60"
-                  >
-                    {resetStatus === "sending" ? "Sending…" : "Send reset link"}
-                  </button>
-                </form>
-              )}
+              <p className="text-sm font-semibold text-white mb-1">Forgot your password?</p>
+              <p className="text-sm text-white/70 leading-relaxed">
+                Campus accounts are managed by your administrator. Please contact your{" "}
+                <span className="font-medium text-gold">campus administrator</span> to reset
+                your password.
+              </p>
+              <button
+                type="button"
+                onClick={() => setShowForgotPanel(false)}
+                className="mt-3 text-sm font-medium text-white/50 hover:text-white/80 focus:outline-none"
+              >
+                ← Back to sign in
+              </button>
             </div>
           )}
 

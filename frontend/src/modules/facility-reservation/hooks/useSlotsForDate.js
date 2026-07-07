@@ -40,10 +40,13 @@ export function useSlotsForDate(
         const map = {};
 
         facilities.forEach((facility, index) => {
-          map[facility.id] = markPastBookings(
-            results[index] || [],
-            selectedDate
-          );
+          const rawSlots = results[index] || [];
+          const mappedSlots = rawSlots.map(slot => ({
+            ...slot,
+            startTime: slot.start_time_of_day || slot.startTime || slot.start_time,
+            endTime: slot.end_time_of_day || slot.endTime || slot.end_time,
+          }));
+          map[facility.id] = markPastBookings(mappedSlots, selectedDate);
         });
 
         if (!cancelled) {
