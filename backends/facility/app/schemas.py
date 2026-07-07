@@ -127,5 +127,16 @@ class UnavailabilityBase(BaseModel):
 
 class UnavailabilityResponse(UnavailabilityBase):
     id: int
-    created_at: datetime
     model_config = ConfigDict(from_attributes=True)
+
+class BookingCreate(BaseModel):
+    facility_id: int
+    booking_date: date
+    start_slot_id: int
+    end_slot_id: int
+
+class CancellationRequest(BaseModel):
+    reason: Optional[int] = None
+
+class ApproveRejectPayload(BaseModel):
+    notes: Optional[int] = None

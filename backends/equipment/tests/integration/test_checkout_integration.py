@@ -12,15 +12,15 @@ from database import get_connection
 class TestInventoryIntegration:
     """Integration tests for GET /inventory endpoints."""
 
-    def test_list_available_equipment_returns_200(self, client, setup_database, create_test_equipment):
+    def test_list_available_equipment_returns_200(self, client, auth_headers, setup_database, create_test_equipment):
         """GET /inventory returns a non-empty list when equipment exists."""
-        response = client.get("/inventory")
+        response = client.get("/inventory", headers=auth_headers)
         assert response.status_code == 200
         data = response.json()
         assert "inventory" in data
         assert len(data["inventory"]) > 0
 
-    def test_list_available_equipment_excludes_zero_stock(self, client, setup_database, create_test_equipment):
+    def test_list_available_equipment_excludes_zero_stock(self, client, auth_headers, setup_database, create_test_equipment):
         """GET /inventory does not include equipment with available_quantity = 0."""
         conn = get_connection()
         cursor = conn.cursor()
@@ -32,25 +32,25 @@ class TestInventoryIntegration:
         cursor.close()
         conn.close()
 
-        response = client.get("/inventory")
+        response = client.get("/inventory", headers=auth_headers)
         assert response.status_code == 200
         data = response.json()
         ids = [item["id"] for item in data["inventory"]]
         assert create_test_equipment["id"] not in ids
 
-    def test_get_single_equipment_by_id(self, client, setup_database, create_test_equipment):
+    def test_get_single_equipment_by_id(self, client, auth_headers, setup_database, create_test_equipment):
         """GET /inventory/{id} returns the correct equipment record."""
         eq_id = create_test_equipment["id"]
-        response = client.get(f"/inventory/{eq_id}")
+        response = client.get(f"/inventory/{eq_id}", headers=auth_headers)
         assert response.status_code == 200
         data = response.json()
         assert "equipment" in data
         assert data["equipment"]["id"] == eq_id
         assert data["equipment"]["name"] == create_test_equipment["name"]
 
-    def test_get_nonexistent_equipment_returns_404(self, client, setup_database):
+    def test_get_nonexistent_equipment_returns_404(self, client, auth_headers, setup_database):
         """GET /inventory/{id} with unknown id returns 404."""
-        response = client.get("/inventory/99999")
+        response = client.get("/inventory/99999", headers=auth_headers)
         assert response.status_code == 404
 
 
@@ -69,7 +69,7 @@ class TestCheckoutIntegration:
         cursor.close()
         conn.close()
 
-    def test_successful_checkout(self, client, setup_database, create_test_student, create_test_equipment):
+    def test_successful_checkout(self, client, auth_headers, setup_database, create_test_student, create_test_equipment):
         """POST /checkout succeeds when student has sufficient balance."""
         student_id = create_test_student["user_id"]
         self._give_balance(student_id, 500.00)
@@ -77,7 +77,7 @@ class TestCheckoutIntegration:
         response = client.post("/checkout", json={
             "student_id": student_id,
             "equipment_id": create_test_equipment["id"]
-        })
+        }, headers=auth_headers)
 
         assert response.status_code == 200
         data = response.json()
@@ -85,7 +85,7 @@ class TestCheckoutIntegration:
         assert "due_date" in data
         assert "deposit_locked" in data
 
-    def test_checkout_reserves_deposit_in_wallet(self, client, setup_database, create_test_student, create_test_equipment):
+    def test_checkout_reserves_deposit_in_wallet(self, client, auth_headers, setup_database, create_test_student, create_test_equipment):
         """After checkout, reserved_tokens increases by the deposit amount."""
         student_id = create_test_student["user_id"]
         deposit = create_test_equipment["deposit_amount"]
@@ -94,7 +94,7 @@ class TestCheckoutIntegration:
         response = client.post("/checkout", json={
             "student_id": student_id,
             "equipment_id": create_test_equipment["id"]
-        })
+        }, headers=auth_headers)
         assert response.status_code == 200
 
         conn = get_connection()
@@ -106,7 +106,7 @@ class TestCheckoutIntegration:
 
         assert float(wallet["reserved_tokens"]) == deposit
 
-    def test_checkout_decrements_available_quantity(self, client, setup_database, create_test_student, create_test_equipment):
+    def test_checkout_decrements_available_quantity(self, client, auth_headers, setup_database, create_test_student, create_test_equipment):
         """After checkout, equipment available_quantity is reduced by 1."""
         student_id = create_test_student["user_id"]
         eq_id = create_test_equipment["id"]
@@ -122,7 +122,7 @@ class TestCheckoutIntegration:
         client.post("/checkout", json={
             "student_id": student_id,
             "equipment_id": eq_id
-        })
+        }, headers=auth_headers)
 
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
@@ -133,7 +133,7 @@ class TestCheckoutIntegration:
 
         assert after == before - 1
 
-    def test_checkout_insufficient_balance_returns_400(self, client, setup_database, create_test_student, create_test_equipment):
+    def test_checkout_insufficient_balance_returns_400(self, client, auth_headers, setup_database, create_test_student, create_test_equipment):
         """POST /checkout with zero balance returns 400."""
         student_id = create_test_student["user_id"]
         self._give_balance(student_id, 0.00)
@@ -141,10 +141,10 @@ class TestCheckoutIntegration:
         response = client.post("/checkout", json={
             "student_id": student_id,
             "equipment_id": create_test_equipment["id"]
-        })
+        }, headers=auth_headers)
         assert response.status_code == 400
 
-    def test_checkout_out_of_stock_returns_400(self, client, setup_database, create_test_student, create_test_equipment):
+    def test_checkout_out_of_stock_returns_400(self, client, auth_headers, setup_database, create_test_student, create_test_equipment):
         """POST /checkout when equipment has no available stock returns 400."""
         eq_id = create_test_equipment["id"]
         conn = get_connection()
@@ -160,10 +160,10 @@ class TestCheckoutIntegration:
         response = client.post("/checkout", json={
             "student_id": student_id,
             "equipment_id": eq_id
-        })
+        }, headers=auth_headers)
         assert response.status_code == 400
 
-    def test_checkout_nonexistent_equipment_returns_404(self, client, setup_database, create_test_student):
+    def test_checkout_nonexistent_equipment_returns_404(self, client, auth_headers, setup_database, create_test_student):
         """POST /checkout with non-existent equipment_id returns 404."""
         student_id = create_test_student["user_id"]
         self._give_balance(student_id, 500.00)
@@ -171,18 +171,23 @@ class TestCheckoutIntegration:
         response = client.post("/checkout", json={
             "student_id": student_id,
             "equipment_id": 99999
-        })
+        }, headers=auth_headers)
         assert response.status_code == 404
 
-    def test_checkout_nonexistent_student_returns_404(self, client, setup_database, create_test_equipment):
+    def test_checkout_nonexistent_student_returns_404(self, client, auth_headers, setup_database, create_test_equipment):
         """POST /checkout with unknown student_id returns 404."""
+        # It should return 401 Unauthorized because the mocked JWT `auth_headers` belongs to a valid user,
+        # but if we pass a different student_id in the payload, the backend might reject it.
+        # Actually, in the backend it might check if current_user["id"] == student_id. Let's see.
         response = client.post("/checkout", json={
             "student_id": str(uuid.uuid4()),
             "equipment_id": create_test_equipment["id"]
-        })
+        }, headers=auth_headers)
+        # It's returning 404 in the old tests, wait, if the token belongs to `auth_headers`, the user is authenticated. 
+        # But if the payload student_id doesn't exist in DB, checkout might return 404. Let's assert 404.
         assert response.status_code == 404
 
-    def test_checkout_duplicate_borrow_returns_400(self, client, setup_database, create_test_student, create_test_equipment):
+    def test_checkout_duplicate_borrow_returns_400(self, client, auth_headers, setup_database, create_test_student, create_test_equipment):
         """POST /checkout for an item already borrowed by the same student returns 400."""
         student_id = create_test_student["user_id"]
         self._give_balance(student_id, 1000.00)
@@ -190,16 +195,16 @@ class TestCheckoutIntegration:
         r1 = client.post("/checkout", json={
             "student_id": student_id,
             "equipment_id": create_test_equipment["id"]
-        })
+        }, headers=auth_headers)
         assert r1.status_code == 200
 
         r2 = client.post("/checkout", json={
             "student_id": student_id,
             "equipment_id": create_test_equipment["id"]
-        })
+        }, headers=auth_headers)
         assert r2.status_code == 400
 
-    def test_checkout_creates_transaction_record(self, client, setup_database, create_test_student, create_test_equipment):
+    def test_checkout_creates_transaction_record(self, client, auth_headers, setup_database, create_test_student, create_test_equipment):
         """A deposit_lock transaction entry is written after a successful checkout."""
         student_id = create_test_student["user_id"]
         self._give_balance(student_id, 500.00)
@@ -207,7 +212,7 @@ class TestCheckoutIntegration:
         response = client.post("/checkout", json={
             "student_id": student_id,
             "equipment_id": create_test_equipment["id"]
-        })
+        }, headers=auth_headers)
         assert response.status_code == 200
 
         conn = get_connection()

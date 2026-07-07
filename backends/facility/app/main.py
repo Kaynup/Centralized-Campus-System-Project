@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import facilities, reservations, notifications, health
+from app.routers import facilities, reservations, health
 
 app = FastAPI(
     title="Facility Service",
@@ -10,7 +10,6 @@ app = FastAPI(
 
 app.include_router(facilities.router)
 app.include_router(reservations.router)
-app.include_router(notifications.router)
 app.include_router(health.router)
 
 

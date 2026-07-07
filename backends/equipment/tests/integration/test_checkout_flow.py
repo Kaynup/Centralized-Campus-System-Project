@@ -83,14 +83,8 @@ class TestEquipmentCheckoutFlow:
     """Full end-to-end flows for the checkout → return lifecycle."""
 
     def test_full_checkout_then_return_on_time(
-        self, client, setup_database, create_test_student, create_test_equipment
+        self, client, auth_headers, setup_database, create_test_student, create_test_equipment
     ):
-        """
-        Happy path: student checks out equipment and returns it before due date.
-        Expected:
-          - Checkout succeeds, deposit is locked, quantity drops.
-          - Return succeeds, full deposit is refunded, quantity restored.
-        """
         student_id = create_test_student["user_id"]
         eq_id = create_test_equipment["id"]
         deposit = create_test_equipment["deposit_amount"]
@@ -103,7 +97,7 @@ class TestEquipmentCheckoutFlow:
         checkout_resp = client.post("/checkout", json={
             "student_id": student_id,
             "equipment_id": eq_id
-        })
+        }, headers=auth_headers)
         assert checkout_resp.status_code == 200
         rental_id = checkout_resp.json()["rental_record_id"]
 
@@ -116,34 +110,25 @@ class TestEquipmentCheckoutFlow:
         return_resp = client.post("/return", json={
             "student_id": student_id,
             "rental_id": rental_id
-        })
+        }, headers=auth_headers)
         assert return_resp.status_code == 200
         return_data = return_resp.json()
         assert return_data["late_fee"] == 0.0
         assert float(return_data["refund_amount"]) == pytest.approx(deposit)
 
         wallet_after_return = _get_wallet(student_id)
-        # Balance should be back to initial (deposit was locked then refunded)
         assert float(wallet_after_return["token_balance"]) == pytest.approx(initial_balance)
         assert float(wallet_after_return["reserved_tokens"]) == pytest.approx(0.0)
         assert _get_equipment_qty(eq_id) == initial_qty
 
     def test_checkout_then_return_with_late_fee(
-        self, client, setup_database, create_test_student, create_test_equipment
+        self, client, auth_headers, setup_database, create_test_student, create_test_equipment
     ):
-        """
-        Overdue path: student returns equipment after due date.
-        Expected:
-          - Late fee is charged (capped at deposit amount).
-          - Refund = deposit - late_fee.
-          - reserved_tokens cleared back to 0.
-        """
         student_id = create_test_student["user_id"]
         eq_id = create_test_equipment["id"]
         deposit = 50.00
         initial_balance = 200.00
         days_overdue = 2
-        expected_late_fee = min(days_overdue * 50.0, deposit)  # 50 per day, cap at deposit
 
         _set_wallet(student_id, initial_balance, deposit)
         rental_id = _insert_overdue_rental(student_id, eq_id, deposit, days_overdue=days_overdue)
@@ -151,7 +136,7 @@ class TestEquipmentCheckoutFlow:
         return_resp = client.post("/return", json={
             "student_id": student_id,
             "rental_id": rental_id
-        })
+        }, headers=auth_headers)
         assert return_resp.status_code == 200
         data = return_resp.json()
         assert data["late_fee"] > 0
@@ -161,78 +146,63 @@ class TestEquipmentCheckoutFlow:
         assert float(wallet["reserved_tokens"]) == pytest.approx(0.0)
 
     def test_late_fee_capped_at_deposit(
-        self, client, setup_database, create_test_student, create_test_equipment
+        self, client, auth_headers, setup_database, create_test_student, create_test_equipment
     ):
-        """
-        Extreme overdue case: late fee cannot exceed the deposit amount.
-        """
         student_id = create_test_student["user_id"]
         eq_id = create_test_equipment["id"]
         deposit = 50.00
-        # 10 days overdue × 50/day = 500 > deposit
         _set_wallet(student_id, 200.00, deposit)
         rental_id = _insert_overdue_rental(student_id, eq_id, deposit, days_overdue=10)
 
         resp = client.post("/return", json={
             "student_id": student_id,
             "rental_id": rental_id
-        })
+        }, headers=auth_headers)
         assert resp.status_code == 200
         data = resp.json()
         assert data["late_fee"] <= deposit
         assert float(data["refund_amount"]) >= 0.0
 
     def test_checkout_blocks_double_borrow_same_item(
-        self, client, setup_database, create_test_student, create_test_equipment
+        self, client, auth_headers, setup_database, create_test_student, create_test_equipment
     ):
-        """
-        Student cannot borrow the same equipment twice without returning it first.
-        """
         student_id = create_test_student["user_id"]
         eq_id = create_test_equipment["id"]
         _set_wallet(student_id, 1000.00)
 
-        r1 = client.post("/checkout", json={"student_id": student_id, "equipment_id": eq_id})
+        r1 = client.post("/checkout", json={"student_id": student_id, "equipment_id": eq_id}, headers=auth_headers)
         assert r1.status_code == 200
 
-        r2 = client.post("/checkout", json={"student_id": student_id, "equipment_id": eq_id})
+        r2 = client.post("/checkout", json={"student_id": student_id, "equipment_id": eq_id}, headers=auth_headers)
         assert r2.status_code == 400
 
     def test_insufficient_balance_prevents_checkout(
-        self, client, setup_database, create_test_student, create_test_equipment
+        self, client, auth_headers, setup_database, create_test_student, create_test_equipment
     ):
-        """
-        Student with less balance than the deposit cannot check out.
-        """
         student_id = create_test_student["user_id"]
         deposit = create_test_equipment["deposit_amount"]
-        # Give just below the required deposit
         _set_wallet(student_id, deposit - 0.01)
 
         resp = client.post("/checkout", json={
             "student_id": student_id,
             "equipment_id": create_test_equipment["id"]
-        })
+        }, headers=auth_headers)
         assert resp.status_code == 400
 
     def test_return_marks_rental_as_returned(
-        self, client, setup_database, create_test_student, create_test_equipment
+        self, client, auth_headers, setup_database, create_test_student, create_test_equipment
     ):
-        """
-        After return, the rental record status must be 'Returned'.
-        """
         student_id = create_test_student["user_id"]
         eq_id = create_test_equipment["id"]
-        deposit = create_test_equipment["deposit_amount"]
         _set_wallet(student_id, 500.00)
 
         checkout_resp = client.post("/checkout", json={
             "student_id": student_id,
             "equipment_id": eq_id
-        })
+        }, headers=auth_headers)
         rental_id = checkout_resp.json()["rental_record_id"]
 
-        client.post("/return", json={"student_id": student_id, "rental_id": rental_id})
+        client.post("/return", json={"student_id": student_id, "rental_id": rental_id}, headers=auth_headers)
 
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
@@ -244,18 +214,15 @@ class TestEquipmentCheckoutFlow:
         assert record["status"] == "Returned"
 
     def test_return_late_fee_transaction_written(
-        self, client, setup_database, create_test_student, create_test_equipment
+        self, client, auth_headers, setup_database, create_test_student, create_test_equipment
     ):
-        """
-        When a late fee is charged on return, a 'late_fee_deduction' transaction must be recorded.
-        """
         student_id = create_test_student["user_id"]
         eq_id = create_test_equipment["id"]
         deposit = 50.00
         _set_wallet(student_id, 200.00, deposit)
         rental_id = _insert_overdue_rental(student_id, eq_id, deposit, days_overdue=2)
 
-        resp = client.post("/return", json={"student_id": student_id, "rental_id": rental_id})
+        resp = client.post("/return", json={"student_id": student_id, "rental_id": rental_id}, headers=auth_headers)
         assert resp.status_code == 200
 
         conn = get_connection()

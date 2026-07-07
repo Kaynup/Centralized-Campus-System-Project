@@ -27,7 +27,7 @@ def return_item(data: ReturnRequest):
         # 1. Get user with wallet
         cursor.execute(
             """
-            SELECT u.id, u.login_id, w.token_balance, w.reserved_tokens 
+            SELECT u.id, u.login_id, w.token_balance, w.reserved_tokens, w.rental_tokens_used
             FROM users u
             LEFT JOIN wallets w ON u.id = w.user_id
             WHERE u.id = %s AND u.role = 'student'
@@ -95,13 +95,15 @@ def return_item(data: ReturnRequest):
         # 6. Wallet update
         wallet_balance = float(student["token_balance"] or 0)
         wallet_reserved = float(student["reserved_tokens"] or 0)
+        rental_tokens_used = float(student["rental_tokens_used"] or 0)
 
         new_balance = wallet_balance + refund_amount
         new_reserved = max(0.0, wallet_reserved - deposit_amount)
+        new_rental_used = max(0.0, rental_tokens_used - deposit_amount)
 
         cursor.execute(
-            "UPDATE wallets SET token_balance=%s, reserved_tokens=%s WHERE user_id=%s",
-            (new_balance, new_reserved, student["id"])
+            "UPDATE wallets SET token_balance=%s, reserved_tokens=%s, rental_tokens_used=%s WHERE user_id=%s",
+            (new_balance, new_reserved, new_rental_used, student["id"])
         )
 
         # 7. Update rental

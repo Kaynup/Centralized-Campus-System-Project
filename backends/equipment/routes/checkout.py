@@ -6,6 +6,9 @@ from datetime import datetime, timedelta
 import logging
 import math
 import uuid
+import os
+
+MAX_RENTAL_TOKEN_LIMIT = float(os.getenv("MAX_RENTAL_TOKEN_LIMIT", "1000.00"))
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -27,7 +30,7 @@ def checkout(data: CheckoutRequest):
     try:
         cursor.execute(
             """
-            SELECT u.id, u.login_id, u.is_active, w.token_balance, w.reserved_tokens 
+            SELECT u.id, u.login_id, u.is_active, w.token_balance, w.reserved_tokens, w.rental_tokens_used
             FROM users u
             LEFT JOIN wallets w ON u.id = w.user_id
             WHERE u.id = %s AND u.role = 'student'
@@ -70,16 +73,21 @@ def checkout(data: CheckoutRequest):
         deposit_amount = float(equipment["deposit_amount"])
         wallet_balance = float(student["token_balance"] or 0)
         wallet_reserved = float(student["reserved_tokens"] or 0)
+        rental_tokens_used = float(student["rental_tokens_used"] or 0)
 
         if wallet_balance < deposit_amount:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Insufficient balance. Required: ₹{deposit_amount}, Available: ₹{wallet_balance}")
+            
+        if rental_tokens_used + deposit_amount > MAX_RENTAL_TOKEN_LIMIT:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Exceeds max rental token limit of ₹{MAX_RENTAL_TOKEN_LIMIT}. Currently using: ₹{rental_tokens_used}")
 
         new_balance = wallet_balance - deposit_amount
         new_reserved = wallet_reserved + deposit_amount
+        new_rental_used = rental_tokens_used + deposit_amount
 
         cursor.execute(
-            "UPDATE wallets SET token_balance = %s, reserved_tokens = %s WHERE user_id = %s",
-            (new_balance, new_reserved, student["id"])  # type: ignore
+            "UPDATE wallets SET token_balance = %s, reserved_tokens = %s, rental_tokens_used = %s WHERE user_id = %s",
+            (new_balance, new_reserved, new_rental_used, student["id"])  # type: ignore
         )
 
         borrow_date = datetime.now()
