@@ -4,6 +4,12 @@ import subprocess
 import mysql.connector
 from dotenv import load_dotenv
 
+# Add centralized_core to path to import its modules properly without inline imports
+sys.path.append(os.path.join(os.path.dirname(__file__), "centralized_core"))
+import database
+import models
+from auth_utils import get_password_hash
+
 # We expect this to be run from the centralized_core venv
 # Load .env from centralized_core
 load_dotenv(os.path.join(os.path.dirname(__file__), "centralized_core", ".env"))
@@ -40,31 +46,26 @@ def init_db():
         password=DB_PASSWORD
     )
     cursor = conn.cursor()
-    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}")
-    print(f"      Database '{DB_NAME}' created or already exists.")
+    cursor.execute(f"DROP DATABASE IF EXISTS {DB_NAME}")
+    cursor.execute(f"CREATE DATABASE {DB_NAME}")
+    print(f"      Database '{DB_NAME}' recreated cleanly.")
     
     cursor.execute(f"USE {DB_NAME}")
     
-    print("\n[2/6] Executing Equipment Schema...")
+    print("\n[2/6] Bootstrapping Centralized Core Tables...")
+    
+    database.Base.metadata.create_all(database.engine)
+    print("      Centralized Core tables initialized successfully.")
+    
+    print("\n[3/6] Executing Equipment Schema...")
     execute_sql_file(cursor, os.path.join(os.path.dirname(__file__), "schema_equipment.sql"))
     
-    print("\n[3/6] Executing Marketplace Schema...")
+    print("\n[4/6] Executing Marketplace Schema...")
     execute_sql_file(cursor, os.path.join(os.path.dirname(__file__), "schema_marketplace.sql"))
     
     conn.commit()
     cursor.close()
     conn.close()
-
-    print("\n[4/6] Bootstrapping Centralized Core Tables...")
-    # Add centralized_core to path to import its modules
-    sys.path.append(os.path.join(os.path.dirname(__file__), "centralized_core"))
-    
-    from centralized_core.database import Base, engine, SessionLocal
-    import centralized_core.models as models
-    from centralized_core.auth_utils import get_password_hash
-    
-    Base.metadata.create_all(engine)
-    print("      Centralized Core tables initialized successfully.")
 
     print("\n[5/6] Running Facility Migrations (Alembic)...")
     try:
@@ -92,7 +93,7 @@ def init_db():
         print(f"      Error running Facility migrations or seed: {e}")
 
     print("\n[6/6] Seeding Mock Users and Wallets...")
-    db = SessionLocal()
+    db = database.SessionLocal()
     try:
         hashed_pwd = get_password_hash("password123")
         
@@ -139,6 +140,23 @@ def init_db():
             reserved_tokens=0.00
         ))
         print("      Seeded student2 / password123 with 500.00 tokens.")
+        
+        # Super Admin
+        db.query(models.AdminUser).filter(models.AdminUser.admin_id == "admin1").delete(synchronize_session=False)
+        db.commit()
+        
+        admin1 = models.AdminUser(
+            id="804561b3-4f93-4a11-8fcb-28569ef86a42",
+            admin_id="admin1",
+            name="Super Admin",
+            email="admin@campus.com",
+            password_hash=hashed_pwd,
+            role=models.AdminRole.super_admin,
+            is_active=True
+        )
+        db.add(admin1)
+        db.flush()
+        print("      Seeded super admin: admin1 / password123")
             
         db.commit()
     except Exception as e:

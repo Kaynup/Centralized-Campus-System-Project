@@ -183,3 +183,103 @@ class TestCentralizedCoreIntegration:
         # Verify empty
         final_resp = client.get("/api/notifications/", headers=headers)
         assert len(final_resp.json()) == 0
+
+    def _get_admin_headers(self, client, db_session):
+        run_id = str(uuid.uuid4())[:8]
+        admin_id = f"admin_{run_id}"
+        pwd = "securepwd"
+        from models import AdminUser, AdminRole
+        from auth_utils import get_password_hash
+        admin = AdminUser(
+            admin_id=admin_id,
+            name="Test Admin",
+            email=f"admin_{run_id}@test.com",
+            password_hash=get_password_hash(pwd),
+            role=AdminRole.super_admin,
+            is_active=True
+        )
+        db_session.add(admin)
+        db_session.commit()
+        
+        login_resp = client.post("/users/login", json={
+            "login_id": admin_id,
+            "password": pwd
+        })
+        assert login_resp.status_code == 200
+        token = login_resp.json()["data"]["access_token"]
+        assert login_resp.json()["data"]["user"]["accountType"] == "admin"
+        return {"Authorization": f"Bearer {token}"}
+
+    def test_admin_login(self, client, db_session):
+        headers = self._get_admin_headers(client, db_session)
+        assert headers is not None
+
+    def test_bulk_register(self, client, db_session):
+        headers = self._get_admin_headers(client, db_session)
+        run_id = str(uuid.uuid4())[:8]
+        payload = {
+            "users": [
+                {
+                    "full_name": "Bulk User 1",
+                    "email": f"bulk1_{run_id}@univ.edu",
+                    "department": "CS",
+                    "phone": "1234567890",
+                    "role": "student"
+                }
+            ]
+        }
+        resp = client.post("/admin/users/bulk-register", json=payload, headers=headers)
+        assert resp.status_code == 200
+        data = resp.json()
+        assert len(data["created"]) == 1
+        assert "tempPassword" in data["created"][0]
+
+    def test_change_request_flow(self, client, db_session):
+        user_headers = self._get_auth_headers(client, db_session)
+        
+        # User submits change request
+        payload = {
+            "field": "department",
+            "requested_value": "Engineering",
+            "reason": "Changed major"
+        }
+        resp = client.post("/users/change-requests", json=payload, headers=user_headers)
+        assert resp.status_code == 200
+        req_id = resp.json()["id"]
+        
+        # Admin fetches change requests
+        admin_headers = self._get_admin_headers(client, db_session)
+        resp = client.get("/admin/change-requests", headers=admin_headers)
+        assert resp.status_code == 200
+        reqs = resp.json()["requests"]
+        assert len(reqs) > 0
+        assert reqs[0]["id"] == req_id
+        
+        # Admin approves
+        resp = client.post(f"/admin/change-requests/{req_id}/approve", headers=admin_headers)
+        assert resp.status_code == 200
+        
+        # Verify user updated
+        me_resp = client.get("/users/me", headers=user_headers)
+        assert me_resp.json()["data"]["department"] == "Engineering"
+
+    def test_sub_admin_management(self, client, db_session):
+        admin_headers = self._get_admin_headers(client, db_session)
+        run_id = str(uuid.uuid4())[:8]
+        
+        payload = {
+            "full_name": "Facility Admin",
+            "email": f"fac_{run_id}@univ.edu",
+            "domain": "facility"
+        }
+        resp = client.post("/admin/sub-admins", json=payload, headers=admin_headers)
+        assert resp.status_code == 200
+        sub_admin_id = resp.json()["subAdmin"]["id"]
+        
+        resp = client.get("/admin/sub-admins", headers=admin_headers)
+        assert resp.status_code == 200
+        admins = resp.json()["subAdmins"]
+        assert len(admins) > 0
+        
+        resp = client.post(f"/admin/sub-admins/{sub_admin_id}/deactivate", headers=admin_headers)
+        assert resp.status_code == 200

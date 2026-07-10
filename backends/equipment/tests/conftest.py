@@ -179,8 +179,8 @@ def create_test_student(setup_database):
         # Create wallet
         wallet_id = str(uuid.uuid4())
         cursor.execute("""
-            INSERT INTO wallets (id, user_id, token_balance, reserved_tokens)
-            VALUES (%s, %s, 1000.00, 0.00)
+            INSERT INTO wallets (id, user_id, token_balance, reserved_tokens, facility_tokens_used, rental_tokens_used)
+            VALUES (%s, %s, 1000.00, 0.00, 0.00, 0.00)
         """, (wallet_id, user_id))
         
         conn.commit()

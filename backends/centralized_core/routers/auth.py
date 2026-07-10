@@ -86,14 +86,21 @@ def register_user(
 
 @router.post(
     "/login",
-    response_model=LoginResponseWrapper,
     summary="Authenticate user credentials and issue JWT"
 )
 def login_user(
     payload: LoginRequest,
     db: Session = Depends(get_db)
 ):
+    # Try finding in users table first
     user = db.query(models.User).filter(models.User.login_id == payload.login_id).first()
+    is_admin = False
+    
+    if not user:
+        # If not found, try admin_users table
+        user = db.query(models.AdminUser).filter(models.AdminUser.admin_id == payload.login_id).first()
+        is_admin = True
+        
     if not user or not auth_utils.verify_password(payload.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -109,22 +116,48 @@ def login_user(
     # Generate token
     token = auth_utils.create_access_token(subject=user.id)
     
+    # Construct the user dictionary for response, injecting accountType
+    user_dict = {
+        "id": user.id,
+        "login_id": getattr(user, 'login_id', None) or getattr(user, 'admin_id', None),
+        "email": user.email,
+        "full_name": getattr(user, 'full_name', None) or getattr(user, 'name', None),
+        "role": user.role.value if hasattr(user.role, 'value') else user.role,
+        "is_active": user.is_active,
+        "is_verified": getattr(user, 'is_verified', True),
+        "department": getattr(user, 'department', None),
+        "phone": getattr(user, 'phone', None),
+        "accountType": "admin" if is_admin else "user"
+    }
+    
     return {
         "data": {
             "access_token": token,
-            "user": user
+            "user": user_dict
         }
     }
 
 @router.get(
     "/me",
-    response_model=UserResponseWrapper,
     summary="Get current authenticated user profile"
 )
 def get_profile(
     current_user: models.User = Depends(get_current_user)
 ):
-    return {"data": current_user}
+    user_dict = {
+        "id": current_user.id,
+        "login_id": getattr(current_user, 'login_id', None) or getattr(current_user, 'admin_id', None),
+        "email": current_user.email,
+        "full_name": getattr(current_user, 'full_name', None) or getattr(current_user, 'name', None),
+        "role": current_user.role.value if hasattr(current_user.role, 'value') else current_user.role,
+        "is_active": current_user.is_active,
+        "is_verified": getattr(current_user, 'is_verified', True),
+        "department": getattr(current_user, 'department', None),
+        "phone": getattr(current_user, 'phone', None),
+        "accountType": getattr(current_user, 'accountType', 'user'),
+        "wallet": getattr(current_user, 'wallet', None)
+    }
+    return {"data": user_dict}
 
 
 class ChangePasswordRequest(BaseModel):
@@ -150,4 +183,29 @@ def change_password(
     current_user.password_hash = auth_utils.get_password_hash(payload.new_password)
     db.commit()
     return {"message": "Password updated successfully"}
+
+@router.post(
+    "/change-requests",
+    response_model=schemas.ChangeRequestResponse,
+    summary="Submit a change request for profile update"
+)
+def submit_change_request(
+    payload: schemas.ChangeRequestCreate,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    current_value = getattr(current_user, payload.field, None)
+    
+    req = models.ChangeRequest(
+        user_id=current_user.id,
+        field=payload.field,
+        current_value=str(current_value) if current_value is not None else None,
+        requested_value=payload.requested_value,
+        reason=payload.reason,
+        status=models.ChangeRequestStatus.pending
+    )
+    db.add(req)
+    db.commit()
+    db.refresh(req)
+    return req
 

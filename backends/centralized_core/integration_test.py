@@ -159,6 +159,127 @@ class TestCentralizedCore(unittest.TestCase):
         final_resp = self.client.get("/api/notifications/", headers=headers)
         self.assertEqual(len(final_resp.json()), 0)
 
+    def test_09_create_super_admin_db(self):
+        # Insert a super_admin directly via DB to test admin endpoints
+        self.__class__.admin_id_str = f"admin_{RUN_ID}"
+        admin_pwd = "superPassword123!"
+        from auth_utils import get_password_hash
+        hashed_pwd = get_password_hash(admin_pwd)
+        db_admin = models.AdminUser(
+            admin_id=self.admin_id_str,
+            name="Super Admin",
+            email=f"admin_{RUN_ID}@univ.edu",
+            password_hash=hashed_pwd,
+            role=models.AdminRole.super_admin,
+            is_active=True
+        )
+        self.db.add(db_admin)
+        self.db.commit()
+        self.db.refresh(db_admin)
+        self.__class__.super_admin_pk = db_admin.id
+
+        # Login as admin
+        payload = {"login_id": self.admin_id_str, "password": admin_pwd}
+        resp = self.client.post("/admin/login", json=payload)
+        self.assertEqual(resp.status_code, 200)
+        self.__class__.admin_token = resp.json()["data"]["access_token"]
+
+    def test_10_bulk_register(self):
+        headers = {"Authorization": f"Bearer {self.admin_token}"}
+        payload = {
+            "users": [
+                {
+                    "full_name": "Bulk User 1",
+                    "email": f"bulk1_{RUN_ID}@univ.edu",
+                    "department": "CS",
+                    "phone": "1234567890",
+                    "role": "student"
+                }
+            ]
+        }
+        resp = self.client.post("/admin/users/bulk-register", json=payload, headers=headers)
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(len(data["created"]), 1)
+        self.assertIn("tempPassword", data["created"][0])
+        self.__class__.bulk_user_id = data["created"][0]["id"]
+
+    def test_11_change_request_flow(self):
+        # 1. User submits change request
+        headers = {"Authorization": f"Bearer {self.token}"} # Token from test_02
+        payload = {
+            "field": "department",
+            "requested_value": "Engineering",
+            "reason": "Changed major"
+        }
+        resp = self.client.post("/users/change-requests", json=payload, headers=headers)
+        self.assertEqual(resp.status_code, 200)
+        req_id = resp.json()["id"]
+        
+        # 2. Admin fetches change requests
+        admin_headers = {"Authorization": f"Bearer {self.admin_token}"}
+        resp = self.client.get("/admin/change-requests", headers=admin_headers)
+        self.assertEqual(resp.status_code, 200)
+        reqs = resp.json()["requests"]
+        self.assertTrue(len(reqs) > 0)
+        self.assertEqual(reqs[0]["id"], req_id)
+        
+        # 3. Admin approves
+        resp = self.client.post(f"/admin/change-requests/{req_id}/approve", headers=admin_headers)
+        self.assertEqual(resp.status_code, 200)
+        
+        # 4. Verify user updated
+        me_resp = self.client.get("/users/me", headers=headers)
+        self.assertEqual(me_resp.status_code, 200)
+        self.assertEqual(me_resp.json()["data"]["department"], "Engineering")
+
+    def test_12_sub_admin_management(self):
+        admin_headers = {"Authorization": f"Bearer {self.admin_token}"}
+        
+        # Create sub-admin
+        payload = {
+            "full_name": "Facility Admin",
+            "email": f"fac_{RUN_ID}@univ.edu",
+            "domain": "facility"
+        }
+        resp = self.client.post("/admin/sub-admins", json=payload, headers=admin_headers)
+        self.assertEqual(resp.status_code, 200)
+        sub_admin_id = resp.json()["subAdmin"]["id"]
+        
+        # Get sub-admins
+        resp = self.client.get("/admin/sub-admins", headers=admin_headers)
+        self.assertEqual(resp.status_code, 200)
+        admins = resp.json()["subAdmins"]
+        self.assertTrue(len(admins) > 0)
+        
+        # Deactivate
+        resp = self.client.post(f"/admin/sub-admins/{sub_admin_id}/deactivate", headers=admin_headers)
+        self.assertEqual(resp.status_code, 200)
+        
+        # Clean up
+        self.db.query(models.AdminUser).filter(models.AdminUser.id == sub_admin_id).delete()
+        self.db.commit()
+
+    @classmethod
+    def tearDownClass(cls):
+        # Clean up database mock records
+        if getattr(cls, 'bulk_user_id', None):
+            cls.db.query(models.Wallet).filter(models.Wallet.user_id == cls.bulk_user_id).delete()
+            cls.db.query(models.User).filter(models.User.id == cls.bulk_user_id).delete()
+            
+        if getattr(cls, 'user_id', None):
+            cls.db.query(models.Notification).filter(models.Notification.recipient_id == cls.user_id).delete()
+            cls.db.query(models.Transaction).filter(models.Transaction.user_id == cls.user_id).delete()
+            cls.db.query(models.ChangeRequest).filter(models.ChangeRequest.user_id == cls.user_id).delete()
+            cls.db.query(models.Wallet).filter(models.Wallet.user_id == cls.user_id).delete()
+            cls.db.query(models.User).filter(models.User.id == cls.user_id).delete()
+            
+        if getattr(cls, 'super_admin_pk', None):
+            cls.db.query(models.AdminUser).filter(models.AdminUser.id == cls.super_admin_pk).delete()
+            
+        cls.db.commit()
+        cls.db.close()
+
 
 if __name__ == "__main__":
     unittest.main()

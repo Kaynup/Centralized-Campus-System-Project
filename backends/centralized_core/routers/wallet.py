@@ -24,7 +24,7 @@ def get_balance(
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    if not current_user.wallet:
+    if not hasattr(current_user, 'wallet') or not current_user.wallet:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Wallet not found for this user."
@@ -41,7 +41,7 @@ def topup_wallet(
     current_user: models.User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    wallet = current_user.wallet
+    wallet = getattr(current_user, 'wallet', None)
     if not wallet:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

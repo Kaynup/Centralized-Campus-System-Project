@@ -3,11 +3,16 @@ import os
 import uuid
 import sys
 from fastapi.testclient import TestClient
+from datetime import datetime, timedelta
+from jose import jwt
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from main import app
 from db import get_db_connection
+
+SECRET_KEY = os.getenv("JWT_SECRET_KEY", "supersecretkeycampuscore123!")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
 
 # In marketplace, we use db.py which gives a raw connection. 
 # We'll use the same database for tests.
@@ -85,10 +90,20 @@ def test_seller(db_conn):
     db_conn.commit()
     cursor.close()
 
-# Mock get_current_user dependency
-from auth import get_current_user
+@pytest.fixture
+def auth_headers_buyer(test_buyer):
+    payload = {
+        "sub": test_buyer["id"],
+        "exp": datetime.utcnow() + timedelta(hours=1)
+    }
+    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    return {"Authorization": f"Bearer {token}"}
 
-def mock_get_current_user(user_data):
-    def dependency():
-        return user_data
-    return dependency
+@pytest.fixture
+def auth_headers_seller(test_seller):
+    payload = {
+        "sub": test_seller["id"],
+        "exp": datetime.utcnow() + timedelta(hours=1)
+    }
+    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    return {"Authorization": f"Bearer {token}"}
