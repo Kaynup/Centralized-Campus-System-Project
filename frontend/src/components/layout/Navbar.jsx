@@ -60,13 +60,15 @@ export default function Navbar({ onToggleSidebar }) {
       <div className="flex-1" />
 
       <div className="flex items-center gap-2 md:gap-4">
-        <button
-          onClick={() => navigate("/wallet")}
-          className="hidden sm:flex items-center gap-1.5 rounded-full bg-forest/10 text-forest px-3 py-1.5 text-sm font-medium hover:bg-forest/15 transition-colors"
-        >
-          <WalletIcon className="w-4 h-4" />
-          ₹{balance?.toFixed(2) ?? "0.00"}
-        </button>
+        {user?.accountType !== "admin" && (
+          <button
+            onClick={() => navigate("/wallet")}
+            className="hidden sm:flex items-center gap-1.5 rounded-full bg-forest/10 text-forest px-3 py-1.5 text-sm font-medium hover:bg-forest/15 transition-colors"
+          >
+            <WalletIcon className="w-4 h-4" />
+            ₹{balance?.toFixed(2) ?? "0.00"}
+          </button>
+        )}
 
         <NotificationBell />
 

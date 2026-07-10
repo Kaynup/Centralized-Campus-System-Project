@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import auth, wallet, notifications
+from routers import auth, wallet, notifications, admin
 
 app = FastAPI(
     title="Campus Centralized Core Service",
@@ -46,6 +46,7 @@ async def log_requests(request: Request, call_next):
 app.include_router(auth.router)
 app.include_router(wallet.router)
 app.include_router(notifications.router, prefix="/api")
+app.include_router(admin.router)
 
 @app.get("/", tags=["Health"])
 def health_check():

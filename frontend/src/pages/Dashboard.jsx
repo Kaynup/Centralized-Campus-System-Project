@@ -42,27 +42,29 @@ export default function Dashboard() {
       </p>
 
       {/* Wallet summary */}
-      <div className="mt-8 flex items-center justify-between rounded-xl border border-slate/10 bg-slate px-6 py-5 text-white">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold/15">
-            <WalletIcon className="h-5 w-5 text-gold" />
+      {user?.accountType !== "admin" && (
+        <div className="mt-8 flex items-center justify-between rounded-xl border border-slate/10 bg-slate px-6 py-5 text-white">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold/15">
+              <WalletIcon className="h-5 w-5 text-gold" />
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-wide text-white/50">Wallet balance</p>
+              <p className="text-xl font-semibold">
+                {isLoading ? "Loading…" : `Rs. ${balance.toLocaleString()}`}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-xs uppercase tracking-wide text-white/50">Wallet balance</p>
-            <p className="text-xl font-semibold">
-              {isLoading ? "Loading…" : `Rs. ${balance.toLocaleString()}`}
-            </p>
-          </div>
+          <button
+            type="button"
+            onClick={() => navigate("/wallet")}
+            className="flex items-center gap-1 text-sm font-semibold text-gold hover:text-gold/80"
+          >
+            View wallet
+            <ArrowRight className="h-4 w-4" />
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => navigate("/wallet")}
-          className="flex items-center gap-1 text-sm font-semibold text-gold hover:text-gold/80"
-        >
-          View wallet
-          <ArrowRight className="h-4 w-4" />
-        </button>
-      </div>
+      )}
 
       {/* Module entry points */}
       <div className="mt-10 grid gap-5 sm:grid-cols-3">

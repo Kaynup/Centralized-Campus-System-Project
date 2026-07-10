@@ -24,6 +24,8 @@ class AdminRole(str, enum.Enum):
     super_admin = "super_admin"
     moderator = "moderator"
     facility_admin = "facility_admin"
+    equipment_admin = "equipment_admin"
+    marketplace_admin = "marketplace_admin"
 
 class ReferenceType(str, enum.Enum):
     booking = "booking"
@@ -47,6 +49,11 @@ class NotificationDomain(str, enum.Enum):
     marketplace = "marketplace"
     core = "core"
 
+class ChangeRequestStatus(str, enum.Enum):
+    pending = "pending"
+    approved = "approved"
+    rejected = "rejected"
+
 
 # ----------------- MODELS -----------------
 
@@ -57,6 +64,8 @@ class User(Base):
     login_id = Column(String(50), nullable=False, unique=True, index=True)
     full_name = Column(String(100), nullable=False)
     email = Column(String(150), nullable=False, unique=True, index=True)
+    department = Column(String(100), nullable=True)
+    phone = Column(String(20), nullable=True)
     password_hash = Column(String(255), nullable=False)
     role = Column(Enum(UserRole), nullable=False, default=UserRole.student)
     is_active = Column(Boolean, default=True, nullable=False)
@@ -130,3 +139,19 @@ class Notification(Base):
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
 
     recipient = relationship("User", back_populates="notifications")
+
+
+class ChangeRequest(Base):
+    __tablename__ = "change_requests"
+
+    id = Column(String(36), primary_key=True, default=generate_uuid)
+    user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    field = Column(String(50), nullable=False)
+    current_value = Column(String(255), nullable=True)
+    requested_value = Column(String(255), nullable=False)
+    reason = Column(Text, nullable=True)
+    status = Column(Enum(ChangeRequestStatus), nullable=False, default=ChangeRequestStatus.pending)
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
+
+    user = relationship("User")
