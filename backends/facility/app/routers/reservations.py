@@ -58,12 +58,50 @@ def list_reservations(
 ):
     """List bookings for the current user (or all if admin)."""
     query = db_session.query(models.Booking)
-    if current_user.role != models.UserRole.admin:
+    if current_user.role != "admin" and current_user.accountType != "admin":
         query = query.filter(models.Booking.user_id == current_user.id)
     if facility_id:
         query = query.filter(models.Booking.facility_id == facility_id)
-    return query.all()
 
+    bookings = query.all()
+    result = []
+    for b in bookings:
+        facility = b.facility
+        # Map RESERVED → ACTIVE for frontend display consistency with standalone
+        display_status = "ACTIVE" if b.status == models.BookingStatus.RESERVED else b.status.value
+
+        result.append(schemas.BookingListResponse(
+            id=b.id,
+            facility_name=facility.name if facility else "Unknown",
+            facility_group=facility.facility_group.value if facility else "Unknown",
+            date=b.booking_date.strftime("%Y-%m-%d") if b.booking_date else "",
+            start_time=b.start_slot.start_time_of_day.strftime("%H:%M") if b.start_slot else "",
+            end_time=b.end_slot.end_time_of_day.strftime("%H:%M") if b.end_slot else "",
+            status=display_status,
+            deposit=b.deposit_paid,
+            cancellation_reason=b.cancellation_reason.action_label if b.cancellation_reason else None,
+        ))
+    return result
+
+
+@router.get(
+    "/preview-cancel/{booking_id}",
+    response_model=dict,
+    summary="Preview a reservation cancellation"
+)
+def preview_cancel_reservation(
+    booking_id: int,
+    db_session: Session = Depends(db.get_db),
+    current_user=Depends(get_current_user),
+):
+    """Preview a booking cancellation to check refund/penalty before committing."""
+    try:
+        preview = services.preview_cancellation(
+            db_session, booking_id, current_user.id
+        )
+        return success_response(data=preview, message="Cancellation preview generated")
+    except (NotFoundError, UnauthorizedFacilityAccessError, CancellationNotAllowedError) as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @router.post(
     "/{booking_id}/cancel",

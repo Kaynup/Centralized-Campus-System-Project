@@ -16,15 +16,7 @@ import { useAuth } from '../../../shared/hooks/useAuth';
 import { useNotification } from '../../../shared/hooks/useNotification';
 import * as bookingApi from '../api/bookingApi';
 
-/* ── DEV mock booking data ───────────────────────────────────────────────── */
-const MOCK_BOOKINGS = [
-  { id: 1, facilityName: 'Advanced CS Research Laboratory', date: '2026-06-10', startTime: '10:00', endTime: '11:30', status: 'ACTIVE' },
-  { id: 2, facilityName: 'Seminar Auditorium 303',           date: '2026-06-12', startTime: '14:00', endTime: '16:00', status: 'PENDING' },
-  { id: 3, facilityName: 'Main Conference Grand Hall',        date: '2026-05-28', startTime: '09:00', endTime: '12:00', status: 'CANCELLED' },
-  { id: 4, facilityName: 'Physics Laboratory B',             date: '2026-06-15', startTime: '13:00', endTime: '14:00', status: 'ACTIVE' },
-  { id: 5, facilityName: 'Study Room 201',                   date: '2026-05-20', startTime: '11:00', endTime: '12:00', status: 'CANCELLED' },
-  { id: 6, facilityName: 'Sports Court A',                   date: '2026-06-11', startTime: '16:00', endTime: '17:30', status: 'PENDING' },
-];
+
 
 /* Augment dev user with a token balance for display */
 const DEV_USER_DISPLAY = { tokenBalance: 99999 };
@@ -44,17 +36,12 @@ export default function ProfilePage() {
   useEffect(() => {
     const load = async () => {
       setIsLoading(true);
-      if (import.meta.env.DEV) {
-        await new Promise((r) => setTimeout(r, 350));
-        setBookings(MOCK_BOOKINGS);
-      } else {
-        try {
-          const data = await bookingApi.fetchMyBookings();
-          setBookings(data);
-        } catch (err) {
-          console.error('Failed to load profile bookings:', err);
-          notify.error('Failed to load booking history.');
-        }
+      try {
+        const data = await bookingApi.fetchMyBookings();
+        setBookings(data);
+      } catch (err) {
+        console.error('Failed to load profile bookings:', err);
+        notify.error('Failed to load booking history.');
       }
       setIsLoading(false);
     };
