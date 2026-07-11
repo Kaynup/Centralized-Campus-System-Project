@@ -10,8 +10,8 @@ export default function BalanceCard({
 }) {
   const formatAmount = (n) =>
     n !== undefined && n !== null
-      ? `₹${Number(n).toLocaleString()}`
-      : '₹—';
+      ? `₹${(Number(n) * 10).toLocaleString()}`
+      : '—';
 
   if (compact) {
     return (

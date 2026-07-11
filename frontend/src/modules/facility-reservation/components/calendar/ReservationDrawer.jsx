@@ -12,6 +12,7 @@ import Button from '../common/Button'
 import StatusBadge from '../common/StatusBadge'
 import { useBooking } from '../../contexts/BookingContext'
 import { useAuth } from '../../../../shared/hooks/useAuth'
+import { useWallet } from '../../../../shared/hooks/useWallet'
 import * as bookingApi from '../../api/bookingApi'
 import * as adminApi from '../../api/adminApi'
 import { getMinSlotsForFacility, getSlotIndex } from '../../utils/bookingHelpers'
@@ -636,6 +637,7 @@ export default function ReservationDrawer({ selectedDate, slotsMap = {} }) {
   } = useBooking()
 
   const { user } = useAuth()
+  const { balance } = useWallet()
 
   // Local UI state
   const [successMsg,  setSuccessMsg]  = useState(null)
@@ -715,7 +717,7 @@ export default function ReservationDrawer({ selectedDate, slotsMap = {} }) {
   const depositTokens = facility
     ? Math.max(1, Math.round((facility.tokenCostPerHour ?? facility.token_cost_per_hour ?? 1) * (finalDurationMins / 60)))
     : 1
-  const userBalance      = user?.token_balance ?? user?.tokenBalance ?? 0
+  const userBalance      = balance ?? 0
   const balanceAfter     = userBalance - depositTokens
   const insufficientBalance = balanceAfter < 0
   const requiresApproval = !!(facility?.requiresApproval ?? facility?.requires_approval)

@@ -15,22 +15,18 @@ import RecentActivity from '../components/profile/RecentActivity';
 import { useAuth } from '../../../shared/hooks/useAuth';
 import { useNotification } from '../../../shared/hooks/useNotification';
 import * as bookingApi from '../api/bookingApi';
-
-
-
-/* Augment dev user with a token balance for display */
-const DEV_USER_DISPLAY = { tokenBalance: 99999 };
+import { useWallet } from '../../../shared/hooks/useWallet';
 
 export default function ProfilePage() {
   const { user: authUser } = useAuth();
+  const { balance } = useWallet();
   const { notify } = useNotification();
 
-  const [bookings, setBookings]   = useState([]);
+  const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Merge token balance for dev user (not returned by mock auth)
   const user = authUser
-    ? { ...DEV_USER_DISPLAY, ...authUser, fullName: authUser.fullName || authUser.name }
+    ? { ...authUser, fullName: authUser.fullName || authUser.name, tokenBalance: balance }
     : null;
 
   useEffect(() => {
@@ -49,9 +45,9 @@ export default function ProfilePage() {
   }, []);
 
   const stats = useMemo(() => ({
-    total:     bookings.length,
-    active:    bookings.filter((b) => b.status === 'ACTIVE').length,
-    pending:   bookings.filter((b) => b.status === 'PENDING').length,
+    total: bookings.length,
+    active: bookings.filter((b) => b.status === 'ACTIVE').length,
+    pending: bookings.filter((b) => b.status === 'PENDING').length,
     cancelled: bookings.filter((b) => b.status === 'CANCELLED').length,
   }), [bookings]);
 

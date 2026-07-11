@@ -37,21 +37,26 @@ export default function TopUpModal({ isOpen, onClose }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Top Up Tokens">
-      <label className="text-sm font-medium text-slate">Amount</label>
+    <Modal isOpen={isOpen} onClose={onClose} title="Top Up Wallet">
+      <label className="text-sm font-medium text-slate">Amount (Rupees / ₹)</label>
       <input
         type="number"
         min="1"
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
         className="mt-1 w-full rounded-md border border-slate/20 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-forest"
-        placeholder="Enter amount"
+        placeholder="Enter amount in ₹"
         disabled={submitting}
       />
+      {amount && !validationError && (
+        <p className="mt-2 text-sm text-forest font-medium">
+          You will receive: {(Number(amount) / 10).toFixed(2)} tokens
+        </p>
+      )}
       {validationError && <p className="mt-1 text-sm text-red-600">{validationError}</p>}
       <div className="mt-4 flex justify-end gap-2">
         <Button variant="ghost" onClick={onClose} disabled={submitting}>Cancel</Button>
-        <Button onClick={handleSubmit} loading={submitting}>Confirm Top-up</Button>
+        <Button onClick={handleSubmit} loading={submitting}>Confirm Payment</Button>
       </div>
     </Modal>
   );

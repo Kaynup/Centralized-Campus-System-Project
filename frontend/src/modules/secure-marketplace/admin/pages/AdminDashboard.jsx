@@ -17,7 +17,7 @@ const fmtNum = (n) => {
 
 const fmtCur = (n) => {
     const num = Number(n ?? 0);
-    return isNaN(num) ? "₹0" : `₹${num.toLocaleString()}`;
+    return isNaN(num) ? "₹0" : `₹${(num * 10).toLocaleString()}`;
 };
 
 /**
@@ -169,7 +169,7 @@ export default function AdminDashboard() {
                 <div className="ad-dash-hero__block">
                     <div className="ad-dash-hero__label">Total Wallet Balance</div>
                     <div className="ad-dash-hero__value">
-                        {loading ? "₹—" : fmtCur(totalWalletBalance)}
+                        {loading ? "—" : fmtCur(totalWalletBalance)}
                     </div>
                 </div>
 
@@ -178,7 +178,7 @@ export default function AdminDashboard() {
                 <div className="ad-dash-hero__block">
                     <div className="ad-dash-hero__label">Active Vault Holdings</div>
                     <div className="ad-dash-hero__value ad-dash-hero__value--indigo">
-                        {loading ? "₹—" : fmtCur(totalHeldAmount)}
+                        {loading ? "—" : fmtCur(totalHeldAmount)}
                     </div>
                 </div>
 

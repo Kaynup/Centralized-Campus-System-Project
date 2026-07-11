@@ -186,7 +186,7 @@ export default function Conversation() {
           <div className="conversation__listing-info">
             <p className="conversation__listing-title">{conversation.listing.title}</p>
             <p className="conversation__listing-price">
-              ₹{Number(conversation.listing.price).toLocaleString()}
+              ₹{(Number(conversation.listing.price) * 10).toLocaleString()}
             </p>
           </div>
           <StatusBadge status={conversation.listing.status} size="sm" />

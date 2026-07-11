@@ -115,7 +115,7 @@ export default function MyListings() {
             { label: 'Available', value: stats.available, color: 'var(--color-green)' },
             { label: 'Reserved',  value: stats.reserved,  color: 'var(--color-orange)' },
             { label: 'Sold',      value: stats.sold,      color: 'var(--color-text-sec)' },
-            { label: 'Earned',    value: `₹${Number(stats.totalEarned).toLocaleString()}`, color: 'var(--color-blue)' },
+            { label: 'Earned',    value: `₹${(Number(stats.totalEarned) * 10).toLocaleString()}`, color: 'var(--color-blue)' },
           ].map((s) => (
             <div key={s.label} className="my-listings__stat-card card">
               <p className="my-listings__stat-value" style={{ color: s.color }}>{s.value}</p>
@@ -158,7 +158,7 @@ export default function MyListings() {
                       <p className="my-listings__title">{listing.title}</p>
                       <StatusBadge status={listing.status} size="sm" />
                     </div>
-                    <p className="my-listings__price">₹{Number(listing.price).toLocaleString()}</p>
+                    <p className="my-listings__price">₹{(Number(listing.price) * 10).toLocaleString()}</p>
                     <div className="my-listings__meta">
                       <span className="my-listings__meta-item">
                         <FiEye size={11} /> {listing.view_Count ?? 0}

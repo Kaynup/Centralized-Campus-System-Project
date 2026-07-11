@@ -40,16 +40,16 @@ function PurchaseSheet({ item, onClose, onConfirm, userBalance, purchasing }) {
           <div className="purchase-sheet__item-info">
             <p className="purchase-sheet__item-title">{item?.title}</p>
             <p className="purchase-sheet__item-meta">{item?.condition} · {item?.sellerName}</p>
-            <p className="purchase-sheet__item-price">₹{price.toLocaleString()}</p>
+            <p className="purchase-sheet__item-price">₹{(price * 10).toLocaleString()}</p>
           </div>
         </div>
 
         {/* Balance Breakdown */}
         <div className="purchase-sheet__breakdown card">
           {[
-            { label: 'Your Balance', value: `₹${balance.toLocaleString()}`, color: 'var(--color-text)' },
-            { label: 'Item Price', value: `-₹${price.toLocaleString()}`, color: 'var(--color-red-text)' },
-            { label: 'Remaining Balance', value: `₹${Math.max(0, remaining).toLocaleString()}`, color: canAfford ? 'var(--color-green-text)' : 'var(--color-red-text)', bold: true },
+            { label: 'Your Balance', value: `₹${(balance * 10).toLocaleString()}`, color: 'var(--color-text)' },
+            { label: 'Item Price', value: `-₹${(price * 10).toLocaleString()}`, color: 'var(--color-red-text)' },
+            { label: 'Remaining Balance', value: `₹${(Math.max(0, remaining) * 10).toLocaleString()}`, color: canAfford ? 'var(--color-green-text)' : 'var(--color-red-text)', bold: true },
           ].map((row, i) => (
             <div key={i} className={`purchase-sheet__row ${i === 2 ? 'purchase-sheet__row--total' : ''}`}>
               <span className={`purchase-sheet__row-label ${row.bold ? 'purchase-sheet__row-label--bold' : ''}`}>
@@ -69,7 +69,7 @@ function PurchaseSheet({ item, onClose, onConfirm, userBalance, purchasing }) {
             <div>
               <p className="purchase-sheet__error-title">Insufficient Balance</p>
               <p className="purchase-sheet__error-desc">
-                You need ₹{Math.abs(remaining).toLocaleString()} more. Please top up your wallet.
+                You need ₹{(Math.abs(remaining) * 10).toLocaleString()} more. Please top up your wallet.
               </p>
             </div>
           </div>
@@ -285,7 +285,7 @@ const normalized = {
             </div>
           </div>
           <div className="item-detail__price-wrap">
-            <p className="item-detail__price">₹{Number(item.price).toLocaleString()}</p>
+            <p className="item-detail__price">₹{(Number(item.price) * 10).toLocaleString()}</p>
             <p className="item-detail__condition">{item.condition}</p>
           </div>
         </div>
@@ -368,7 +368,7 @@ const normalized = {
             type="button"
           >
             <FiShield size={17} />
-            {purchasing ? 'Processing...' : `Buy Securely · ₹${Number(item.price).toLocaleString()}`}
+            {purchasing ? 'Processing...' : `Buy Securely · ₹${(Number(item.price) * 10).toLocaleString()}`}
           </button>
         </div>
       )}

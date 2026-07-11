@@ -66,7 +66,7 @@ export default function Navbar({ onToggleSidebar }) {
             className="hidden sm:flex items-center gap-1.5 rounded-full bg-forest/10 text-forest px-3 py-1.5 text-sm font-medium hover:bg-forest/15 transition-colors"
           >
             <WalletIcon className="w-4 h-4" />
-            ₹{balance?.toFixed(2) ?? "0.00"}
+            {balance?.toFixed(2) ?? "0.00"} tokens
           </button>
         )}
 

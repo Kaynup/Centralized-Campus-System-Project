@@ -19,7 +19,7 @@ def create_booking(db: Session, user_id: str, facility_id: int, booking_date: da
                    start_slot_id: int, end_slot_id: int):
     """Create a booking with validation rules and token limits."""
 
-    facility = db.query(models.Facility).filter(models.Facility.id == facility_id).first()
+    facility = db.query(models.Facility).filter(models.Facility.id == facility_id).with_for_update().first()
     if not facility:
         raise NotFoundError("Facility not found")
 
@@ -52,7 +52,7 @@ def create_booking(db: Session, user_id: str, facility_id: int, booking_date: da
     deposit_required = float(duration_hours * facility.token_cost_per_hour)
     
     # Check wallet and limits
-    MAX_FACILITY_TOKEN_LIMIT = float(os.getenv("MAX_FACILITY_TOKEN_LIMIT", "500.00"))
+    MAX_FACILITY_TOKEN_LIMIT = float(os.getenv("MAX_FACILITY_TOKEN_LIMIT", "10.00"))
     
     wallet = db.execute(
         text("SELECT token_balance, reserved_tokens, facility_tokens_used FROM wallets WHERE user_id = :u FOR UPDATE"),

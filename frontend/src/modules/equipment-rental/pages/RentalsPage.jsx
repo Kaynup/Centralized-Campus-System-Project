@@ -49,8 +49,8 @@ export default function RentalsPage() {
 
       const msg =
         data.late_fee > 0
-          ? `"${equipmentName}" returned. Late fee: ₹${data.late_fee}. Refund: ₹${data.refund_amount}`
-          : `"${equipmentName}" returned. Full deposit ₹${data.refund_amount} refunded!`;
+          ? `"${equipmentName}" returned. Late fee: ${data.late_fee} tokens. Refund: ${data.refund_amount} tokens`
+          : `"${equipmentName}" returned. Full deposit ${data.refund_amount} tokens refunded!`;
 
       setSuccessMsg(msg);
       fetchRentals();

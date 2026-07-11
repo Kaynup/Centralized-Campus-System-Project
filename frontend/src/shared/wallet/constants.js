@@ -1,6 +1,6 @@
 // Temporary frontend-side limits until backend exposes them (see §13)
-export const MAX_FACILITY_LIMIT = Number(import.meta.env.VITE_MAX_FACILITY_TOKENS) || 500;
-export const MAX_RENTAL_LIMIT = Number(import.meta.env.VITE_MAX_RENTAL_TOKENS) || 500;
+export const MAX_FACILITY_LIMIT = Number(import.meta.env.VITE_MAX_FACILITY_TOKENS) || 10;
+export const MAX_RENTAL_LIMIT = Number(import.meta.env.VITE_MAX_RENTAL_TOKENS) || 50;
 
 export const TRANSACTION_TYPE_META = {
   token_topup:        { label: 'Top-up',                 tone: 'success', sign: '+' },

@@ -76,8 +76,8 @@ export default function AdminListings() {
         {
             key: "title", label: "Item",
             render: (v) => (
-                <span style={{ fontWeight: 600, color: "var(--ad-text)" }} className="ad-truncate"
-                    title={v} style={{ maxWidth: 180, display: "inline-block" }}>
+                <span style={{ fontWeight: 600, color: "var(--ad-text)", maxWidth: 180, display: "inline-block" }} className="ad-truncate"
+                    title={v}>
                     {v}
                 </span>
             )
@@ -90,7 +90,7 @@ export default function AdminListings() {
         },
         {
             key: "price", label: "Price",
-            render: (v) => `₹${Number(v ?? 0).toLocaleString()}`
+            render: (v) => `₹${(Number(v ?? 0) * 10).toLocaleString()}`
         },
         { key: "status", label: "Status", render: (v) => <AdminBadge value={v} /> },
         { key: "listing_channel", label: "Channel", render: (v) => <AdminBadge value={v} /> },
@@ -151,7 +151,7 @@ export default function AdminListings() {
                             <div style={{ background: "var(--ad-bg)", borderRadius: 12, padding: "14px 16px", marginBottom: 14 }}>
                                 <div style={{ fontWeight: 700, marginBottom: 3 }}>{modal.item.title}</div>
                                 <div style={{ fontSize: 13, color: "var(--ad-text-sec)" }}>
-                                    Seller: {modal.item.seller_login_id} · ₹{Number(modal.item.price ?? 0).toLocaleString()}
+                                    Seller: {modal.item.seller_login_id} · ₹{(Number(modal.item.price ?? 0) * 10).toLocaleString()}
                                 </div>
                             </div>
                             <p style={{ fontSize: 13, color: "var(--ad-text-sec)" }}>{modalConfig.desc}</p>

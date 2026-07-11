@@ -99,12 +99,12 @@ class TestCentralizedCore(unittest.TestCase):
         response = self.client.post("/wallet/topup", json=payload, headers=headers)
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        self.assertEqual(float(data["token_amount"]), 50.00)
-        self.assertEqual(float(data["token_balance_after"]), 150.00)
+        self.assertEqual(float(data["token_amount"]), 5.0)
+        self.assertEqual(float(data["token_balance_after"]), 105.0)
         
         # Verify wallet balance updated
         balance_resp = self.client.get("/wallet/balance", headers=headers)
-        self.assertEqual(float(balance_resp.json()["token_balance"]), 150.00)
+        self.assertEqual(float(balance_resp.json()["token_balance"]), 105.0)
         
     def test_07_wallet_history(self):
         headers = {"Authorization": f"Bearer {self.token}"}
@@ -113,7 +113,7 @@ class TestCentralizedCore(unittest.TestCase):
         data = response.json()
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["transaction_type"], "token_topup")
-        self.assertEqual(float(data[0]["token_amount"]), 50.00)
+        self.assertEqual(float(data[0]["token_amount"]), 5.0)
         
     def test_08_notifications_flow(self):
         headers = {"Authorization": f"Bearer {self.token}"}

@@ -5,7 +5,7 @@ from routers import auth, wallet, notifications, admin
 app = FastAPI(
     title="Campus Centralized Core Service",
     description="Core backend service managing shared authentication, wallets, notifications, and transactions.",
-    version="0.8.0"
+    version="0.9.0"
 )
 
 import logging
