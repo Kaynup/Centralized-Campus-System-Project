@@ -17,69 +17,6 @@ import { useAuth } from '../../../shared/hooks/useAuth'
 import * as approvalApi from '../api/approvalApi'
 import { getLocalDateString } from '../utils/dateHelpers'
 
-/* ── DEV mock data ─────────────────────────────────────────────────────────── */
-const MOCK_APPROVALS = [
-  {
-    id: 1,
-    bookingId: 101,
-    requesterName: 'Punyak',
-    requesterEmail: 'punyak@xyz.edu',
-    facilityName: 'Advanced CS Research Laboratory (Cybersecurity & Systems)',
-    facilityGroup: 'Labs',
-    date: '2026-06-11',
-    startTime: '10:00',
-    endTime: '11:30',
-    requestedAt: '2026-06-09T08:15:00Z',
-  },
-  {
-    id: 2,
-    bookingId: 102,
-    requesterName: 'Anjali Mehta',
-    requesterEmail: 'anjali@campus.edu',
-    facilityName: 'Advanced Seminar Auditorium 303',
-    facilityGroup: 'Classrooms',
-    date: '2026-06-12',
-    startTime: '14:00',
-    endTime: '16:00',
-    requestedAt: '2026-06-09T09:45:00Z',
-  },
-  {
-    id: 3,
-    bookingId: 103,
-    requesterName: 'Rohan Das',
-    requesterEmail: 'rohan@campus.edu',
-    facilityName: 'Main Conference Grand Exhibition Hall',
-    facilityGroup: 'Halls',
-    date: '2026-06-13',
-    startTime: '09:00',
-    endTime: '12:00',
-    requestedAt: '2026-06-09T11:00:00Z',
-  },
-  {
-    id: 4,
-    bookingId: 104,
-    requesterName: 'Priya Nair',
-    requesterEmail: 'priya@campus.edu',
-    facilityName: 'Molecular Biology & Genetics Core Laboratory',
-    facilityGroup: 'Labs',
-    date: '2026-06-14',
-    startTime: '13:00',
-    endTime: '15:00',
-    requestedAt: '2026-06-09T10:30:00Z',
-  },
-  {
-    id: 5,
-    bookingId: 105,
-    requesterName: 'Vikram Bose',
-    requesterEmail: 'vikram@campus.edu',
-    facilityName: 'Student Multi-purpose Activity & Recreation Hall',
-    facilityGroup: 'Halls',
-    date: '2026-06-15',
-    startTime: '18:00',
-    endTime: '21:00',
-    requestedAt: '2026-06-09T07:50:00Z',
-  },
-]
 
 /* ── Helpers ────────────────────────────────────────────────────────────────── */
 function calcDuration(startTime, endTime) {

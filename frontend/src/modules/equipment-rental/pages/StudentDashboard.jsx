@@ -116,7 +116,7 @@ export default function StudentDashboard() {
               Available Balance
             </p>
             <p className="text-3xl font-bold text-stone-900">
-              ₹{parseFloat(wallet?.available_balance || 0).toFixed(2)}
+              {parseFloat(wallet?.available_balance || 0).toFixed(2)} tokens
             </p>
             <p className="text-xs text-stone-400 mt-1">Ready to use</p>
           </div>
@@ -126,7 +126,7 @@ export default function StudentDashboard() {
               Reserved
             </p>
             <p className="text-3xl font-bold text-amber-500">
-              ₹{parseFloat(wallet?.reserved_balance || 0).toFixed(2)}
+              {parseFloat(wallet?.reserved_balance || 0).toFixed(2)} tokens
             </p>
             <p className="text-xs text-stone-400 mt-1">Locked as deposit</p>
           </div>
@@ -136,7 +136,7 @@ export default function StudentDashboard() {
               Total Balance
             </p>
             <p className="text-3xl font-bold text-primary">
-              ₹{parseFloat(wallet?.total_balance || 0).toFixed(2)}
+              {parseFloat(wallet?.total_balance || 0).toFixed(2)} tokens
             </p>
             <p className="text-xs text-stone-400 mt-1">Available + Reserved</p>
           </div>
@@ -213,7 +213,7 @@ export default function StudentDashboard() {
                     </span>
                   )}
                   <p className="text-xs text-stone-400 mt-2">
-                    Deposit: ₹{rental.deposit_amount}
+                    Deposit: {rental.deposit_amount} tokens
                   </p>
                 </div>
               </div>

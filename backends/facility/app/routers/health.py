@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from app import db
 
 router = APIRouter(tags=["Health"])
@@ -12,10 +13,9 @@ router = APIRouter(tags=["Health"])
     responses={500: {"description": "Service degraded"}}
 )
 def health_check(db_session: Session = Depends(db.get_db)):
-    
+
     try:
-        # Simple DB connectivity test
-        db_session.execute("SELECT 1")
+        db_session.execute(text("SELECT 1"))
         db_ok = True
     except Exception:
         db_ok = False

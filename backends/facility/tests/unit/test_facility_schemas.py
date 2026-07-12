@@ -24,6 +24,14 @@ class TestFacilitySchemas:
 
     def test_approval_request_valid(self):
         approval = ApproveRejectPayload(
-            notes=5
+            notes="Approved — looks good."
         )
-        assert approval.notes == 5
+        assert approval.notes == "Approved — looks good."
+
+    def test_approval_request_no_notes(self):
+        approval = ApproveRejectPayload()
+        assert approval.notes is None
+
+    def test_approval_request_invalid_notes_type(self):
+        with pytest.raises(ValidationError):
+            ApproveRejectPayload(notes=5)

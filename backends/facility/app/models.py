@@ -66,7 +66,7 @@ class Booking(Base):
     __tablename__ = "bookings"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    user_id = Column(String(36), nullable=True, index=True)
     facility_id = Column(Integer, ForeignKey("facilities.id", ondelete="CASCADE"), nullable=False, index=True)
     booking_date = Column(Date, nullable=False, index=True)
     start_slot_id = Column(Integer, ForeignKey("slots.id", ondelete="RESTRICT"), nullable=False)
@@ -104,7 +104,7 @@ class Approval(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     booking_id = Column(Integer, ForeignKey("bookings.id", ondelete="CASCADE"), nullable=False, unique=True)
-    approver_id = Column(String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    approver_id = Column(String(36), nullable=True)
     status = Column(SAEnum(ApprovalStatus, native_enum=True, name="approvalstatus"), nullable=False, default=ApprovalStatus.PENDING)
     notes_id = Column(Integer, ForeignKey("action_reasons.id", ondelete="SET NULL"), nullable=True)
     requested_at = Column(DateTime, default=func.now(), nullable=False)

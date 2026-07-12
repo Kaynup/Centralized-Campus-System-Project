@@ -19,7 +19,7 @@ def create_booking(db: Session, user_id: str, facility_id: int, booking_date: da
                    start_slot_id: int, end_slot_id: int):
     """Create a booking with validation rules and token limits."""
 
-    facility = db.query(models.Facility).filter(models.Facility.id == facility_id).first()
+    facility = db.query(models.Facility).filter(models.Facility.id == facility_id).with_for_update().first()
     if not facility:
         raise NotFoundError("Facility not found")
 
@@ -52,7 +52,7 @@ def create_booking(db: Session, user_id: str, facility_id: int, booking_date: da
     deposit_required = float(duration_hours * facility.token_cost_per_hour)
     
     # Check wallet and limits
-    MAX_FACILITY_TOKEN_LIMIT = float(os.getenv("MAX_FACILITY_TOKEN_LIMIT", "500.00"))
+    MAX_FACILITY_TOKEN_LIMIT = float(os.getenv("MAX_FACILITY_TOKEN_LIMIT", "10.00"))
     
     wallet = db.execute(
         text("SELECT token_balance, reserved_tokens, facility_tokens_used FROM wallets WHERE user_id = :u FOR UPDATE"),
@@ -310,7 +310,10 @@ def get_slots_for_date(db: Session, facility_id: int, target_date: date, current
         if status == "AVAILABLE":
             for b in bookings:
                 if b.start_slot_id <= slot.id <= b.end_slot_id:
-                    status = "BOOKED"
+                    if current_user and str(b.user_id) == str(current_user.id):
+                        status = "PENDING" if b.status == models.BookingStatus.PENDING else "MY_BOOKING"
+                    else:
+                        status = "RESERVED"
                     booking_id = b.id
                     deposit = b.deposit_paid
                     break

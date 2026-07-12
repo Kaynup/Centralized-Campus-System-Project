@@ -17,7 +17,9 @@ const normalizeSlot = (slot) => {
     slot.endTimeOfDay || slot.end_time_of_day || slot.endTime
   );
 
-  const status = slot.status || "AVAILABLE";
+  let status = slot.status || "AVAILABLE";
+  if (status === "BOOKED") status = "RESERVED";
+  if (status === "MAINTENANCE") status = "UNAVAILABLE";
 
   return {
     ...slot,

@@ -204,7 +204,7 @@ const {
                   <div className="dashboard__purchase-meta">
                     <StatusBadge status={activePurchase.paymentStatus} />
                     <span className="dashboard__purchase-price">
-                      ₹{Number(activePurchase.price).toLocaleString()}
+                      ₹{(Number(activePurchase.price) * 10).toLocaleString()}
                     </span>
                   </div>
                 </div>

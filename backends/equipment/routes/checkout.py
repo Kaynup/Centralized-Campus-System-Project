@@ -8,7 +8,7 @@ import math
 import uuid
 import os
 
-MAX_RENTAL_TOKEN_LIMIT = float(os.getenv("MAX_RENTAL_TOKEN_LIMIT", "1000.00"))
+MAX_RENTAL_TOKEN_LIMIT = float(os.getenv("MAX_RENTAL_TOKEN_LIMIT", "50.00"))
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
