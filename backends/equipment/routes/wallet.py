@@ -67,10 +67,8 @@ def get_transactions(student_id: str):
                 t.token_amount as amount,
                 t.token_balance_after as balance_after,
                 t.created_at,
-                e.name as equipment_name
+                NULL as equipment_name
             FROM transactions t
-            LEFT JOIN rental_records r ON t.reference_id = CAST(r.id AS CHAR)
-            LEFT JOIN equipments e ON r.equipment_id = e.id
             WHERE t.user_id = %s
             ORDER BY t.created_at DESC
             """,

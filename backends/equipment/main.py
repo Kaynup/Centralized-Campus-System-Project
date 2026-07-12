@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes import checkout, rentals, wallet, inventory, admin
+from routes import auth as auth_routes
+from routes import admin_api as admin_api_routes
 from fastapi import Depends
 from auth import get_current_user
 from scheduler import start_scheduler
@@ -42,11 +44,13 @@ async def log_requests(request: Request, call_next):
         logger.error(f"{request.method} {request.url.path} - ERROR: {str(e)} - {process_time:.3f}s", exc_info=True)
         return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
 
+app.include_router(auth_routes.router)
 app.include_router(inventory.router)
-app.include_router(checkout.router, dependencies=[Depends(get_current_user)])
-app.include_router(rentals.router, dependencies=[Depends(get_current_user)])
-app.include_router(wallet.router, dependencies=[Depends(get_current_user)])
-app.include_router(admin.router, dependencies=[Depends(get_current_user)])
+app.include_router(checkout.router)
+app.include_router(rentals.router)
+app.include_router(wallet.router)
+app.include_router(admin.router)
+app.include_router(admin_api_routes.router)
 
 
 @app.get("/")

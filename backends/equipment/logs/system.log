@@ -3120,3 +3120,583 @@ mysql.connector.errors.DatabaseError: 2059 (HY000): Authentication plugin 'mysql
 2026-07-12 07:57:03,247 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
 2026-07-12 07:58:27,440 | INFO | POST /admin/login - Status: 404 - 0.030s
 2026-07-12 07:58:27,443 | INFO | HTTP Request: POST http://testserver/admin/login "HTTP/1.1 404 Not Found"
+2026-07-12 08:10:50,675 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-12 08:10:50,677 | INFO | Added job "update_overdue_rentals" to job store "default"
+2026-07-12 08:10:50,677 | INFO | Scheduler started
+2026-07-12 08:10:50,678 | INFO | Overdue rental scheduler started
+2026-07-12 08:11:06,065 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-12 08:11:06,067 | INFO | Added job "update_overdue_rentals" to job store "default"
+2026-07-12 08:11:06,067 | INFO | Scheduler started
+2026-07-12 08:11:06,068 | INFO | Overdue rental scheduler started
+2026-07-12 08:17:51,450 | INFO | POST /admin/login - Status: 404 - 0.026s
+2026-07-12 08:17:51,455 | INFO | HTTP Request: POST http://testserver/admin/login "HTTP/1.1 404 Not Found"
+2026-07-12 08:17:52,431 | INFO | POST /admin/login - Status: 404 - 0.001s
+2026-07-12 08:17:52,435 | INFO | HTTP Request: POST http://testserver/admin/login "HTTP/1.1 404 Not Found"
+2026-07-12 08:17:53,114 | INFO | POST /admin/add-student - Status: 404 - 0.001s
+2026-07-12 08:17:53,118 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 08:17:53,800 | INFO | POST /admin/add-equipment - Status: 404 - 0.001s
+2026-07-12 08:17:53,804 | INFO | HTTP Request: POST http://testserver/admin/add-equipment "HTTP/1.1 404 Not Found"
+2026-07-12 08:17:54,428 | INFO | POST /admin/add-student - Status: 404 - 0.001s
+2026-07-12 08:17:54,431 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 08:17:54,436 | INFO | POST /admin/add-student - Status: 404 - 0.001s
+2026-07-12 08:17:54,440 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 08:17:54,445 | INFO | POST /admin/add-student - Status: 404 - 0.001s
+2026-07-12 08:17:54,448 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 08:17:54,468 | INFO | GET /admin/students - Status: 404 - 0.001s
+2026-07-12 08:17:54,471 | INFO | HTTP Request: GET http://testserver/admin/students "HTTP/1.1 404 Not Found"
+2026-07-12 08:17:55,190 | INFO | GET /admin/dashboard-stats - Status: 404 - 0.001s
+2026-07-12 08:17:55,193 | INFO | HTTP Request: GET http://testserver/admin/dashboard-stats "HTTP/1.1 404 Not Found"
+2026-07-12 08:17:55,888 | INFO | GET /admin/all-rentals - Status: 404 - 0.002s
+2026-07-12 08:17:55,892 | INFO | HTTP Request: GET http://testserver/admin/all-rentals "HTTP/1.1 404 Not Found"
+2026-07-12 08:17:56,709 | INFO | GET /admin/late-rentals - Status: 404 - 0.001s
+2026-07-12 08:17:56,712 | INFO | HTTP Request: GET http://testserver/admin/late-rentals "HTTP/1.1 404 Not Found"
+2026-07-12 08:17:57,470 | INFO | POST /admin/add-balance - Status: 404 - 0.001s
+2026-07-12 08:17:57,473 | INFO | HTTP Request: POST http://testserver/admin/add-balance "HTTP/1.1 404 Not Found"
+2026-07-12 08:17:58,162 | INFO | POST /admin/add-equipment - Status: 404 - 0.001s
+2026-07-12 08:17:58,164 | INFO | HTTP Request: POST http://testserver/admin/add-equipment "HTTP/1.1 404 Not Found"
+2026-07-12 08:17:58,969 | INFO | POST /admin/add-student - Status: 404 - 0.001s
+2026-07-12 08:17:58,972 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 08:17:59,779 | INFO | GET /admin/all-transactions - Status: 404 - 0.001s
+2026-07-12 08:17:59,781 | INFO | HTTP Request: GET http://testserver/admin/all-transactions "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:00,535 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 08:18:00,539 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:01,189 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 08:18:01,192 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:01,827 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 08:18:01,829 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:02,608 | INFO | POST /auth/register - Status: 404 - 0.000s
+2026-07-12 08:18:02,610 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:02,613 | INFO | POST /auth/login - Status: 404 - 0.000s
+2026-07-12 08:18:02,615 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:03,350 | INFO | POST /auth/register - Status: 404 - 0.000s
+2026-07-12 08:18:03,353 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:03,357 | INFO | POST /auth/login - Status: 404 - 0.001s
+2026-07-12 08:18:03,359 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:04,166 | INFO | POST /auth/login - Status: 404 - 0.001s
+2026-07-12 08:18:04,169 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:04,832 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 08:18:04,835 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:04,869 | INFO | POST /auth/login - Status: 404 - 0.001s
+2026-07-12 08:18:04,872 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:05,629 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 08:18:05,631 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:05,636 | INFO | POST /auth/forgot-password - Status: 404 - 0.001s
+2026-07-12 08:18:05,639 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:06,237 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 08:18:06,239 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:06,243 | INFO | POST /auth/forgot-password - Status: 404 - 0.000s
+2026-07-12 08:18:06,245 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:06,841 | INFO | POST /auth/forgot-password - Status: 404 - 0.001s
+2026-07-12 08:18:06,844 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:07,608 | INFO | POST /checkout - Status: 401 - 0.005s
+2026-07-12 08:18:07,610 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:08,291 | INFO | POST /return - Status: 401 - 0.004s
+2026-07-12 08:18:08,293 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:08,994 | INFO | POST /return - Status: 401 - 0.002s
+2026-07-12 08:18:08,997 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:09,918 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 08:18:09,922 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:10,644 | INFO | POST /checkout - Status: 401 - 0.001s
+2026-07-12 08:18:10,646 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:11,595 | INFO | POST /checkout - Status: 401 - 0.001s
+2026-07-12 08:18:11,597 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:12,397 | INFO | POST /return - Status: 401 - 0.002s
+2026-07-12 08:18:12,401 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:13,110 | INFO | GET /inventory - Status: 200 - 0.023s
+2026-07-12 08:18:13,114 | INFO | HTTP Request: GET http://testserver/inventory "HTTP/1.1 200 OK"
+2026-07-12 08:18:13,888 | INFO | GET /inventory - Status: 200 - 0.016s
+2026-07-12 08:18:13,890 | INFO | HTTP Request: GET http://testserver/inventory "HTTP/1.1 200 OK"
+2026-07-12 08:18:14,678 | INFO | GET /inventory/1 - Status: 200 - 0.018s
+2026-07-12 08:18:14,680 | INFO | HTTP Request: GET http://testserver/inventory/1 "HTTP/1.1 200 OK"
+2026-07-12 08:18:15,394 | INFO | GET /inventory/99999 - Status: 404 - 0.026s
+2026-07-12 08:18:15,398 | INFO | HTTP Request: GET http://testserver/inventory/99999 "HTTP/1.1 404 Not Found"
+2026-07-12 08:18:16,073 | INFO | POST /checkout - Status: 401 - 0.001s
+2026-07-12 08:18:16,075 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:16,852 | INFO | POST /checkout - Status: 401 - 0.001s
+2026-07-12 08:18:16,856 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:17,567 | INFO | POST /checkout - Status: 401 - 0.001s
+2026-07-12 08:18:17,570 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:18,347 | INFO | POST /checkout - Status: 401 - 0.001s
+2026-07-12 08:18:18,351 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:19,261 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 08:18:19,264 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:19,974 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 08:18:19,978 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:20,753 | INFO | POST /checkout - Status: 401 - 0.003s
+2026-07-12 08:18:20,756 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:21,572 | INFO | POST /checkout - Status: 401 - 0.001s
+2026-07-12 08:18:21,574 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:22,357 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 08:18:22,360 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:23,110 | INFO | GET /wallet/6043b626-2255-4ea8-9c7a-0c88a8587f17 - Status: 401 - 0.002s
+2026-07-12 08:18:23,112 | INFO | HTTP Request: GET http://testserver/wallet/6043b626-2255-4ea8-9c7a-0c88a8587f17 "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:23,842 | INFO | GET /wallet/8440a622-ca7c-492b-994f-69671033f00c - Status: 401 - 0.001s
+2026-07-12 08:18:23,845 | INFO | HTTP Request: GET http://testserver/wallet/8440a622-ca7c-492b-994f-69671033f00c "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:24,637 | INFO | GET /wallet/2be8c0e7-6ceb-4030-b308-023b1c16fb5b/transactions - Status: 401 - 0.002s
+2026-07-12 08:18:24,640 | INFO | HTTP Request: GET http://testserver/wallet/2be8c0e7-6ceb-4030-b308-023b1c16fb5b/transactions "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:25,361 | INFO | GET /wallet/f927be03-a04f-4825-8654-f0bd652ec6c1/transactions - Status: 401 - 0.001s
+2026-07-12 08:18:25,364 | INFO | HTTP Request: GET http://testserver/wallet/f927be03-a04f-4825-8654-f0bd652ec6c1/transactions "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:26,090 | INFO | GET /rentals/4501b846-553c-4b6c-b12d-6d85ee900276 - Status: 401 - 0.002s
+2026-07-12 08:18:26,093 | INFO | HTTP Request: GET http://testserver/rentals/4501b846-553c-4b6c-b12d-6d85ee900276 "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:26,917 | INFO | GET /rentals/d8503889-cfa8-4d3e-a617-0eb2cf243469/active - Status: 401 - 0.002s
+2026-07-12 08:18:26,921 | INFO | HTTP Request: GET http://testserver/rentals/d8503889-cfa8-4d3e-a617-0eb2cf243469/active "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:27,794 | INFO | GET /rentals/cdf5694c-ff9b-406f-8f4f-922528b16c09/active - Status: 401 - 0.001s
+2026-07-12 08:18:27,796 | INFO | HTTP Request: GET http://testserver/rentals/cdf5694c-ff9b-406f-8f4f-922528b16c09/active "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:28,635 | INFO | POST /return - Status: 401 - 0.002s
+2026-07-12 08:18:28,639 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:29,507 | INFO | POST /return - Status: 401 - 0.002s
+2026-07-12 08:18:29,510 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:30,313 | INFO | POST /return - Status: 401 - 0.002s
+2026-07-12 08:18:30,317 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:31,042 | INFO | POST /return - Status: 401 - 0.001s
+2026-07-12 08:18:31,044 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:18:31,919 | INFO | POST /return - Status: 401 - 0.002s
+2026-07-12 08:18:31,922 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:29:30,267 | INFO | POST /admin/login - Status: 200 - 0.042s
+2026-07-12 08:29:30,271 | INFO | HTTP Request: POST http://testserver/admin/login "HTTP/1.1 200 OK"
+2026-07-12 08:29:31,199 | INFO | POST /admin/login - Status: 401 - 0.025s
+2026-07-12 08:29:31,202 | INFO | HTTP Request: POST http://testserver/admin/login "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:29:31,971 | INFO | POST /admin/add-student - Status: 201 - 0.036s
+2026-07-12 08:29:31,974 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:29:32,820 | INFO | POST /admin/add-equipment - Status: 201 - 0.037s
+2026-07-12 08:29:32,823 | INFO | HTTP Request: POST http://testserver/admin/add-equipment "HTTP/1.1 201 Created"
+2026-07-12 08:29:33,463 | INFO | POST /admin/add-student - Status: 201 - 0.029s
+2026-07-12 08:29:33,468 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:29:33,504 | INFO | POST /admin/add-student - Status: 201 - 0.032s
+2026-07-12 08:29:33,507 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:29:33,534 | INFO | POST /admin/add-student - Status: 201 - 0.022s
+2026-07-12 08:29:33,537 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:29:33,558 | INFO | GET /admin/students - Status: 200 - 0.017s
+2026-07-12 08:29:33,561 | INFO | HTTP Request: GET http://testserver/admin/students "HTTP/1.1 200 OK"
+2026-07-12 08:29:34,324 | INFO | GET /admin/dashboard-stats - Status: 200 - 0.030s
+2026-07-12 08:29:34,327 | INFO | HTTP Request: GET http://testserver/admin/dashboard-stats "HTTP/1.1 200 OK"
+2026-07-12 08:29:35,051 | INFO | GET /admin/all-rentals - Status: 200 - 0.025s
+2026-07-12 08:29:35,057 | INFO | HTTP Request: GET http://testserver/admin/all-rentals "HTTP/1.1 200 OK"
+2026-07-12 08:29:35,881 | INFO | GET /admin/late-rentals - Status: 200 - 0.012s
+2026-07-12 08:29:35,884 | INFO | HTTP Request: GET http://testserver/admin/late-rentals "HTTP/1.1 200 OK"
+2026-07-12 08:29:36,585 | INFO | POST /admin/add-balance - Status: 200 - 0.023s
+2026-07-12 08:29:36,588 | INFO | HTTP Request: POST http://testserver/admin/add-balance "HTTP/1.1 200 OK"
+2026-07-12 08:29:37,607 | INFO | POST /admin/add-equipment - Status: 201 - 0.026s
+2026-07-12 08:29:37,611 | INFO | HTTP Request: POST http://testserver/admin/add-equipment "HTTP/1.1 201 Created"
+2026-07-12 08:29:37,643 | INFO | PUT /admin/update-equipment/1 - Status: 200 - 0.026s
+2026-07-12 08:29:37,647 | INFO | HTTP Request: PUT http://testserver/admin/update-equipment/1 "HTTP/1.1 200 OK"
+2026-07-12 08:29:38,331 | INFO | POST /admin/add-student - Status: 201 - 0.028s
+2026-07-12 08:29:38,334 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:29:38,367 | INFO | PUT /admin/update-student-status/00ae2084-83a1-445e-8e76-3bba8ae3e6de - Status: 200 - 0.028s
+2026-07-12 08:29:38,370 | INFO | HTTP Request: PUT http://testserver/admin/update-student-status/00ae2084-83a1-445e-8e76-3bba8ae3e6de "HTTP/1.1 200 OK"
+2026-07-12 08:29:39,141 | INFO | GET /admin/all-transactions - Status: 200 - 0.036s
+2026-07-12 08:29:39,146 | INFO | HTTP Request: GET http://testserver/admin/all-transactions "HTTP/1.1 200 OK"
+2026-07-12 08:29:39,940 | INFO | POST /auth/register - Status: 200 - 0.038s
+2026-07-12 08:29:39,943 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:29:40,632 | INFO | POST /auth/register - Status: 200 - 0.028s
+2026-07-12 08:29:40,635 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:29:41,416 | INFO | POST /auth/register - Status: 200 - 0.076s
+2026-07-12 08:29:41,419 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:29:41,458 | INFO | POST /auth/register - Status: 200 - 0.033s
+2026-07-12 08:29:41,461 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:29:42,460 | INFO | POST /auth/register - Status: 200 - 0.131s
+2026-07-12 08:29:42,465 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:29:42,491 | INFO | POST /auth/login - Status: 200 - 0.018s
+2026-07-12 08:29:42,493 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 200 OK"
+2026-07-12 08:29:43,381 | INFO | POST /auth/register - Status: 200 - 0.025s
+2026-07-12 08:29:43,386 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:29:43,426 | INFO | POST /auth/login - Status: 401 - 0.011s
+2026-07-12 08:29:43,428 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:29:44,168 | INFO | POST /auth/login - Status: 401 - 0.017s
+2026-07-12 08:29:44,171 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:29:44,835 | INFO | POST /auth/register - Status: 200 - 0.027s
+2026-07-12 08:29:44,838 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:29:44,883 | INFO | POST /auth/login - Status: 403 - 0.018s
+2026-07-12 08:29:44,887 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 403 Forbidden"
+2026-07-12 08:29:45,547 | INFO | POST /auth/register - Status: 200 - 0.028s
+2026-07-12 08:29:45,552 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:29:45,582 | INFO | POST /auth/forgot-password - Status: 200 - 0.027s
+2026-07-12 08:29:45,586 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 200 OK"
+2026-07-12 08:29:45,606 | INFO | POST /auth/login - Status: 200 - 0.017s
+2026-07-12 08:29:45,609 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 200 OK"
+2026-07-12 08:29:46,283 | INFO | POST /auth/register - Status: 200 - 0.033s
+2026-07-12 08:29:46,285 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:29:46,311 | INFO | POST /auth/forgot-password - Status: 404 - 0.022s
+2026-07-12 08:29:46,316 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 08:29:47,455 | INFO | POST /auth/forgot-password - Status: 404 - 0.057s
+2026-07-12 08:29:47,460 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 08:29:48,309 | INFO | CHECKOUT | login_id=student_bc091cf3 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:29:48,311 | INFO | POST /checkout - Status: 200 - 0.033s
+2026-07-12 08:29:48,314 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:29:48,374 | INFO | POST /return - Status: 200 - 0.032s
+2026-07-12 08:29:48,376 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:29:49,449 | INFO | POST /return - Status: 200 - 0.046s
+2026-07-12 08:29:49,453 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:29:50,623 | INFO | POST /return - Status: 200 - 0.038s
+2026-07-12 08:29:50,627 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:29:51,380 | INFO | CHECKOUT | login_id=student_89a8a710 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:29:51,382 | INFO | POST /checkout - Status: 200 - 0.032s
+2026-07-12 08:29:51,385 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:29:51,448 | INFO | POST /checkout - Status: 400 - 0.059s
+2026-07-12 08:29:51,451 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:29:52,275 | INFO | POST /checkout - Status: 400 - 0.020s
+2026-07-12 08:29:52,279 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:29:52,989 | INFO | CHECKOUT | login_id=student_9403f689 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:29:52,991 | INFO | POST /checkout - Status: 200 - 0.030s
+2026-07-12 08:29:52,993 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:29:53,022 | INFO | POST /return - Status: 200 - 0.024s
+2026-07-12 08:29:53,024 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:29:53,702 | INFO | POST /return - Status: 200 - 0.026s
+2026-07-12 08:29:53,705 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:29:54,284 | INFO | GET /inventory - Status: 200 - 0.014s
+2026-07-12 08:29:54,286 | INFO | HTTP Request: GET http://testserver/inventory "HTTP/1.1 200 OK"
+2026-07-12 08:29:54,986 | INFO | GET /inventory - Status: 200 - 0.016s
+2026-07-12 08:29:54,990 | INFO | HTTP Request: GET http://testserver/inventory "HTTP/1.1 200 OK"
+2026-07-12 08:29:55,908 | INFO | GET /inventory/1 - Status: 200 - 0.024s
+2026-07-12 08:29:55,911 | INFO | HTTP Request: GET http://testserver/inventory/1 "HTTP/1.1 200 OK"
+2026-07-12 08:29:56,770 | INFO | GET /inventory/99999 - Status: 404 - 0.019s
+2026-07-12 08:29:56,772 | INFO | HTTP Request: GET http://testserver/inventory/99999 "HTTP/1.1 404 Not Found"
+2026-07-12 08:29:57,641 | INFO | CHECKOUT | login_id=student_e654b459 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:29:57,643 | INFO | POST /checkout - Status: 200 - 0.038s
+2026-07-12 08:29:57,648 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:29:58,541 | INFO | CHECKOUT | login_id=student_0a6a1795 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:29:58,543 | INFO | POST /checkout - Status: 200 - 0.039s
+2026-07-12 08:29:58,548 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:29:59,464 | INFO | CHECKOUT | login_id=student_4463a877 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:29:59,466 | INFO | POST /checkout - Status: 200 - 0.038s
+2026-07-12 08:29:59,469 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:30:00,206 | INFO | POST /checkout - Status: 400 - 0.019s
+2026-07-12 08:30:00,208 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:30:01,237 | INFO | POST /checkout - Status: 400 - 0.030s
+2026-07-12 08:30:01,241 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:30:02,222 | INFO | POST /checkout - Status: 404 - 0.027s
+2026-07-12 08:30:02,227 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 404 Not Found"
+2026-07-12 08:30:03,137 | INFO | POST /checkout - Status: 404 - 0.022s
+2026-07-12 08:30:03,141 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 404 Not Found"
+2026-07-12 08:30:04,077 | INFO | CHECKOUT | login_id=student_4f837ea5 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:30:04,080 | INFO | POST /checkout - Status: 200 - 0.046s
+2026-07-12 08:30:04,086 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:30:04,130 | INFO | POST /checkout - Status: 400 - 0.036s
+2026-07-12 08:30:04,134 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:30:04,985 | INFO | CHECKOUT | login_id=student_edf3907b | item_id=1 | deposit_amount=50.0
+2026-07-12 08:30:04,987 | INFO | POST /checkout - Status: 200 - 0.038s
+2026-07-12 08:30:04,991 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:30:05,883 | INFO | GET /wallet/c21b017d-a575-4bdd-9e33-a95456092347 - Status: 200 - 0.021s
+2026-07-12 08:30:05,887 | INFO | HTTP Request: GET http://testserver/wallet/c21b017d-a575-4bdd-9e33-a95456092347 "HTTP/1.1 200 OK"
+2026-07-12 08:30:06,524 | INFO | GET /wallet/5873a7a9-4bfd-471c-9372-6dbe1dedd22b - Status: 404 - 0.025s
+2026-07-12 08:30:06,529 | INFO | HTTP Request: GET http://testserver/wallet/5873a7a9-4bfd-471c-9372-6dbe1dedd22b "HTTP/1.1 404 Not Found"
+2026-07-12 08:30:07,289 | INFO | GET /wallet/b60aba0e-4bab-4deb-b318-52fba772dd80/transactions - Status: 500 - 0.024s
+2026-07-12 08:30:07,295 | INFO | HTTP Request: GET http://testserver/wallet/b60aba0e-4bab-4deb-b318-52fba772dd80/transactions "HTTP/1.1 500 Internal Server Error"
+2026-07-12 08:30:08,137 | INFO | GET /wallet/51fdf90e-3d48-46ca-b3ac-cc475e822a71/transactions - Status: 500 - 0.017s
+2026-07-12 08:30:08,141 | INFO | HTTP Request: GET http://testserver/wallet/51fdf90e-3d48-46ca-b3ac-cc475e822a71/transactions "HTTP/1.1 500 Internal Server Error"
+2026-07-12 08:30:08,929 | INFO | GET /rentals/ad49f7d5-970e-40c2-9996-aa14411be67d - Status: 200 - 0.021s
+2026-07-12 08:30:08,933 | INFO | HTTP Request: GET http://testserver/rentals/ad49f7d5-970e-40c2-9996-aa14411be67d "HTTP/1.1 200 OK"
+2026-07-12 08:30:09,813 | INFO | GET /rentals/7bfe2aba-3942-422d-a4a5-23883cd9b496/active - Status: 200 - 0.026s
+2026-07-12 08:30:09,817 | INFO | HTTP Request: GET http://testserver/rentals/7bfe2aba-3942-422d-a4a5-23883cd9b496/active "HTTP/1.1 200 OK"
+2026-07-12 08:30:10,686 | INFO | GET /rentals/3852624d-4d20-4eca-a96b-ff0845f409b3/active - Status: 200 - 0.020s
+2026-07-12 08:30:10,688 | INFO | HTTP Request: GET http://testserver/rentals/3852624d-4d20-4eca-a96b-ff0845f409b3/active "HTTP/1.1 200 OK"
+2026-07-12 08:30:11,512 | INFO | POST /return - Status: 200 - 0.032s
+2026-07-12 08:30:11,515 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:30:12,410 | INFO | POST /return - Status: 200 - 0.042s
+2026-07-12 08:30:12,414 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:30:13,349 | INFO | POST /return - Status: 200 - 0.037s
+2026-07-12 08:30:13,353 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:30:14,143 | INFO | POST /return - Status: 404 - 0.018s
+2026-07-12 08:30:14,146 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 404 Not Found"
+2026-07-12 08:30:15,071 | INFO | POST /return - Status: 200 - 0.036s
+2026-07-12 08:30:15,075 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:30:56,975 | INFO | GET /wallet/fd609eec-aff5-4a8d-bf9c-6e4e6089bca5/transactions - Status: 500 - 0.031s
+2026-07-12 08:30:56,979 | INFO | HTTP Request: GET http://testserver/wallet/fd609eec-aff5-4a8d-bf9c-6e4e6089bca5/transactions "HTTP/1.1 500 Internal Server Error"
+2026-07-12 08:30:58,000 | INFO | GET /wallet/1902c52a-00a6-4702-a066-d63083cdce29/transactions - Status: 500 - 0.021s
+2026-07-12 08:30:58,004 | INFO | HTTP Request: GET http://testserver/wallet/1902c52a-00a6-4702-a066-d63083cdce29/transactions "HTTP/1.1 500 Internal Server Error"
+2026-07-12 08:40:18,697 | INFO | POST /admin/login - Status: 200 - 0.034s
+2026-07-12 08:40:18,700 | INFO | HTTP Request: POST http://testserver/admin/login "HTTP/1.1 200 OK"
+2026-07-12 08:40:19,348 | INFO | POST /admin/login - Status: 401 - 0.016s
+2026-07-12 08:40:19,350 | INFO | HTTP Request: POST http://testserver/admin/login "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:40:20,128 | INFO | POST /admin/add-student - Status: 201 - 0.025s
+2026-07-12 08:40:20,132 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:40:20,694 | INFO | POST /admin/add-equipment - Status: 201 - 0.022s
+2026-07-12 08:40:20,697 | INFO | HTTP Request: POST http://testserver/admin/add-equipment "HTTP/1.1 201 Created"
+2026-07-12 08:40:21,280 | INFO | POST /admin/add-student - Status: 201 - 0.029s
+2026-07-12 08:40:21,284 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:40:21,315 | INFO | POST /admin/add-student - Status: 201 - 0.024s
+2026-07-12 08:40:21,319 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:40:21,346 | INFO | POST /admin/add-student - Status: 201 - 0.021s
+2026-07-12 08:40:21,348 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:40:21,364 | INFO | GET /admin/students - Status: 200 - 0.013s
+2026-07-12 08:40:21,367 | INFO | HTTP Request: GET http://testserver/admin/students "HTTP/1.1 200 OK"
+2026-07-12 08:40:21,859 | INFO | GET /admin/dashboard-stats - Status: 200 - 0.023s
+2026-07-12 08:40:21,863 | INFO | HTTP Request: GET http://testserver/admin/dashboard-stats "HTTP/1.1 200 OK"
+2026-07-12 08:40:22,460 | INFO | GET /admin/all-rentals - Status: 200 - 0.024s
+2026-07-12 08:40:22,463 | INFO | HTTP Request: GET http://testserver/admin/all-rentals "HTTP/1.1 200 OK"
+2026-07-12 08:40:23,102 | INFO | GET /admin/late-rentals - Status: 200 - 0.016s
+2026-07-12 08:40:23,105 | INFO | HTTP Request: GET http://testserver/admin/late-rentals "HTTP/1.1 200 OK"
+2026-07-12 08:40:23,742 | INFO | POST /admin/add-balance - Status: 200 - 0.030s
+2026-07-12 08:40:23,746 | INFO | HTTP Request: POST http://testserver/admin/add-balance "HTTP/1.1 200 OK"
+2026-07-12 08:40:24,569 | INFO | POST /admin/add-equipment - Status: 201 - 0.039s
+2026-07-12 08:40:24,575 | INFO | HTTP Request: POST http://testserver/admin/add-equipment "HTTP/1.1 201 Created"
+2026-07-12 08:40:24,614 | INFO | PUT /admin/update-equipment/1 - Status: 200 - 0.032s
+2026-07-12 08:40:24,618 | INFO | HTTP Request: PUT http://testserver/admin/update-equipment/1 "HTTP/1.1 200 OK"
+2026-07-12 08:40:25,291 | INFO | POST /admin/add-student - Status: 201 - 0.025s
+2026-07-12 08:40:25,294 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:40:25,318 | INFO | PUT /admin/update-student-status/890a5be2-0151-409a-bd9e-5fbae5bd8f48 - Status: 200 - 0.020s
+2026-07-12 08:40:25,321 | INFO | HTTP Request: PUT http://testserver/admin/update-student-status/890a5be2-0151-409a-bd9e-5fbae5bd8f48 "HTTP/1.1 200 OK"
+2026-07-12 08:40:26,438 | INFO | GET /admin/all-transactions - Status: 200 - 0.021s
+2026-07-12 08:40:26,441 | INFO | HTTP Request: GET http://testserver/admin/all-transactions "HTTP/1.1 200 OK"
+2026-07-12 08:40:27,031 | INFO | POST /auth/register - Status: 200 - 0.028s
+2026-07-12 08:40:27,034 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:40:27,682 | INFO | POST /auth/register - Status: 200 - 0.027s
+2026-07-12 08:40:27,685 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:40:28,350 | INFO | POST /auth/register - Status: 200 - 0.029s
+2026-07-12 08:40:28,355 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:40:28,392 | INFO | POST /auth/register - Status: 200 - 0.032s
+2026-07-12 08:40:28,396 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:40:29,051 | INFO | POST /auth/register - Status: 200 - 0.027s
+2026-07-12 08:40:29,055 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:40:29,077 | INFO | POST /auth/login - Status: 200 - 0.017s
+2026-07-12 08:40:29,079 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 200 OK"
+2026-07-12 08:40:29,765 | INFO | POST /auth/register - Status: 200 - 0.028s
+2026-07-12 08:40:29,768 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:40:29,785 | INFO | POST /auth/login - Status: 401 - 0.012s
+2026-07-12 08:40:29,788 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:40:30,494 | INFO | POST /auth/login - Status: 401 - 0.016s
+2026-07-12 08:40:30,497 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:40:31,265 | INFO | POST /auth/register - Status: 200 - 0.028s
+2026-07-12 08:40:31,267 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:40:31,307 | INFO | POST /auth/login - Status: 403 - 0.017s
+2026-07-12 08:40:31,310 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 403 Forbidden"
+2026-07-12 08:40:32,033 | INFO | POST /auth/register - Status: 200 - 0.035s
+2026-07-12 08:40:32,036 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:40:32,063 | INFO | POST /auth/forgot-password - Status: 200 - 0.022s
+2026-07-12 08:40:32,065 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 200 OK"
+2026-07-12 08:40:32,082 | INFO | POST /auth/login - Status: 200 - 0.013s
+2026-07-12 08:40:32,085 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 200 OK"
+2026-07-12 08:40:32,756 | INFO | POST /auth/register - Status: 200 - 0.022s
+2026-07-12 08:40:32,758 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:40:32,774 | INFO | POST /auth/forgot-password - Status: 404 - 0.012s
+2026-07-12 08:40:32,776 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 08:40:33,506 | INFO | POST /auth/forgot-password - Status: 404 - 0.021s
+2026-07-12 08:40:33,509 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 08:40:34,353 | INFO | CHECKOUT | login_id=student_205fdf21 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:40:34,354 | INFO | POST /checkout - Status: 200 - 0.032s
+2026-07-12 08:40:34,357 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:40:34,418 | INFO | POST /return - Status: 200 - 0.032s
+2026-07-12 08:40:34,421 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:40:35,255 | INFO | POST /return - Status: 200 - 0.035s
+2026-07-12 08:40:35,258 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:40:36,196 | INFO | POST /return - Status: 200 - 0.032s
+2026-07-12 08:40:36,200 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:40:36,975 | INFO | CHECKOUT | login_id=student_f0138c4e | item_id=1 | deposit_amount=50.0
+2026-07-12 08:40:36,977 | INFO | POST /checkout - Status: 200 - 0.037s
+2026-07-12 08:40:36,981 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:40:37,011 | INFO | POST /checkout - Status: 400 - 0.024s
+2026-07-12 08:40:37,014 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:40:37,836 | INFO | POST /checkout - Status: 400 - 0.021s
+2026-07-12 08:40:37,839 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:40:38,639 | INFO | CHECKOUT | login_id=student_1f2d5776 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:40:38,640 | INFO | POST /checkout - Status: 200 - 0.031s
+2026-07-12 08:40:38,643 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:40:38,678 | INFO | POST /return - Status: 200 - 0.031s
+2026-07-12 08:40:38,680 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:40:39,542 | INFO | POST /return - Status: 200 - 0.035s
+2026-07-12 08:40:39,546 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:40:40,344 | INFO | GET /inventory - Status: 200 - 0.017s
+2026-07-12 08:40:40,346 | INFO | HTTP Request: GET http://testserver/inventory "HTTP/1.1 200 OK"
+2026-07-12 08:40:41,056 | INFO | GET /inventory - Status: 200 - 0.016s
+2026-07-12 08:40:41,059 | INFO | HTTP Request: GET http://testserver/inventory "HTTP/1.1 200 OK"
+2026-07-12 08:40:41,884 | INFO | GET /inventory/1 - Status: 200 - 0.019s
+2026-07-12 08:40:41,889 | INFO | HTTP Request: GET http://testserver/inventory/1 "HTTP/1.1 200 OK"
+2026-07-12 08:40:42,640 | INFO | GET /inventory/99999 - Status: 404 - 0.016s
+2026-07-12 08:40:42,643 | INFO | HTTP Request: GET http://testserver/inventory/99999 "HTTP/1.1 404 Not Found"
+2026-07-12 08:40:43,444 | INFO | CHECKOUT | login_id=student_d82b5a7e | item_id=1 | deposit_amount=50.0
+2026-07-12 08:40:43,446 | INFO | POST /checkout - Status: 200 - 0.030s
+2026-07-12 08:40:43,451 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:40:44,309 | INFO | CHECKOUT | login_id=student_806488fb | item_id=1 | deposit_amount=50.0
+2026-07-12 08:40:44,311 | INFO | POST /checkout - Status: 200 - 0.037s
+2026-07-12 08:40:44,313 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:40:45,152 | INFO | CHECKOUT | login_id=student_ca6fd846 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:40:45,154 | INFO | POST /checkout - Status: 200 - 0.042s
+2026-07-12 08:40:45,159 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:40:46,017 | INFO | POST /checkout - Status: 400 - 0.026s
+2026-07-12 08:40:46,021 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:40:46,871 | INFO | POST /checkout - Status: 400 - 0.018s
+2026-07-12 08:40:46,873 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:40:47,643 | INFO | POST /checkout - Status: 404 - 0.019s
+2026-07-12 08:40:47,646 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 404 Not Found"
+2026-07-12 08:40:48,412 | INFO | POST /checkout - Status: 404 - 0.020s
+2026-07-12 08:40:48,414 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 404 Not Found"
+2026-07-12 08:40:49,212 | INFO | CHECKOUT | login_id=student_82f80655 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:40:49,214 | INFO | POST /checkout - Status: 200 - 0.025s
+2026-07-12 08:40:49,217 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:40:49,237 | INFO | POST /checkout - Status: 400 - 0.017s
+2026-07-12 08:40:49,239 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:40:50,024 | INFO | CHECKOUT | login_id=student_24383a65 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:40:50,027 | INFO | POST /checkout - Status: 200 - 0.035s
+2026-07-12 08:40:50,032 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:40:50,846 | INFO | GET /wallet/9bc59908-804d-40b9-a2fd-c4fcfae043cc - Status: 200 - 0.018s
+2026-07-12 08:40:50,850 | INFO | HTTP Request: GET http://testserver/wallet/9bc59908-804d-40b9-a2fd-c4fcfae043cc "HTTP/1.1 200 OK"
+2026-07-12 08:40:51,557 | INFO | GET /wallet/e7afa896-8fc1-4caf-9ff9-47d43141f5a5 - Status: 404 - 0.017s
+2026-07-12 08:40:51,561 | INFO | HTTP Request: GET http://testserver/wallet/e7afa896-8fc1-4caf-9ff9-47d43141f5a5 "HTTP/1.1 404 Not Found"
+2026-07-12 08:40:52,357 | INFO | GET /wallet/0d26f95a-52b7-4f21-9122-b822c9976b9f/transactions - Status: 200 - 0.017s
+2026-07-12 08:40:52,360 | INFO | HTTP Request: GET http://testserver/wallet/0d26f95a-52b7-4f21-9122-b822c9976b9f/transactions "HTTP/1.1 200 OK"
+2026-07-12 08:40:53,073 | INFO | GET /wallet/5206a59b-66cb-4ffd-85b7-ac091575075b/transactions - Status: 200 - 0.016s
+2026-07-12 08:40:53,076 | INFO | HTTP Request: GET http://testserver/wallet/5206a59b-66cb-4ffd-85b7-ac091575075b/transactions "HTTP/1.1 200 OK"
+2026-07-12 08:40:53,889 | INFO | GET /rentals/c4d400ab-7d99-4afa-9cdc-d5b6d34bf639 - Status: 200 - 0.017s
+2026-07-12 08:40:53,892 | INFO | HTTP Request: GET http://testserver/rentals/c4d400ab-7d99-4afa-9cdc-d5b6d34bf639 "HTTP/1.1 200 OK"
+2026-07-12 08:40:54,711 | INFO | GET /rentals/7379bca8-c764-451a-9936-034479afc073/active - Status: 200 - 0.019s
+2026-07-12 08:40:54,714 | INFO | HTTP Request: GET http://testserver/rentals/7379bca8-c764-451a-9936-034479afc073/active "HTTP/1.1 200 OK"
+2026-07-12 08:40:55,557 | INFO | GET /rentals/fd9c3159-7789-455a-9504-e3dbf46b56df/active - Status: 200 - 0.018s
+2026-07-12 08:40:55,561 | INFO | HTTP Request: GET http://testserver/rentals/fd9c3159-7789-455a-9504-e3dbf46b56df/active "HTTP/1.1 200 OK"
+2026-07-12 08:40:56,409 | INFO | POST /return - Status: 200 - 0.037s
+2026-07-12 08:40:56,412 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:40:57,285 | INFO | POST /return - Status: 200 - 0.034s
+2026-07-12 08:40:57,290 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:40:58,133 | INFO | POST /return - Status: 200 - 0.026s
+2026-07-12 08:40:58,136 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:40:58,872 | INFO | POST /return - Status: 404 - 0.018s
+2026-07-12 08:40:58,875 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 404 Not Found"
+2026-07-12 08:40:59,717 | INFO | POST /return - Status: 200 - 0.037s
+2026-07-12 08:40:59,720 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:44:21,187 | INFO | POST /admin/login - Status: 200 - 0.038s
+2026-07-12 08:44:21,190 | INFO | HTTP Request: POST http://testserver/admin/login "HTTP/1.1 200 OK"
+2026-07-12 08:44:21,929 | INFO | POST /admin/login - Status: 401 - 0.017s
+2026-07-12 08:44:21,933 | INFO | HTTP Request: POST http://testserver/admin/login "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:44:22,648 | INFO | POST /admin/add-student - Status: 201 - 0.027s
+2026-07-12 08:44:22,652 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:44:23,255 | INFO | POST /admin/add-equipment - Status: 201 - 0.020s
+2026-07-12 08:44:23,258 | INFO | HTTP Request: POST http://testserver/admin/add-equipment "HTTP/1.1 201 Created"
+2026-07-12 08:44:23,814 | INFO | POST /admin/add-student - Status: 201 - 0.019s
+2026-07-12 08:44:23,817 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:44:23,839 | INFO | POST /admin/add-student - Status: 201 - 0.019s
+2026-07-12 08:44:23,841 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:44:23,882 | INFO | POST /admin/add-student - Status: 201 - 0.023s
+2026-07-12 08:44:23,886 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:44:23,904 | INFO | GET /admin/students - Status: 200 - 0.014s
+2026-07-12 08:44:23,906 | INFO | HTTP Request: GET http://testserver/admin/students "HTTP/1.1 200 OK"
+2026-07-12 08:44:24,442 | INFO | GET /admin/dashboard-stats - Status: 200 - 0.021s
+2026-07-12 08:44:24,446 | INFO | HTTP Request: GET http://testserver/admin/dashboard-stats "HTTP/1.1 200 OK"
+2026-07-12 08:44:25,038 | INFO | GET /admin/all-rentals - Status: 200 - 0.020s
+2026-07-12 08:44:25,041 | INFO | HTTP Request: GET http://testserver/admin/all-rentals "HTTP/1.1 200 OK"
+2026-07-12 08:44:25,587 | INFO | GET /admin/late-rentals - Status: 200 - 0.015s
+2026-07-12 08:44:25,590 | INFO | HTTP Request: GET http://testserver/admin/late-rentals "HTTP/1.1 200 OK"
+2026-07-12 08:44:26,238 | INFO | POST /admin/add-balance - Status: 200 - 0.021s
+2026-07-12 08:44:26,241 | INFO | HTTP Request: POST http://testserver/admin/add-balance "HTTP/1.1 200 OK"
+2026-07-12 08:44:26,818 | INFO | POST /admin/add-equipment - Status: 201 - 0.022s
+2026-07-12 08:44:26,821 | INFO | HTTP Request: POST http://testserver/admin/add-equipment "HTTP/1.1 201 Created"
+2026-07-12 08:44:26,851 | INFO | PUT /admin/update-equipment/1 - Status: 200 - 0.026s
+2026-07-12 08:44:26,854 | INFO | HTTP Request: PUT http://testserver/admin/update-equipment/1 "HTTP/1.1 200 OK"
+2026-07-12 08:44:27,463 | INFO | POST /admin/add-student - Status: 201 - 0.025s
+2026-07-12 08:44:27,467 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 201 Created"
+2026-07-12 08:44:27,494 | INFO | PUT /admin/update-student-status/56fe0f10-b701-4136-b700-8f42107293ca - Status: 200 - 0.023s
+2026-07-12 08:44:27,498 | INFO | HTTP Request: PUT http://testserver/admin/update-student-status/56fe0f10-b701-4136-b700-8f42107293ca "HTTP/1.1 200 OK"
+2026-07-12 08:44:28,118 | INFO | GET /admin/all-transactions - Status: 200 - 0.023s
+2026-07-12 08:44:28,122 | INFO | HTTP Request: GET http://testserver/admin/all-transactions "HTTP/1.1 200 OK"
+2026-07-12 08:44:28,637 | INFO | POST /auth/register - Status: 200 - 0.025s
+2026-07-12 08:44:28,639 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:44:29,165 | INFO | POST /auth/register - Status: 200 - 0.033s
+2026-07-12 08:44:29,169 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:44:29,727 | INFO | POST /auth/register - Status: 200 - 0.027s
+2026-07-12 08:44:29,734 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:44:29,764 | INFO | POST /auth/register - Status: 200 - 0.024s
+2026-07-12 08:44:29,766 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:44:30,367 | INFO | POST /auth/register - Status: 200 - 0.031s
+2026-07-12 08:44:30,371 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:44:30,395 | INFO | POST /auth/login - Status: 200 - 0.020s
+2026-07-12 08:44:30,399 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 200 OK"
+2026-07-12 08:44:30,923 | INFO | POST /auth/register - Status: 200 - 0.030s
+2026-07-12 08:44:30,927 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:44:30,951 | INFO | POST /auth/login - Status: 401 - 0.018s
+2026-07-12 08:44:30,953 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:44:31,538 | INFO | POST /auth/login - Status: 401 - 0.022s
+2026-07-12 08:44:31,540 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 401 Unauthorized"
+2026-07-12 08:44:32,138 | INFO | POST /auth/register - Status: 200 - 0.035s
+2026-07-12 08:44:32,143 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:44:32,181 | INFO | POST /auth/login - Status: 403 - 0.015s
+2026-07-12 08:44:32,184 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 403 Forbidden"
+2026-07-12 08:44:32,711 | INFO | POST /auth/register - Status: 200 - 0.027s
+2026-07-12 08:44:32,714 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:44:32,743 | INFO | POST /auth/forgot-password - Status: 200 - 0.024s
+2026-07-12 08:44:32,747 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 200 OK"
+2026-07-12 08:44:32,768 | INFO | POST /auth/login - Status: 200 - 0.016s
+2026-07-12 08:44:32,771 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 200 OK"
+2026-07-12 08:44:33,438 | INFO | POST /auth/register - Status: 200 - 0.034s
+2026-07-12 08:44:33,442 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 200 OK"
+2026-07-12 08:44:33,463 | INFO | POST /auth/forgot-password - Status: 404 - 0.016s
+2026-07-12 08:44:33,466 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 08:44:34,085 | INFO | POST /auth/forgot-password - Status: 404 - 0.025s
+2026-07-12 08:44:34,088 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 08:44:34,728 | INFO | CHECKOUT | login_id=student_e315f849 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:44:34,731 | INFO | POST /checkout - Status: 200 - 0.036s
+2026-07-12 08:44:34,734 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:44:34,797 | INFO | POST /return - Status: 200 - 0.029s
+2026-07-12 08:44:34,802 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:44:35,494 | INFO | POST /return - Status: 200 - 0.033s
+2026-07-12 08:44:35,498 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:44:36,131 | INFO | POST /return - Status: 200 - 0.030s
+2026-07-12 08:44:36,134 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:44:36,757 | INFO | CHECKOUT | login_id=student_3616404d | item_id=1 | deposit_amount=50.0
+2026-07-12 08:44:36,759 | INFO | POST /checkout - Status: 200 - 0.027s
+2026-07-12 08:44:36,763 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:44:36,787 | INFO | POST /checkout - Status: 400 - 0.019s
+2026-07-12 08:44:36,790 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:44:37,395 | INFO | POST /checkout - Status: 400 - 0.021s
+2026-07-12 08:44:37,399 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:44:38,167 | INFO | CHECKOUT | login_id=student_67a06c53 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:44:38,169 | INFO | POST /checkout - Status: 200 - 0.029s
+2026-07-12 08:44:38,172 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:44:38,202 | INFO | POST /return - Status: 200 - 0.025s
+2026-07-12 08:44:38,206 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:44:38,858 | INFO | POST /return - Status: 200 - 0.028s
+2026-07-12 08:44:38,860 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:44:39,682 | INFO | GET /inventory - Status: 200 - 0.015s
+2026-07-12 08:44:39,685 | INFO | HTTP Request: GET http://testserver/inventory "HTTP/1.1 200 OK"
+2026-07-12 08:44:40,326 | INFO | GET /inventory - Status: 200 - 0.016s
+2026-07-12 08:44:40,329 | INFO | HTTP Request: GET http://testserver/inventory "HTTP/1.1 200 OK"
+2026-07-12 08:44:41,022 | INFO | GET /inventory/1 - Status: 200 - 0.018s
+2026-07-12 08:44:41,025 | INFO | HTTP Request: GET http://testserver/inventory/1 "HTTP/1.1 200 OK"
+2026-07-12 08:44:41,650 | INFO | GET /inventory/99999 - Status: 404 - 0.016s
+2026-07-12 08:44:41,653 | INFO | HTTP Request: GET http://testserver/inventory/99999 "HTTP/1.1 404 Not Found"
+2026-07-12 08:44:42,376 | INFO | CHECKOUT | login_id=student_fa6d1f71 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:44:42,379 | INFO | POST /checkout - Status: 200 - 0.030s
+2026-07-12 08:44:42,383 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:44:43,057 | INFO | CHECKOUT | login_id=student_6191d079 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:44:43,059 | INFO | POST /checkout - Status: 200 - 0.028s
+2026-07-12 08:44:43,063 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:44:43,875 | INFO | CHECKOUT | login_id=student_f24200d6 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:44:43,877 | INFO | POST /checkout - Status: 200 - 0.027s
+2026-07-12 08:44:43,879 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:44:44,607 | INFO | POST /checkout - Status: 400 - 0.019s
+2026-07-12 08:44:44,611 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:44:45,319 | INFO | POST /checkout - Status: 400 - 0.021s
+2026-07-12 08:44:45,324 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:44:46,027 | INFO | POST /checkout - Status: 404 - 0.021s
+2026-07-12 08:44:46,031 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 404 Not Found"
+2026-07-12 08:44:46,696 | INFO | POST /checkout - Status: 404 - 0.011s
+2026-07-12 08:44:46,698 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 404 Not Found"
+2026-07-12 08:44:47,460 | INFO | CHECKOUT | login_id=student_28e8753b | item_id=1 | deposit_amount=50.0
+2026-07-12 08:44:47,463 | INFO | POST /checkout - Status: 200 - 0.039s
+2026-07-12 08:44:47,466 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:44:47,492 | INFO | POST /checkout - Status: 400 - 0.021s
+2026-07-12 08:44:47,496 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 400 Bad Request"
+2026-07-12 08:44:48,263 | INFO | CHECKOUT | login_id=student_554d5085 | item_id=1 | deposit_amount=50.0
+2026-07-12 08:44:48,265 | INFO | POST /checkout - Status: 200 - 0.028s
+2026-07-12 08:44:48,268 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 200 OK"
+2026-07-12 08:44:49,084 | INFO | GET /wallet/db1a407c-fd25-4ddd-84b2-1a483c5c094f - Status: 200 - 0.018s
+2026-07-12 08:44:49,087 | INFO | HTTP Request: GET http://testserver/wallet/db1a407c-fd25-4ddd-84b2-1a483c5c094f "HTTP/1.1 200 OK"
+2026-07-12 08:44:49,779 | INFO | GET /wallet/b290aa88-7d4c-4d51-b941-26c326d902f7 - Status: 404 - 0.018s
+2026-07-12 08:44:49,782 | INFO | HTTP Request: GET http://testserver/wallet/b290aa88-7d4c-4d51-b941-26c326d902f7 "HTTP/1.1 404 Not Found"
+2026-07-12 08:44:50,517 | INFO | GET /wallet/a8ab753f-52b7-44c0-aa70-7179f2e7649f/transactions - Status: 200 - 0.019s
+2026-07-12 08:44:50,521 | INFO | HTTP Request: GET http://testserver/wallet/a8ab753f-52b7-44c0-aa70-7179f2e7649f/transactions "HTTP/1.1 200 OK"
+2026-07-12 08:44:51,256 | INFO | GET /wallet/e00e02ea-53e7-4280-be5d-76d61076319d/transactions - Status: 200 - 0.016s
+2026-07-12 08:44:51,260 | INFO | HTTP Request: GET http://testserver/wallet/e00e02ea-53e7-4280-be5d-76d61076319d/transactions "HTTP/1.1 200 OK"
+2026-07-12 08:44:52,031 | INFO | GET /rentals/91bce270-c596-41aa-b451-fa7e263304d7 - Status: 200 - 0.018s
+2026-07-12 08:44:52,033 | INFO | HTTP Request: GET http://testserver/rentals/91bce270-c596-41aa-b451-fa7e263304d7 "HTTP/1.1 200 OK"
+2026-07-12 08:44:52,871 | INFO | GET /rentals/08575afc-7e89-4f07-a7ab-1c6e766b958b/active - Status: 200 - 0.016s
+2026-07-12 08:44:52,875 | INFO | HTTP Request: GET http://testserver/rentals/08575afc-7e89-4f07-a7ab-1c6e766b958b/active "HTTP/1.1 200 OK"
+2026-07-12 08:44:53,638 | INFO | GET /rentals/5740fef2-82b2-4f65-89a2-fcf0f0de2d78/active - Status: 200 - 0.017s
+2026-07-12 08:44:53,640 | INFO | HTTP Request: GET http://testserver/rentals/5740fef2-82b2-4f65-89a2-fcf0f0de2d78/active "HTTP/1.1 200 OK"
+2026-07-12 08:44:54,581 | INFO | POST /return - Status: 200 - 0.033s
+2026-07-12 08:44:54,584 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:44:55,454 | INFO | POST /return - Status: 200 - 0.057s
+2026-07-12 08:44:55,465 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:44:56,377 | INFO | POST /return - Status: 200 - 0.027s
+2026-07-12 08:44:56,380 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
+2026-07-12 08:44:57,131 | INFO | POST /return - Status: 404 - 0.020s
+2026-07-12 08:44:57,134 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 404 Not Found"
+2026-07-12 08:44:57,963 | INFO | POST /return - Status: 200 - 0.031s
+2026-07-12 08:44:57,966 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 200 OK"
