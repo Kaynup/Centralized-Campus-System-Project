@@ -2859,3 +2859,264 @@ mysql.connector.errors.DatabaseError: 2059 (HY000): Authentication plugin 'mysql
 2026-07-07 02:59:36,682 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.076s
 2026-07-07 02:59:36,756 | INFO | GET /rentals/380d6bda-a0e2-45e3-9993-41c305c48b2a/active - Status: 200 - 0.073s
 2026-07-07 02:59:36,757 | INFO | GET /wallet/380d6bda-a0e2-45e3-9993-41c305c48b2a - Status: 200 - 0.074s
+2026-07-12 07:52:04,807 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-12 07:52:04,809 | INFO | Added job "update_overdue_rentals" to job store "default"
+2026-07-12 07:52:04,810 | INFO | Scheduler started
+2026-07-12 07:52:04,811 | INFO | Overdue rental scheduler started
+2026-07-12 07:53:23,284 | INFO | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-12 07:53:23,286 | INFO | Added job "update_overdue_rentals" to job store "default"
+2026-07-12 07:53:23,286 | INFO | Scheduler started
+2026-07-12 07:53:23,288 | INFO | Overdue rental scheduler started
+2026-07-12 07:53:55,569 | INFO | GET / - Status: 200 - 0.016s
+2026-07-12 07:54:07,641 | INFO | GET / - Status: 200 - 0.001s
+2026-07-12 07:54:07,797 | INFO | GET /favicon.ico - Status: 404 - 0.001s
+2026-07-12 07:55:02,338 | INFO | POST /admin/login - Status: 404 - 0.032s
+2026-07-12 07:55:02,342 | INFO | HTTP Request: POST http://testserver/admin/login "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:03,300 | INFO | POST /admin/login - Status: 404 - 0.001s
+2026-07-12 07:55:03,303 | INFO | HTTP Request: POST http://testserver/admin/login "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:03,883 | INFO | POST /admin/add-student - Status: 404 - 0.001s
+2026-07-12 07:55:03,886 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:04,498 | INFO | POST /admin/add-equipment - Status: 404 - 0.001s
+2026-07-12 07:55:04,501 | INFO | HTTP Request: POST http://testserver/admin/add-equipment "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:05,190 | INFO | POST /admin/add-student - Status: 404 - 0.000s
+2026-07-12 07:55:05,192 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:05,197 | INFO | POST /admin/add-student - Status: 404 - 0.001s
+2026-07-12 07:55:05,198 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:05,201 | INFO | POST /admin/add-student - Status: 404 - 0.000s
+2026-07-12 07:55:05,203 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:05,206 | INFO | GET /admin/students - Status: 404 - 0.000s
+2026-07-12 07:55:05,208 | INFO | HTTP Request: GET http://testserver/admin/students "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:05,761 | INFO | GET /admin/dashboard-stats - Status: 404 - 0.001s
+2026-07-12 07:55:05,765 | INFO | HTTP Request: GET http://testserver/admin/dashboard-stats "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:06,230 | INFO | GET /admin/all-rentals - Status: 404 - 0.000s
+2026-07-12 07:55:06,232 | INFO | HTTP Request: GET http://testserver/admin/all-rentals "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:06,782 | INFO | GET /admin/late-rentals - Status: 404 - 0.000s
+2026-07-12 07:55:06,784 | INFO | HTTP Request: GET http://testserver/admin/late-rentals "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:07,480 | INFO | POST /admin/add-balance - Status: 404 - 0.001s
+2026-07-12 07:55:07,483 | INFO | HTTP Request: POST http://testserver/admin/add-balance "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:08,082 | INFO | POST /admin/add-equipment - Status: 404 - 0.001s
+2026-07-12 07:55:08,085 | INFO | HTTP Request: POST http://testserver/admin/add-equipment "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:08,713 | INFO | POST /admin/add-student - Status: 404 - 0.001s
+2026-07-12 07:55:08,717 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:09,367 | INFO | GET /admin/all-transactions - Status: 404 - 0.001s
+2026-07-12 07:55:09,370 | INFO | HTTP Request: GET http://testserver/admin/all-transactions "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:10,028 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:55:10,032 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:10,747 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:55:10,750 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:11,398 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:55:11,401 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:12,000 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:55:12,004 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:12,011 | INFO | POST /auth/login - Status: 404 - 0.002s
+2026-07-12 07:55:12,015 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:12,603 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:55:12,606 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:12,613 | INFO | POST /auth/login - Status: 404 - 0.001s
+2026-07-12 07:55:12,617 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:13,303 | INFO | POST /auth/login - Status: 404 - 0.001s
+2026-07-12 07:55:13,306 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:13,896 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:55:13,900 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:13,935 | INFO | POST /auth/login - Status: 404 - 0.001s
+2026-07-12 07:55:13,938 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:14,561 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:55:14,565 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:14,571 | INFO | POST /auth/forgot-password - Status: 404 - 0.001s
+2026-07-12 07:55:14,575 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:15,196 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:55:15,199 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:15,204 | INFO | POST /auth/forgot-password - Status: 404 - 0.001s
+2026-07-12 07:55:15,208 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:15,799 | INFO | POST /auth/forgot-password - Status: 404 - 0.000s
+2026-07-12 07:55:15,801 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:16,468 | INFO | POST /checkout - Status: 401 - 0.006s
+2026-07-12 07:55:16,471 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:17,346 | INFO | POST /return - Status: 401 - 0.005s
+2026-07-12 07:55:17,348 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:18,052 | INFO | POST /return - Status: 401 - 0.001s
+2026-07-12 07:55:18,054 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:18,961 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:55:18,963 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:19,423 | INFO | POST /checkout - Status: 401 - 0.001s
+2026-07-12 07:55:19,425 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:20,082 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:55:20,087 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:20,712 | INFO | POST /return - Status: 401 - 0.002s
+2026-07-12 07:55:20,714 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:21,276 | INFO | GET /inventory - Status: 200 - 0.026s
+2026-07-12 07:55:21,280 | INFO | HTTP Request: GET http://testserver/inventory "HTTP/1.1 200 OK"
+2026-07-12 07:55:21,735 | INFO | GET /inventory - Status: 200 - 0.014s
+2026-07-12 07:55:21,737 | INFO | HTTP Request: GET http://testserver/inventory "HTTP/1.1 200 OK"
+2026-07-12 07:55:22,305 | INFO | GET /inventory/1 - Status: 200 - 0.010s
+2026-07-12 07:55:22,309 | INFO | HTTP Request: GET http://testserver/inventory/1 "HTTP/1.1 200 OK"
+2026-07-12 07:55:22,915 | INFO | GET /inventory/99999 - Status: 404 - 0.024s
+2026-07-12 07:55:22,919 | INFO | HTTP Request: GET http://testserver/inventory/99999 "HTTP/1.1 404 Not Found"
+2026-07-12 07:55:23,583 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:55:23,585 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:24,480 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:55:24,484 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:25,370 | INFO | POST /checkout - Status: 401 - 0.003s
+2026-07-12 07:55:25,375 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:26,183 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:55:26,187 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:26,972 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:55:26,975 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:27,540 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:55:27,542 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:28,224 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:55:28,227 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:28,861 | INFO | POST /checkout - Status: 401 - 0.003s
+2026-07-12 07:55:28,864 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:29,675 | INFO | POST /checkout - Status: 401 - 0.003s
+2026-07-12 07:55:29,680 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:32,665 | INFO | GET /wallet/a7a1336d-f51d-4e60-9884-b0d4444fa76b - Status: 401 - 0.003s
+2026-07-12 07:55:32,668 | INFO | HTTP Request: GET http://testserver/wallet/a7a1336d-f51d-4e60-9884-b0d4444fa76b "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:33,342 | INFO | GET /wallet/289ad3aa-260d-4bdc-9f25-3a25955a1007 - Status: 401 - 0.001s
+2026-07-12 07:55:33,346 | INFO | HTTP Request: GET http://testserver/wallet/289ad3aa-260d-4bdc-9f25-3a25955a1007 "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:33,907 | INFO | GET /wallet/d5f6d416-b9b2-453f-93e9-8a205ef44fef/transactions - Status: 401 - 0.002s
+2026-07-12 07:55:33,911 | INFO | HTTP Request: GET http://testserver/wallet/d5f6d416-b9b2-453f-93e9-8a205ef44fef/transactions "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:34,610 | INFO | GET /wallet/ea879539-c8fd-432d-8422-f10ba1086239/transactions - Status: 401 - 0.001s
+2026-07-12 07:55:34,612 | INFO | HTTP Request: GET http://testserver/wallet/ea879539-c8fd-432d-8422-f10ba1086239/transactions "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:35,260 | INFO | GET /rentals/8bb1523f-0d39-4078-aac3-1f6ceb3ccd59 - Status: 401 - 0.002s
+2026-07-12 07:55:35,266 | INFO | HTTP Request: GET http://testserver/rentals/8bb1523f-0d39-4078-aac3-1f6ceb3ccd59 "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:36,225 | INFO | GET /rentals/70c2b837-878e-46d6-8ea4-5f465ca92a58/active - Status: 401 - 0.001s
+2026-07-12 07:55:36,227 | INFO | HTTP Request: GET http://testserver/rentals/70c2b837-878e-46d6-8ea4-5f465ca92a58/active "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:36,878 | INFO | GET /rentals/fb795846-9f23-4d10-9053-ee006606c083/active - Status: 401 - 0.001s
+2026-07-12 07:55:36,880 | INFO | HTTP Request: GET http://testserver/rentals/fb795846-9f23-4d10-9053-ee006606c083/active "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:37,477 | INFO | POST /return - Status: 401 - 0.001s
+2026-07-12 07:55:37,479 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:38,257 | INFO | POST /return - Status: 401 - 0.002s
+2026-07-12 07:55:38,261 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:38,997 | INFO | POST /return - Status: 401 - 0.002s
+2026-07-12 07:55:39,001 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:39,567 | INFO | POST /return - Status: 401 - 0.003s
+2026-07-12 07:55:39,571 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:55:40,290 | INFO | POST /return - Status: 401 - 0.002s
+2026-07-12 07:55:40,294 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:29,659 | INFO | POST /admin/login - Status: 404 - 0.025s
+2026-07-12 07:56:29,663 | INFO | HTTP Request: POST http://testserver/admin/login "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:30,514 | INFO | POST /admin/login - Status: 404 - 0.001s
+2026-07-12 07:56:30,517 | INFO | HTTP Request: POST http://testserver/admin/login "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:31,005 | INFO | POST /admin/add-student - Status: 404 - 0.001s
+2026-07-12 07:56:31,007 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:31,430 | INFO | POST /admin/add-equipment - Status: 404 - 0.001s
+2026-07-12 07:56:31,432 | INFO | HTTP Request: POST http://testserver/admin/add-equipment "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:31,824 | INFO | POST /admin/add-student - Status: 404 - 0.000s
+2026-07-12 07:56:31,827 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:31,830 | INFO | POST /admin/add-student - Status: 404 - 0.001s
+2026-07-12 07:56:31,832 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:31,835 | INFO | POST /admin/add-student - Status: 404 - 0.000s
+2026-07-12 07:56:31,836 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:31,838 | INFO | GET /admin/students - Status: 404 - 0.000s
+2026-07-12 07:56:31,840 | INFO | HTTP Request: GET http://testserver/admin/students "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:32,216 | INFO | GET /admin/dashboard-stats - Status: 404 - 0.000s
+2026-07-12 07:56:32,217 | INFO | HTTP Request: GET http://testserver/admin/dashboard-stats "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:32,599 | INFO | GET /admin/all-rentals - Status: 404 - 0.000s
+2026-07-12 07:56:32,600 | INFO | HTTP Request: GET http://testserver/admin/all-rentals "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:33,052 | INFO | GET /admin/late-rentals - Status: 404 - 0.000s
+2026-07-12 07:56:33,053 | INFO | HTTP Request: GET http://testserver/admin/late-rentals "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:33,452 | INFO | POST /admin/add-balance - Status: 404 - 0.000s
+2026-07-12 07:56:33,453 | INFO | HTTP Request: POST http://testserver/admin/add-balance "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:34,003 | INFO | POST /admin/add-equipment - Status: 404 - 0.001s
+2026-07-12 07:56:34,014 | INFO | HTTP Request: POST http://testserver/admin/add-equipment "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:35,052 | INFO | POST /admin/add-student - Status: 404 - 0.002s
+2026-07-12 07:56:35,056 | INFO | HTTP Request: POST http://testserver/admin/add-student "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:35,643 | INFO | GET /admin/all-transactions - Status: 404 - 0.001s
+2026-07-12 07:56:35,646 | INFO | HTTP Request: GET http://testserver/admin/all-transactions "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:36,241 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:56:36,245 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:36,931 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:56:36,934 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:37,599 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:56:37,601 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:38,232 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:56:38,236 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:38,244 | INFO | POST /auth/login - Status: 404 - 0.002s
+2026-07-12 07:56:38,249 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:38,801 | INFO | POST /auth/register - Status: 404 - 0.000s
+2026-07-12 07:56:38,803 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:38,806 | INFO | POST /auth/login - Status: 404 - 0.000s
+2026-07-12 07:56:38,809 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:39,399 | INFO | POST /auth/login - Status: 404 - 0.001s
+2026-07-12 07:56:39,402 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:40,009 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:56:40,013 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:40,042 | INFO | POST /auth/login - Status: 404 - 0.001s
+2026-07-12 07:56:40,046 | INFO | HTTP Request: POST http://testserver/auth/login "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:40,586 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:56:40,588 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:40,593 | INFO | POST /auth/forgot-password - Status: 404 - 0.001s
+2026-07-12 07:56:40,597 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:41,149 | INFO | POST /auth/register - Status: 404 - 0.001s
+2026-07-12 07:56:41,153 | INFO | HTTP Request: POST http://testserver/auth/register "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:41,174 | INFO | POST /auth/forgot-password - Status: 404 - 0.001s
+2026-07-12 07:56:41,179 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:41,784 | INFO | POST /auth/forgot-password - Status: 404 - 0.001s
+2026-07-12 07:56:41,787 | INFO | HTTP Request: POST http://testserver/auth/forgot-password "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:42,445 | INFO | POST /checkout - Status: 401 - 0.005s
+2026-07-12 07:56:42,447 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:43,080 | INFO | POST /return - Status: 401 - 0.004s
+2026-07-12 07:56:43,082 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:43,722 | INFO | POST /return - Status: 401 - 0.001s
+2026-07-12 07:56:43,724 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:44,373 | INFO | POST /checkout - Status: 401 - 0.001s
+2026-07-12 07:56:44,376 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:44,915 | INFO | POST /checkout - Status: 401 - 0.001s
+2026-07-12 07:56:44,917 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:45,509 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:56:45,512 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:46,119 | INFO | POST /return - Status: 401 - 0.001s
+2026-07-12 07:56:46,121 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:46,750 | INFO | GET /inventory - Status: 200 - 0.019s
+2026-07-12 07:56:46,753 | INFO | HTTP Request: GET http://testserver/inventory "HTTP/1.1 200 OK"
+2026-07-12 07:56:47,436 | INFO | GET /inventory - Status: 200 - 0.016s
+2026-07-12 07:56:47,438 | INFO | HTTP Request: GET http://testserver/inventory "HTTP/1.1 200 OK"
+2026-07-12 07:56:48,249 | INFO | GET /inventory/1 - Status: 200 - 0.016s
+2026-07-12 07:56:48,251 | INFO | HTTP Request: GET http://testserver/inventory/1 "HTTP/1.1 200 OK"
+2026-07-12 07:56:48,781 | INFO | GET /inventory/99999 - Status: 404 - 0.021s
+2026-07-12 07:56:48,784 | INFO | HTTP Request: GET http://testserver/inventory/99999 "HTTP/1.1 404 Not Found"
+2026-07-12 07:56:49,513 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:56:49,516 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:50,128 | INFO | POST /checkout - Status: 401 - 0.001s
+2026-07-12 07:56:50,130 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:50,771 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:56:50,774 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:51,452 | INFO | POST /checkout - Status: 401 - 0.001s
+2026-07-12 07:56:51,454 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:52,023 | INFO | POST /checkout - Status: 401 - 0.001s
+2026-07-12 07:56:52,026 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:52,700 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:56:52,702 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:53,285 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:56:53,288 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:53,943 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:56:53,948 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:54,632 | INFO | POST /checkout - Status: 401 - 0.002s
+2026-07-12 07:56:54,634 | INFO | HTTP Request: POST http://testserver/checkout "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:55,238 | INFO | GET /wallet/7f382d55-d92d-45ef-9381-b7e8115f978b - Status: 401 - 0.002s
+2026-07-12 07:56:55,242 | INFO | HTTP Request: GET http://testserver/wallet/7f382d55-d92d-45ef-9381-b7e8115f978b "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:55,762 | INFO | GET /wallet/9d1933bc-a80b-4947-b2d3-fd5cf58500b4 - Status: 401 - 0.001s
+2026-07-12 07:56:55,766 | INFO | HTTP Request: GET http://testserver/wallet/9d1933bc-a80b-4947-b2d3-fd5cf58500b4 "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:56,383 | INFO | GET /wallet/e5e5681d-b131-405e-82e6-099fd5cc533c/transactions - Status: 401 - 0.002s
+2026-07-12 07:56:56,386 | INFO | HTTP Request: GET http://testserver/wallet/e5e5681d-b131-405e-82e6-099fd5cc533c/transactions "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:56,989 | INFO | GET /wallet/475f406f-5e68-4422-ae50-6f8548f5130d/transactions - Status: 401 - 0.001s
+2026-07-12 07:56:56,993 | INFO | HTTP Request: GET http://testserver/wallet/475f406f-5e68-4422-ae50-6f8548f5130d/transactions "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:57,683 | INFO | GET /rentals/4c2cdf42-2c28-4308-8031-258f776a85f5 - Status: 401 - 0.002s
+2026-07-12 07:56:57,685 | INFO | HTTP Request: GET http://testserver/rentals/4c2cdf42-2c28-4308-8031-258f776a85f5 "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:58,374 | INFO | GET /rentals/9b3f8485-25f9-45e2-a2c6-74f4f8920be9/active - Status: 401 - 0.002s
+2026-07-12 07:56:58,377 | INFO | HTTP Request: GET http://testserver/rentals/9b3f8485-25f9-45e2-a2c6-74f4f8920be9/active "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:59,101 | INFO | GET /rentals/c36b9515-73ad-4360-ba57-81d6fff2ba65/active - Status: 401 - 0.001s
+2026-07-12 07:56:59,104 | INFO | HTTP Request: GET http://testserver/rentals/c36b9515-73ad-4360-ba57-81d6fff2ba65/active "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:56:59,862 | INFO | POST /return - Status: 401 - 0.002s
+2026-07-12 07:56:59,865 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:57:00,698 | INFO | POST /return - Status: 401 - 0.001s
+2026-07-12 07:57:00,701 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:57:01,554 | INFO | POST /return - Status: 401 - 0.002s
+2026-07-12 07:57:01,557 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:57:02,367 | INFO | POST /return - Status: 401 - 0.002s
+2026-07-12 07:57:02,369 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:57:03,244 | INFO | POST /return - Status: 401 - 0.001s
+2026-07-12 07:57:03,247 | INFO | HTTP Request: POST http://testserver/return "HTTP/1.1 401 Unauthorized"
+2026-07-12 07:58:27,440 | INFO | POST /admin/login - Status: 404 - 0.030s
+2026-07-12 07:58:27,443 | INFO | HTTP Request: POST http://testserver/admin/login "HTTP/1.1 404 Not Found"
