@@ -111,7 +111,7 @@ export default function Purchases() {
                     <div className="purchases__item-row">
                       <StatusBadge status={purchase.paymentStatus} size="sm" />
                       <span className="purchases__price">
-                        ₹{Number(purchase.price).toLocaleString()}
+                        ₹{(Number(purchase.price) * 10).toLocaleString()}
                       </span>
                     </div>
                   </div>

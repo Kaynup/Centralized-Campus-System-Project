@@ -153,7 +153,7 @@ function FacilityCalendarPage() {
       name:         user.fullName || user.full_name || user.name || user.email || 'User',
       tokenBalance: balance,
     }
-  }, [user])
+  }, [user, balance])
 
 const { notify } = useNotification();
 

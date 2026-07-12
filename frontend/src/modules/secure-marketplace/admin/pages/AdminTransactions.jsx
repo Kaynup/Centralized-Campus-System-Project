@@ -79,7 +79,7 @@ export default function AdminTransactions() {
         },
         {
             key: "amount", label: "Amount",
-            render: (v) => `₹${Number(v ?? 0).toLocaleString()}`
+            render: (v) => `₹${(Number(v ?? 0) * 10).toLocaleString()}`
         },
         { key: "status", label: "Status", render: (v) => <AdminBadge value={v} /> },
         {
@@ -103,7 +103,7 @@ export default function AdminTransactions() {
         },
         {
             key: "amount", label: "Held Amount",
-            render: (v) => `₹${Number(v ?? 0).toLocaleString()}`
+            render: (v) => `₹${(Number(v ?? 0) * 10).toLocaleString()}`
         },
         { key: "status", label: "Status", render: (v) => <AdminBadge value={v} /> },
         { key: "created_at", label: "Created", render: (v) => v ? new Date(v).toLocaleDateString() : "—" },
@@ -114,7 +114,7 @@ export default function AdminTransactions() {
         { key: "item_title", label: "Item" },
         { key: "from_login_id", label: "From", render: (v) => <code style={{ fontSize: 12 }}>{v}</code> },
         { key: "to_login_id", label: "To", render: (v) => <code style={{ fontSize: 12 }}>{v}</code> },
-        { key: "amount", label: "Amount", render: (v) => `₹${Number(v ?? 0).toLocaleString()}` },
+        { key: "amount", label: "Amount", render: (v) => `₹${(Number(v ?? 0) * 10).toLocaleString()}` },
         { key: "transaction_type", label: "Type", render: (v) => <AdminBadge value={v} /> },
         { key: "created_at", label: "Date", render: (v) => v ? new Date(v).toLocaleDateString() : "—" },
     ];

@@ -128,7 +128,7 @@ export default function ListItem() {
       const listingData = await createItem({
         title:           form.title.trim(),
         description:     form.description.trim(),
-        price:           parseInt(form.price, 10),
+        price:           Math.floor(parseInt(form.price, 10) / 10),
         category:        form.category,
         condition:       form.condition,
         listing_channel:

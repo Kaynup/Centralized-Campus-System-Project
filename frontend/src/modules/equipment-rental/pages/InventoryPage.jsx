@@ -170,7 +170,7 @@ useEffect(() => {
                 <div className="flex items-center justify-between border-t border-stone-50 pt-2">
                   <div>
                     <p className="text-[12px] text-stone-400">Security deposit</p>
-                    <p className="text-lg font-bold text-stone-800">₹{item.deposit_amount}</p>
+                    <p className="text-lg font-bold text-stone-800">{item.deposit_amount} tokens</p>
                   </div>
                   <button
                     onClick={() => handleCheckout(item.id, item.name)}

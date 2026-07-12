@@ -1,64 +1,35 @@
-import { facilityClient } from "../../../shared/api/axiosClient";
+import { facilityClient, authClient } from "../../../shared/api/axiosClient";
 
 export const toggleSlotAvailability = async (payload) => {
-  // TODO: move to ENDPOINTS.FACILITY once that section exists
+  // Map to the new admin endpoint for unavailability
+  const { facility_id, ...rest } = payload;
   const { data } = await facilityClient.post(
-    "/api/v1/admin/slots/toggle-availability",
-    payload
+    `/api/v1/admin/facilities/${facility_id}/unavailability`,
+    rest
   );
-
   return data;
 };
 
-export const getSlotHistory = async (
-  facilityId,
-  dateStr,
-  slotId
-) => {
-  // TODO: move to ENDPOINTS.FACILITY once that section exists
-  const { data } = await facilityClient.get(
-    "/api/v1/admin/history",
-    {
-      params: {
-        facility_id: facilityId,
-        date: dateStr,
-        slot_id: slotId,
-      },
-    }
-  );
-
-  return data.data;
+export const getSlotHistory = async (facilityId, dateStr, slotId) => {
+  console.warn("getSlotHistory is not supported by the backend");
+  return [];
 };
 
-export const forceCancelBooking = async (
-  bookingId,
-  payload
-) => {
-  // TODO: move to ENDPOINTS.FACILITY once that section exists
-  const { data } = await facilityClient.patch(
-    `/api/v1/admin/bookings/${bookingId}/force-cancel`,
-    payload
-  );
-
-  return data;
+export const forceCancelBooking = async (bookingId, payload) => {
+  console.warn("forceCancelBooking is not supported by the backend");
+  return {};
 };
 
 export const topUpUser = async (userId, payload) => {
-  // TODO: move to ENDPOINTS.FACILITY once that section exists
-  const { data } = await facilityClient.post(
-    `/api/v1/admin/users/${userId}/topup`,
-    payload
+  // Core service wallet endpoint
+  const { data } = await authClient.post(
+    `/api/v1/wallet/topup`,
+    { user_id: userId, amount: payload.amount }
   );
-
   return data;
 };
 
 export const universalTopUp = async (payload) => {
-  // TODO: move to ENDPOINTS.FACILITY once that section exists
-  const { data } = await facilityClient.post(
-    "/api/v1/admin/users/bulk-topup",
-    payload
-  );
-
-  return data;
+  console.warn("universalTopUp is not currently implemented in core service");
+  return {};
 };

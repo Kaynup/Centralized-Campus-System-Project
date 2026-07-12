@@ -13,6 +13,7 @@
 **/npm-debug.log*
 **/yarn-debug.log*
 **/pnpm-debug.log*
+backends/equipment/logs/
 
 # Python
 **/__pycache__/
@@ -109,3 +110,6 @@ Thumbs.db
 
 # Facility component (WIP)
 /backends/facility/
+
+# git
+git_commit.txt

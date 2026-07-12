@@ -116,12 +116,12 @@ class TestCentralizedCoreIntegration:
         response = client.post("/wallet/topup", json=payload, headers=headers)
         assert response.status_code == 200
         data = response.json()
-        assert float(data["token_amount"]) == 50.00
-        assert float(data["token_balance_after"]) == 150.00
+        assert float(data["token_amount"]) == 5.00
+        assert float(data["token_balance_after"]) == 105.00
         
         # Verify wallet balance updated
         balance_resp = client.get("/wallet/balance", headers=headers)
-        assert float(balance_resp.json()["token_balance"]) == 150.00
+        assert float(balance_resp.json()["token_balance"]) == 105.00
 
     def test_wallet_history(self, client, db_session):
         headers = self._get_auth_headers(client, db_session)
@@ -134,7 +134,7 @@ class TestCentralizedCoreIntegration:
         data = response.json()
         assert len(data) >= 1
         assert data[0]["transaction_type"] == "token_topup"
-        assert float(data[0]["token_amount"]) == 25.00
+        assert float(data[0]["token_amount"]) == 2.50
 
     def test_notifications_flow(self, client, db_session):
         headers = self._get_auth_headers(client, db_session)

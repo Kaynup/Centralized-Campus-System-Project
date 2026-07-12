@@ -13,7 +13,7 @@ router = APIRouter(
 )
 
 class TopupRequest(BaseModel):
-    amount: Decimal = Field(..., gt=Decimal('0.00'), max_digits=12, decimal_places=2)
+    amount: Decimal = Field(..., gt=Decimal('0.00'), max_digits=12, decimal_places=2, description="Amount in Rupees (₹) to be converted to tokens (10 ₹ = 1 token)")
 
 @router.get(
     "/balance",
@@ -48,8 +48,11 @@ def topup_wallet(
             detail="Wallet not found for this user."
         )
         
+    # Convert Rupees to Tokens (10 Rupees = 1 Token)
+    tokens_to_add = payload.amount / Decimal('10.00')
+    
     # Update balance
-    wallet.token_balance += payload.amount
+    wallet.token_balance += tokens_to_add
     
     # Create transaction log
     transaction = models.Transaction(
@@ -57,9 +60,9 @@ def topup_wallet(
         reference_type=models.ReferenceType.manual_adjustment,
         reference_id=None,
         transaction_type=models.TransactionType.token_topup,
-        token_amount=payload.amount,
+        token_amount=tokens_to_add,
         token_balance_after=wallet.token_balance,
-        description=f"Topup of {payload.amount} tokens"
+        description=f"Topup of {tokens_to_add} tokens (Paid ₹{payload.amount})"
     )
     
     db.add(transaction)

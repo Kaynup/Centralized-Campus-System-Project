@@ -128,11 +128,3 @@ class UnavailabilityBase(BaseModel):
 class UnavailabilityResponse(UnavailabilityBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
-
-class BookingCreate(BaseModel):
-    facility_id: int
-    booking_date: date
-    start_slot_id: int
-    end_slot_id: int
-
-

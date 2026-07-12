@@ -1,3 +1,6 @@
+import { authClient } from "../../../shared/api/axiosClient";
+
 export const updatePreferences = async (prefs) => {
-  return Promise.resolve({ success: true, prefs });
+  const { data } = await authClient.patch("/api/v1/users/me", { preferences: prefs });
+  return data;
 };
