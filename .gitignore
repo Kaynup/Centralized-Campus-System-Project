@@ -40,6 +40,8 @@ mock-server/
 .env.production
 .env.staging
 !.env.example
+!.env.docker
+.env.docker
 
 # Python
 __pycache__/
@@ -108,8 +110,10 @@ Thumbs.db
 *.sqlite3
 /backends/marketplace/static/uploads/
 
-# Facility component (WIP)
-/backends/facility/
+
+# Docker
+# Uncomment the line below to keep .env.docker out of git if using real passwords:
+# .env.docker
 
 # git
 git_commit.txt

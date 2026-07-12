@@ -52,3 +52,22 @@ install-all:
 	@echo "Installing Frontend dependencies..."
 	bash -c "cd frontend && npm install"
 	@echo "All installations complete!"
+
+# Docker Compose
+docker-up:
+	docker compose -f docker-compose.dev.yml up --build
+
+docker-up-detached:
+	docker compose -f docker-compose.dev.yml up --build -d
+
+docker-down:
+	docker compose -f docker-compose.dev.yml down
+
+docker-down-volumes:
+	docker compose -f docker-compose.dev.yml down -v
+
+docker-logs:
+	docker compose -f docker-compose.dev.yml logs -f
+
+docker-init-db:
+	docker compose -f docker-compose.dev.yml run --rm db-init

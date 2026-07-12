@@ -1,0 +1,16 @@
+# Root-level .dockerignore (used by docker/Dockerfile.init which has context = .)
+venv/
+.venv/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/.pytest_cache/
+**/.env
+**/.env.local
+frontend/node_modules/
+frontend/dist/
+.git/
+.gitignore
+standalone-components/
+dev-plans-docs/
+docs/
