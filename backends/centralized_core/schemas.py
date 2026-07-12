@@ -3,7 +3,7 @@ from typing import Optional, Dict, Any, List
 from datetime import datetime
 from uuid import UUID
 from decimal import Decimal
-from models import UserRole, AdminRole, ReferenceType, TransactionType, NotificationDomain
+from models import UserRole, AdminRole, ReferenceType, TransactionType, NotificationDomain, ChangeRequestStatus
 
 # ----------------- WALLET SCHEMAS -----------------
 
@@ -31,6 +31,8 @@ class UserBase(BaseModel):
     email: EmailStr
     role: UserRole = UserRole.student
     is_active: bool = True
+    department: Optional[str] = None
+    phone: Optional[str] = None
     preferences: Optional[Dict[str, Any]] = None
 
 class UserCreate(UserBase):
@@ -43,6 +45,48 @@ class UserResponse(UserBase):
     created_at: datetime
     updated_at: datetime
     wallet: Optional[WalletResponse] = None
+
+    class Config:
+        orm_mode = True
+        from_attributes = True
+
+class BulkRegisterItem(BaseModel):
+    full_name: str
+    email: EmailStr
+    department: Optional[str] = None
+    phone: Optional[str] = None
+    role: Optional[UserRole] = UserRole.student
+
+class BulkRegisterRequest(BaseModel):
+    users: List[BulkRegisterItem]
+
+class BulkRegisterResponseItem(BaseModel):
+    id: UUID
+    login_id: str
+    full_name: str
+    email: EmailStr
+    tempPassword: str
+
+class BulkRegisterResponse(BaseModel):
+    created: List[BulkRegisterResponseItem]
+
+# ----------------- CHANGE REQUEST SCHEMAS -----------------
+
+class ChangeRequestCreate(BaseModel):
+    field: str
+    requested_value: str
+    reason: Optional[str] = None
+
+class ChangeRequestResponse(BaseModel):
+    id: UUID
+    user_id: UUID
+    field: str
+    current_value: Optional[str]
+    requested_value: str
+    reason: Optional[str]
+    status: ChangeRequestStatus
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
         orm_mode = True
@@ -68,6 +112,38 @@ class AdminResponse(AdminBase):
     class Config:
         orm_mode = True
         from_attributes = True
+
+class SubAdminCreate(BaseModel):
+    full_name: str
+    email: EmailStr
+    domain: str
+
+class SubAdminCreateResponseItem(BaseModel):
+    id: UUID
+    admin_id: str
+    name: str
+    email: EmailStr
+    role: AdminRole
+    domain: str
+    tempPassword: str
+
+class SubAdminCreateResponse(BaseModel):
+    subAdmin: SubAdminCreateResponseItem
+
+class SubAdminListResponseItem(BaseModel):
+    id: UUID
+    admin_id: str
+    name: str
+    email: EmailStr
+    domain: str
+    is_active: bool
+    last_login_at: Optional[datetime]
+
+class SubAdminListResponse(BaseModel):
+    subAdmins: List[SubAdminListResponseItem]
+
+class DomainReassignRequest(BaseModel):
+    domain: str
 
 # ----------------- TRANSACTION SCHEMAS -----------------
 

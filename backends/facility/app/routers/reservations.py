@@ -80,7 +80,7 @@ def cancel_reservation(
     try:
         preview = services.execute_cancellation(
             db_session, booking_id, current_user.id,
-            reason_id=None if not payload else payload.reason
+            reason=None if not payload else payload.reason
         )
         return success_response(data={"refund": preview}, message="Reservation cancelled")
     except (NotFoundError, UnauthorizedFacilityAccessError, CancellationNotAllowedError) as e:
@@ -104,7 +104,7 @@ def approve_reservation(
             db_session, approval_id=booking_id,
             approver_id=current_user.id,
             approve=True,
-            notes_id=None if not payload.notes else payload.notes
+            notes=None if not payload.notes else payload.notes
         )
         return success_response(data={"approval_id": approval.id}, message="Reservation approved")
     except NotFoundError as e:
@@ -128,7 +128,7 @@ def reject_reservation(
             db_session, approval_id=booking_id,
             approver_id=current_user.id,
             approve=False,
-            notes_id=None if not payload.notes else payload.notes
+            notes=None if not payload.notes else payload.notes
         )
         return success_response(data={"approval_id": approval.id}, message="Reservation rejected")
     except NotFoundError as e:

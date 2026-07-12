@@ -5,6 +5,10 @@ from datetime import datetime, timedelta
 from fastapi.testclient import TestClient
 from decimal import Decimal
 import uuid
+from jose import jwt
+
+SECRET_KEY = os.getenv("JWT_SECRET_KEY", "supersecretkeycampuscore123!")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
 
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -175,8 +179,8 @@ def create_test_student(setup_database):
         # Create wallet
         wallet_id = str(uuid.uuid4())
         cursor.execute("""
-            INSERT INTO wallets (id, user_id, token_balance, reserved_tokens)
-            VALUES (%s, %s, 1000.00, 0.00)
+            INSERT INTO wallets (id, user_id, token_balance, reserved_tokens, facility_tokens_used, rental_tokens_used)
+            VALUES (%s, %s, 1000.00, 0.00, 0.00, 0.00)
         """, (wallet_id, user_id))
         
         conn.commit()
@@ -193,6 +197,17 @@ def create_test_student(setup_database):
         cursor.close()
         conn.close()
         raise e
+
+@pytest.fixture
+def auth_headers(create_test_student):
+    """Generate mock JWT auth headers for the test student"""
+    user_id = create_test_student["user_id"]
+    payload = {
+        "sub": user_id,
+        "exp": datetime.utcnow() + timedelta(hours=1)
+    }
+    token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+    return {"Authorization": f"Bearer {token}"}
 
 @pytest.fixture
 def create_test_equipment(setup_database):

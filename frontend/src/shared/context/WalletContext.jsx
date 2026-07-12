@@ -41,7 +41,7 @@ function makeTransaction({ type, amount, description, balanceAfter }) {
 }
 
 export function WalletProvider({ children }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   const [wallet, setWallet] = useState(null);
   const [transactions, setTransactions] = useState([]);
@@ -86,11 +86,15 @@ export function WalletProvider({ children }) {
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetchWallet();
+      if (user?.accountType === "admin") {
+        setStatus("ready");
+      } else {
+        fetchWallet();
+      }
     } else {
       resetWallet();
     }
-  }, [isAuthenticated, fetchWallet, resetWallet]);
+  }, [isAuthenticated, user, fetchWallet, resetWallet]);
 
   const topUp = useCallback(async ({ amount, method = "card" }) => {
     if (!amount || amount <= 0) {

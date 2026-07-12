@@ -400,14 +400,6 @@ function ApprovalDashboardPage() {
     setIsLoading(true)
     setError(null)
 
-    /* DEV PATH */
-    if (import.meta.env.DEV) {
-      await new Promise(r => setTimeout(r, 400)) // simulate network
-      setApprovals(MOCK_APPROVALS)
-      setIsLoading(false)
-      return
-    }
-
     /* PROD PATH */
     try {
       const data = await approvalApi.fetchPendingApprovals()
@@ -435,11 +427,6 @@ function ApprovalDashboardPage() {
   const handleApprove = async (approval) => {
     setActionError(null)
 
-    if (import.meta.env.DEV) {
-      removeRow(approval.id)
-      return
-    }
-
     try {
       const bIds = Array.isArray(approval.bookingId) ? approval.bookingId : [approval.bookingId]
       for (const bid of bIds) {
@@ -456,14 +443,6 @@ function ApprovalDashboardPage() {
     if (!rejectTarget) return
     setIsSubmitting(true)
     setActionError(null)
-
-    if (import.meta.env.DEV) {
-      await new Promise(r => setTimeout(r, 500))
-      removeRow(rejectTarget.id)
-      setRejectTarget(null)
-      setIsSubmitting(false)
-      return
-    }
 
     try {
       const bIds = Array.isArray(rejectTarget.bookingId) ? rejectTarget.bookingId : [rejectTarget.bookingId]

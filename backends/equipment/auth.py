@@ -47,27 +47,45 @@ def get_current_user(
             (user_id,)
         )
         user = cursor.fetchone()
+        
+        is_admin = False
+        if not user:
+            cursor.execute(
+                """
+                SELECT id, admin_id as login_id, name as full_name, email, role, is_active 
+                FROM admin_users 
+                WHERE id = %s
+                """,
+                (user_id,)
+            )
+            user = cursor.fetchone()
+            if user:
+                user["is_verified"] = True
+                is_admin = True
     finally:
         conn.close()
 
     if not user or not user["is_active"]:
         raise credentials_exception
+        
+    user["accountType"] = "admin" if is_admin else "user"
 
     # Update last_seen_at locally in the database
     try:
         from datetime import timezone
         now_utc = datetime.now(timezone.utc).replace(tzinfo=None)
         
-        conn = get_connection()
-        try:
-            cursor = conn.cursor()
-            cursor.execute(
-                "UPDATE users SET last_seen_at = %s WHERE id = %s",
-                (now_utc, user_id)
-            )
-            conn.commit()
-        finally:
-            conn.close()
+        if not is_admin:
+            conn = get_connection()
+            try:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "UPDATE users SET last_seen_at = %s WHERE id = %s",
+                    (now_utc, user_id)
+                )
+                conn.commit()
+            finally:
+                conn.close()
     except Exception:
         # Don't fail the request if updating last_seen_at fails
         pass

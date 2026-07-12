@@ -12,7 +12,7 @@ from database import get_connection
 class TestWalletIntegration:
     """Integration tests for GET /wallet/{student_id} and /wallet/{student_id}/transactions."""
 
-    def test_get_wallet_balance(self, client, setup_database, create_test_student):
+    def test_get_wallet_balance(self, client, auth_headers, setup_database, create_test_student):
         """GET /wallet/{student_id} returns correct balance keys."""
         student_id = create_test_student["user_id"]
 
@@ -27,21 +27,20 @@ class TestWalletIntegration:
         cursor.close()
         conn.close()
 
-        resp = client.get(f"/wallet/{student_id}")
+        resp = client.get(f"/wallet/{student_id}", headers=auth_headers)
         assert resp.status_code == 200
         data = resp.json()
-        # Actual keys: student_id, available_balance, reserved_balance, total_balance
         assert "student_id" in data
         assert float(data["available_balance"]) == 1000.00
         assert float(data["reserved_balance"]) == 50.00
         assert float(data["total_balance"]) == 1050.00
 
-    def test_get_wallet_nonexistent_student_returns_404(self, client, setup_database):
+    def test_get_wallet_nonexistent_student_returns_404(self, client, auth_headers, setup_database):
         """GET /wallet/{student_id} with unknown ID returns 404."""
-        resp = client.get(f"/wallet/{str(uuid.uuid4())}")
+        resp = client.get(f"/wallet/{str(uuid.uuid4())}", headers=auth_headers)
         assert resp.status_code == 404
 
-    def test_get_transaction_history(self, client, setup_database, create_test_student):
+    def test_get_transaction_history(self, client, auth_headers, setup_database, create_test_student):
         """GET /wallet/{student_id}/transactions returns the list of transactions."""
         student_id = create_test_student["user_id"]
 
@@ -58,17 +57,17 @@ class TestWalletIntegration:
         cursor.close()
         conn.close()
 
-        resp = client.get(f"/wallet/{student_id}/transactions")
+        resp = client.get(f"/wallet/{student_id}/transactions", headers=auth_headers)
         assert resp.status_code == 200
         data = resp.json()
         assert "transactions" in data
         assert len(data["transactions"]) > 0
 
-    def test_transaction_history_empty_for_new_student(self, client, setup_database, create_test_student):
+    def test_transaction_history_empty_for_new_student(self, client, auth_headers, setup_database, create_test_student):
         """A freshly created student has no transactions."""
         student_id = create_test_student["user_id"]
 
-        resp = client.get(f"/wallet/{student_id}/transactions")
+        resp = client.get(f"/wallet/{student_id}/transactions", headers=auth_headers)
         assert resp.status_code == 200
         data = resp.json()
         assert data["transactions"] == []
@@ -111,29 +110,29 @@ class TestRentalIntegration:
     # Rental history
     # ------------------------------------------------------------------
 
-    def test_get_student_rentals(self, client, setup_database, create_test_student, create_test_equipment):
+    def test_get_student_rentals(self, client, auth_headers, setup_database, create_test_student, create_test_equipment):
         """GET /rentals/{student_id} lists rental history for the student."""
         student_id = create_test_student["user_id"]
         self._insert_rental(student_id, create_test_equipment["id"])
 
-        resp = client.get(f"/rentals/{student_id}")
+        resp = client.get(f"/rentals/{student_id}", headers=auth_headers)
         assert resp.status_code == 200
         data = resp.json()
         assert "rentals" in data
         assert len(data["rentals"]) > 0
 
-    def test_get_active_rentals(self, client, setup_database, create_test_student, create_test_equipment):
+    def test_get_active_rentals(self, client, auth_headers, setup_database, create_test_student, create_test_equipment):
         """GET /rentals/{student_id}/active returns only Borrowed/Late rentals."""
         student_id = create_test_student["user_id"]
         self._insert_rental(student_id, create_test_equipment["id"], status="Borrowed")
 
-        resp = client.get(f"/rentals/{student_id}/active")
+        resp = client.get(f"/rentals/{student_id}/active", headers=auth_headers)
         assert resp.status_code == 200
         data = resp.json()
         assert "active_rentals" in data
         assert any(r["status"] in ("Borrowed", "Late") for r in data["active_rentals"])
 
-    def test_returned_rental_not_in_active(self, client, setup_database, create_test_student, create_test_equipment):
+    def test_returned_rental_not_in_active(self, client, auth_headers, setup_database, create_test_student, create_test_equipment):
         """Returned rentals do not appear in active rentals list."""
         student_id = create_test_student["user_id"]
         # Insert an already-returned rental
@@ -150,7 +149,7 @@ class TestRentalIntegration:
         cursor.close()
         conn.close()
 
-        resp = client.get(f"/rentals/{student_id}/active")
+        resp = client.get(f"/rentals/{student_id}/active", headers=auth_headers)
         assert resp.status_code == 200
         data = resp.json()
         statuses = [r["status"] for r in data["active_rentals"]]
@@ -160,7 +159,7 @@ class TestRentalIntegration:
     # Return
     # ------------------------------------------------------------------
 
-    def test_return_on_time_no_late_fee(self, client, setup_database, create_test_student, create_test_equipment):
+    def test_return_on_time_no_late_fee(self, client, auth_headers, setup_database, create_test_student, create_test_equipment):
         """POST /return before due date refunds full deposit with no late fee."""
         student_id = create_test_student["user_id"]
         deposit = 50.00
@@ -171,13 +170,13 @@ class TestRentalIntegration:
         resp = client.post("/return", json={
             "student_id": student_id,
             "rental_id": rental_id
-        })
+        }, headers=auth_headers)
         assert resp.status_code == 200
         data = resp.json()
         assert data["late_fee"] == 0.0
         assert float(data["refund_amount"]) == deposit
 
-    def test_return_overdue_charges_late_fee(self, client, setup_database, create_test_student, create_test_equipment):
+    def test_return_overdue_charges_late_fee(self, client, auth_headers, setup_database, create_test_student, create_test_equipment):
         """POST /return after due date incurs a positive late fee."""
         student_id = create_test_student["user_id"]
         deposit = 50.00
@@ -201,13 +200,13 @@ class TestRentalIntegration:
         resp = client.post("/return", json={
             "student_id": student_id,
             "rental_id": rental_id
-        })
+        }, headers=auth_headers)
         assert resp.status_code == 200
         data = resp.json()
         assert data["late_fee"] > 0
         assert float(data["refund_amount"]) < deposit
 
-    def test_return_restores_equipment_availability(self, client, setup_database, create_test_student, create_test_equipment):
+    def test_return_restores_equipment_availability(self, client, auth_headers, setup_database, create_test_student, create_test_equipment):
         """After return, equipment available_quantity is incremented by 1."""
         student_id = create_test_student["user_id"]
         eq_id = create_test_equipment["id"]
@@ -226,7 +225,7 @@ class TestRentalIntegration:
 
         rental_id = self._insert_rental(student_id, eq_id, deposit=deposit)
 
-        client.post("/return", json={"student_id": student_id, "rental_id": rental_id})
+        client.post("/return", json={"student_id": student_id, "rental_id": rental_id}, headers=auth_headers)
 
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
@@ -237,22 +236,27 @@ class TestRentalIntegration:
 
         assert after_qty == before_qty
 
-    def test_return_nonexistent_rental_returns_404(self, client, setup_database, create_test_student):
+    def test_return_nonexistent_rental_returns_404(self, client, auth_headers, setup_database, create_test_student):
         """POST /return with a non-existent rental_id returns 404."""
         resp = client.post("/return", json={
             "student_id": create_test_student["user_id"],
             "rental_id": 99999
-        })
+        }, headers=auth_headers)
         assert resp.status_code == 404
 
-    def test_return_writes_transaction_records(self, client, setup_database, create_test_student, create_test_equipment):
+    def test_return_writes_transaction_records(self, client, auth_headers, setup_database, create_test_student, create_test_equipment):
         """After a successful return, a deposit_unlock transaction is written."""
         student_id = create_test_student["user_id"]
+        eq_id = create_test_equipment["id"]
         deposit = 50.00
         self._set_wallet(student_id, 100.00, deposit)
-        rental_id = self._insert_rental(student_id, create_test_equipment["id"], deposit=deposit)
+        rental_id = self._insert_rental(student_id, eq_id, deposit=deposit)
 
-        client.post("/return", json={"student_id": student_id, "rental_id": rental_id})
+        resp = client.post("/return", json={
+            "student_id": student_id,
+            "rental_id": rental_id
+        }, headers=auth_headers)
+        assert resp.status_code == 200
 
         conn = get_connection()
         cursor = conn.cursor(dictionary=True)
@@ -265,3 +269,4 @@ class TestRentalIntegration:
         conn.close()
 
         assert tx is not None
+        assert float(tx["token_amount"]) > 0

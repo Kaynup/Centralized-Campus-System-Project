@@ -15,15 +15,7 @@ export function FacilityProvider({ children }) {
     setIsLoading(true);
     setError(null);
 
-    /* ── DEV PATH ────────────────────────────────────────────────────────────
-     * Serve static mock facilities — no network call needed.
-     * Same pattern as AuthContext DEV bypass.
-     * ──────────────────────────────────────────────────────────────────── */
-    if (import.meta.env.DEV) {
-      setFacilities(MOCK_FACILITIES);
-      setIsLoading(false);
-      return;
-    }
+    // DEV mock bypass removed
 
     /* ── PROD PATH ───────────────────────────────────────────────────────── */
     try {
