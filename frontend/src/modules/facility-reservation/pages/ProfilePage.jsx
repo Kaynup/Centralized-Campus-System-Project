@@ -19,14 +19,19 @@ import { useWallet } from '../../../shared/hooks/useWallet';
 
 export default function ProfilePage() {
   const { user: authUser } = useAuth();
-  const { balance } = useWallet();
+  const { wallet } = useWallet();
   const { notify } = useNotification();
 
   const [bookings, setBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Maximum facility tokens allowance
+  const MAX_FACILITY_LIMIT = 10;
+  const facilityUsed = wallet?.facility_tokens_used || 0;
+  const facilityRemaining = Math.max(0, MAX_FACILITY_LIMIT - facilityUsed);
+
   const user = authUser
-    ? { ...authUser, fullName: authUser.fullName || authUser.name, tokenBalance: balance }
+    ? { ...authUser, fullName: authUser.fullName || authUser.name, tokenBalance: facilityRemaining }
     : null;
 
   useEffect(() => {

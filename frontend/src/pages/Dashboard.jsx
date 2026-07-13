@@ -51,7 +51,7 @@ export default function Dashboard() {
             <div>
               <p className="text-xs uppercase tracking-wide text-white/50">Wallet balance</p>
               <p className="text-xl font-semibold">
-                {isLoading ? "Loading…" : `Rs. ${balance.toLocaleString()}`}
+                {isLoading ? "Loading…" : `${balance.toLocaleString()} tokens`}
               </p>
             </div>
           </div>

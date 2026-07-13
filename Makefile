@@ -1,9 +1,36 @@
-# Database Initialization
+.PHONY: init-db start-backend-core start-backend-equipment start-backend-facility start-backend-marketplace start-frontend test-all test-backend-core test-backend-equipment test-backend-facility test-backend-marketplace install-all up down down-v build logs docker-init-db
+
+# ==========================================
+# Docker Compose Shortcuts
+# ==========================================
+up:
+	docker compose -f docker-compose.dev.yml up -d
+
+up-build:
+	docker compose -f docker-compose.dev.yml up --build -d
+
+build:
+	docker compose -f docker-compose.dev.yml build
+
+down:
+	docker compose -f docker-compose.dev.yml down
+
+down-v:
+	docker compose -f docker-compose.dev.yml down -v
+
+logs:
+	docker compose -f docker-compose.dev.yml logs -f
+
+docker-init-db:
+	docker compose -f docker-compose.dev.yml run --rm db-init
+
+# ==========================================
+# Local Development (Non-Docker)
+# ==========================================
 init-db:
 	@echo "Initializing database..."
 	bash -c "cd backends && source centralized_core/venv/bin/activate && python init_db.py"
 
-# Backend Services
 start-backend-core:
 	bash -c "cd backends/centralized_core && source venv/bin/activate && uvicorn main:app --port 8000 --reload"
 
@@ -16,11 +43,12 @@ start-backend-facility:
 start-backend-marketplace:
 	bash -c "cd backends/marketplace && source venv/bin/activate && uvicorn main:app --port 8003 --reload"
 
-# Frontend Service
 start-frontend:
 	bash -c "cd frontend && npm run dev"
 
+# ==========================================
 # Testing Services
+# ==========================================
 test-all: test-backend-core test-backend-equipment test-backend-facility test-backend-marketplace
 
 test-backend-core:
@@ -39,7 +67,9 @@ test-backend-marketplace:
 	@echo "Running tests for Marketplace Backend..."
 	bash -c "cd backends/marketplace && source venv/bin/activate && pytest"
 
+# ==========================================
 # Installation Utilities
+# ==========================================
 install-all:
 	@echo "Installing Centralized Core dependencies..."
 	bash -c "cd backends/centralized_core && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt"
@@ -52,22 +82,3 @@ install-all:
 	@echo "Installing Frontend dependencies..."
 	bash -c "cd frontend && npm install"
 	@echo "All installations complete!"
-
-# Docker Compose
-docker-up:
-	docker compose -f docker-compose.dev.yml up --build
-
-docker-up-detached:
-	docker compose -f docker-compose.dev.yml up --build -d
-
-docker-down:
-	docker compose -f docker-compose.dev.yml down
-
-docker-down-volumes:
-	docker compose -f docker-compose.dev.yml down -v
-
-docker-logs:
-	docker compose -f docker-compose.dev.yml logs -f
-
-docker-init-db:
-	docker compose -f docker-compose.dev.yml run --rm db-init

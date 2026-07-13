@@ -113,7 +113,8 @@ Thumbs.db
 
 # Docker
 # Uncomment the line below to keep .env.docker out of git if using real passwords:
-# .env.docker
+.env.docker
+backends/equipment/logs
 
 # git
 git_commit.txt

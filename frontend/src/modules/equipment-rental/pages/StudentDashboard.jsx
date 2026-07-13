@@ -113,32 +113,32 @@ export default function StudentDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
           <div className="bg-white rounded-2xl border border-stone-100 p-6 shadow-sm">
             <p className="text-[12px] font-semibold text-stone-400 uppercase tracking-widest mb-2">
-              Available Balance
+              Available Allowance
             </p>
             <p className="text-3xl font-bold text-stone-900">
-              {parseFloat(wallet?.available_balance || 0).toFixed(2)} tokens
+              {Math.max(0, 50 - parseFloat(wallet?.rental_tokens_used || 0)).toFixed(2)} tokens
             </p>
-            <p className="text-xs text-stone-400 mt-1">Ready to use</p>
+            <p className="text-xs text-stone-400 mt-1">Ready to use for rentals</p>
           </div>
 
           <div className="bg-white rounded-2xl border border-stone-100 p-6 shadow-sm">
             <p className="text-[12px] font-semibold text-stone-400 uppercase tracking-widest mb-2">
-              Reserved
+              Tokens Used
             </p>
             <p className="text-3xl font-bold text-amber-500">
-              {parseFloat(wallet?.reserved_balance || 0).toFixed(2)} tokens
+              {parseFloat(wallet?.rental_tokens_used || 0).toFixed(2)} tokens
             </p>
-            <p className="text-xs text-stone-400 mt-1">Locked as deposit</p>
+            <p className="text-xs text-stone-400 mt-1">Currently tied up in rentals</p>
           </div>
 
           <div className="bg-white rounded-2xl border border-stone-100 p-6 shadow-sm">
             <p className="text-[12px] font-semibold text-stone-400 uppercase tracking-widest mb-2">
-              Total Balance
+              Total Allowance
             </p>
             <p className="text-3xl font-bold text-primary">
-              {parseFloat(wallet?.total_balance || 0).toFixed(2)} tokens
+              50.00 tokens
             </p>
-            <p className="text-xs text-stone-400 mt-1">Available + Reserved</p>
+            <p className="text-xs text-stone-400 mt-1">Maximum equipment limit</p>
           </div>
         </div>
 

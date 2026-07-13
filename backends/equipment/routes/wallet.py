@@ -18,6 +18,7 @@ def get_wallet(student_id: str):
                 u.login_id as student_id,
                 w.token_balance,
                 w.reserved_tokens,
+                w.rental_tokens_used,
                 (w.token_balance + w.reserved_tokens) as total_balance
             FROM users u
             JOIN wallets w ON u.id = w.user_id
@@ -37,6 +38,7 @@ def get_wallet(student_id: str):
             "student_id": wallet["student_id"],
             "available_balance": wallet["token_balance"],
             "reserved_balance": wallet["reserved_tokens"],
+            "rental_tokens_used": wallet["rental_tokens_used"],
             "total_balance": wallet["total_balance"]
         }
 
