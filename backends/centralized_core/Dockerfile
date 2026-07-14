@@ -8,11 +8,6 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# System dependencies (gcc for compiling cryptography wheels)
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc \
-    && rm -rf /var/lib/apt/lists/*
-
 # Install Python dependencies first (layer-cache friendly)
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
