@@ -1,12 +1,19 @@
 /* Calendar grid specific styles */
+.calendar-page-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
 
 .calendar-shell {
   display: grid;
   grid-template-columns: var(--facility-label-width) 1fr;
   position: relative;
   overflow: auto;
-  /* Fit the viewport minus the topbar and some page chrome; status bar removed */
-  max-height: calc(100vh - var(--topbar-height) - 17rem);
+  flex: 1;
+  min-height: 0;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   box-sizing: border-box;

@@ -23,6 +23,6 @@ COPY backends/ /app/backends/
 
 # Copy and install the entrypoint script
 COPY docker/init-db.sh /init-db.sh
-RUN chmod +x /init-db.sh
+RUN sed -i 's/\r$//' /init-db.sh && chmod +x /init-db.sh
 
 ENTRYPOINT ["/init-db.sh"]

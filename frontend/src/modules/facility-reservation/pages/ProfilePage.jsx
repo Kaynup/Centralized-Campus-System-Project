@@ -26,7 +26,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
 
   // Maximum facility tokens allowance
-  const MAX_FACILITY_LIMIT = 10;
+  const MAX_FACILITY_LIMIT = Number(import.meta.env.VITE_MAX_FACILITY_TOKEN_LIMIT) || 10;
   const facilityUsed = wallet?.facility_tokens_used || 0;
   const facilityRemaining = Math.max(0, MAX_FACILITY_LIMIT - facilityUsed);
 

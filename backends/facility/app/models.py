@@ -132,3 +132,19 @@ class ActionReason(Base):
     action_label = Column(String(100), nullable=False, unique=True)
     reason_statement = Column(String(255), nullable=False)
     created_at = Column(DateTime, default=func.now(), nullable=False)
+
+class Notification(Base):
+    __tablename__ = "notifications"
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(String(36), nullable=False, index=True)
+    type = Column(String(50), nullable=False)
+    title = Column(String(255), nullable=False)
+    message = Column(Text, nullable=False)
+    booking_id = Column(Integer, nullable=True)
+    is_read = Column(Boolean, default=False, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+
+    @property
+    def read(self):
+        return self.is_read

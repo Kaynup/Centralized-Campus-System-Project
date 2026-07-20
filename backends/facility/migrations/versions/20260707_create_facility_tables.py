@@ -80,7 +80,7 @@ def upgrade():
         'approvals',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('booking_id', sa.Integer, sa.ForeignKey('bookings.id', ondelete="CASCADE"), nullable=False, unique=True),
-        sa.Column('approver_id', sa.String(36), sa.ForeignKey('users.id', ondelete="SET NULL")),
+        sa.Column('approver_id', sa.String(36)),
         sa.Column('status', sa.Enum('PENDING','APPROVED','REJECTED', name='approvalstatus'), nullable=False, server_default='PENDING'),
         sa.Column('notes_id', sa.Integer, sa.ForeignKey('action_reasons.id', ondelete="SET NULL")),
         sa.Column('requested_at', sa.DateTime, server_default=sa.func.now(), nullable=False),

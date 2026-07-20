@@ -221,7 +221,7 @@ export function BookingProvider({ children }) {
     setBookingError(null);
     setCancellationPreview(null);
     
-    const isAdmin = user?.role === 'admin';
+    const isAdmin = user?.accountType === 'admin' && (user?.role === 'super_admin' || user?.role === 'facility_admin');
 
     if (slot.status === 'PAST') {
       if (isAdmin) {

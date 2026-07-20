@@ -18,6 +18,10 @@ down:
 down-v:
 	docker compose -f docker-compose.dev.yml down -v
 
+restart: down up
+
+restart-hard: down-v up-build
+
 logs:
 	docker compose -f docker-compose.dev.yml logs -f
 

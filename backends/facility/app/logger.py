@@ -36,11 +36,14 @@ def log_action(
 
     log_entry = models.SystemLog(
         user_id=user_id,          
-        action_type=action_type,
-        description=description[:255],
-        facility_id=facility_id,
-        booking_id=booking_id,
-        approval_id=approval_id,
+        action=action_type,
+        message=description[:255],
+        log_metadata={
+            "facility_id": facility_id,
+            "booking_id": booking_id,
+            "approval_id": approval_id
+        },
+        level=models.LogLevel.INFO,
         created_at=datetime.utcnow(),
     )
 

@@ -137,10 +137,10 @@ def seed_action_reasons(db: Session):
     ]
     
     for context, statement in reasons:
-        reason = db.scalar(select(ActionReason).where(ActionReason.action_label == context))
+        reason = db.scalar(select(ActionReason).where(ActionReason.action_label == context.value))
         if not reason:
             reason = ActionReason(
-                action_label=context,
+                action_label=context.value,
                 reason_statement=statement
             )
             db.add(reason)

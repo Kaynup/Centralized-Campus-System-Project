@@ -1,7 +1,9 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from datetime import date
+from datetime import date, datetime
 from app.db import models
+from app.logger import log_action
+from app.utils.role_helpers import needs_approval
 from app.utils.exceptions import (
     SlotUnavailableError,
     InsufficientTokensError,
@@ -15,9 +17,10 @@ from app.utils.exceptions import (
 import os
 import uuid
 
-def create_booking(db: Session, user_id: str, facility_id: int, booking_date: date,
+def create_booking(db: Session, current_user, facility_id: int, booking_date: date,
                    start_slot_id: int, end_slot_id: int):
-    """Create a booking with validation rules and token limits."""
+    """Create a booking with validation rules, token limits, and approval hierarchy."""
+    user_id = current_user.id
 
     facility = db.query(models.Facility).filter(models.Facility.id == facility_id).with_for_update().first()
     if not facility:
@@ -81,6 +84,11 @@ def create_booking(db: Session, user_id: str, facility_id: int, booking_date: da
         {"b": new_balance, "r": new_reserved, "f": new_facility_used, "u": user_id}
     )
 
+    # Determine if approval is needed based on role and facility
+    requires_approval = facility.requires_approval or 0
+    needs_appr = needs_approval(current_user.role, requires_approval)
+    booking_status = models.BookingStatus.PENDING if needs_appr else models.BookingStatus.RESERVED
+
     # Create booking
     booking = models.Booking(
         user_id=user_id,
@@ -88,11 +96,19 @@ def create_booking(db: Session, user_id: str, facility_id: int, booking_date: da
         booking_date=booking_date,
         start_slot_id=start_slot_id,
         end_slot_id=end_slot_id,
-        status=models.BookingStatus.PENDING,
+        status=booking_status,
         deposit_paid=deposit_required
     )
     db.add(booking)
     db.flush()
+    
+    if needs_appr:
+        approval = models.Approval(
+            booking_id=booking.id,
+            status=models.ApprovalStatus.PENDING
+        )
+        db.add(approval)
+        db.flush()
     
     db.execute(
         text("""
@@ -107,12 +123,21 @@ def create_booking(db: Session, user_id: str, facility_id: int, booking_date: da
     
     db.commit()
     db.refresh(booking)
+    
+    log_action(
+        db=db,
+        user_id=user_id,
+        action_type="BOOKING_CREATED",
+        description=f"Created booking {booking.id} for facility {facility_id}",
+        facility_id=facility_id,
+        booking_id=booking.id
+    )
     return booking
 
 
-def action_approval(db: Session, approval_id: int, approver_id: str, approve: bool, notes: str = None):
+def action_approval(db: Session, booking_id: int, approver_id: str, approve: bool, notes: str = None):
     """Approve or reject a booking."""
-    approval = db.query(models.Approval).filter(models.Approval.id == approval_id).first()
+    approval = db.query(models.Approval).filter(models.Approval.booking_id == booking_id).first()
     if not approval:
         raise NotFoundError("Approval not found")
 
@@ -172,6 +197,17 @@ def action_approval(db: Session, approval_id: int, approver_id: str, approve: bo
 
     db.commit()
     db.refresh(approval)
+
+    action_text = "APPROVED" if approve else "REJECTED"
+    log_action(
+        db=db,
+        user_id=approver_id,
+        action_type=f"BOOKING_{action_text}",
+        description=f"Approval {approval.id} {action_text} for Booking {booking.id}",
+        facility_id=booking.facility_id,
+        booking_id=booking.id,
+        approval_id=approval.id
+    )
     return approval
 
 
@@ -185,7 +221,9 @@ def preview_cancellation(db: Session, booking_id: int, user_id: str):
         
     deposit_paid = float(booking.deposit_paid or 0.0)
 
-    hours_until_start = (booking.start_slot.start_time_of_day.hour - date.today().hour)
+    booking_dt = datetime.combine(booking.booking_date, booking.start_slot.start_time_of_day)
+    hours_until_start = (booking_dt - datetime.now()).total_seconds() / 3600.0
+    
     # Simple logic to determine penalty
     refund_pct = 0.5 if hours_until_start > 24 else 0.0
     if hours_until_start > 48:
@@ -269,6 +307,15 @@ def execute_cancellation(db: Session, booking_id: int, user_id: str, reason: str
                 )
 
     db.commit()
+
+    log_action(
+        db=db,
+        user_id=user_id,
+        action_type="BOOKING_CANCELLED",
+        description=f"Cancelled booking {booking.id}",
+        facility_id=booking.facility_id,
+        booking_id=booking.id
+    )
     return preview
 
 

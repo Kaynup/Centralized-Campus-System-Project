@@ -328,7 +328,10 @@ function ApprovalDashboardPage() {
   }, [approvals, selectedDate, showAll, enableDateFilter])
 
   /* ── Role guard ─────────────────────────────────────────────────────────── */
-  if (user && user.role !== 'admin') {
+  const isSuperAdmin = user?.accountType === "admin" && user?.role === "super_admin";
+  const isFacilityAdmin = isSuperAdmin || user?.role === "facility_admin";
+
+  if (user && !isFacilityAdmin) {
     return <Navigate to="/calendar" replace />
   }
 

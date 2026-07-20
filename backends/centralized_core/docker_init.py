@@ -120,6 +120,43 @@ def init_db() -> None:
             print("      ✓ Seeded: student2 / password123  (500 tokens)")
         else:
             print("      → student2 already exists, skipping.")
+        # Professor 1
+        if not db.query(models.User).filter(models.User.login_id == "professor1").first():
+            p1 = models.User(
+                id="f1b7a2d6-4444-4444-4444-c782b5443210",
+                login_id="professor1",
+                full_name="Professor 1",
+                email="professor1@mail.com",
+                password_hash=hashed,
+                role=models.UserRole.professor,
+                is_active=True,
+                is_verified=True,
+            )
+            db.add(p1)
+            db.flush()
+            db.add(models.Wallet(user_id=p1.id, token_balance=2000.0, reserved_tokens=0.0))
+            print("      ✓ Seeded: professor1 / password123")
+        else:
+            print("      → professor1 already exists, skipping.")
+
+        # Professor 2
+        if not db.query(models.User).filter(models.User.login_id == "professor2").first():
+            p2 = models.User(
+                id="e2b7a2d6-5555-5555-5555-d782b5443211",
+                login_id="professor2",
+                full_name="Professor 2",
+                email="professor2@mail.com",
+                password_hash=hashed,
+                role=models.UserRole.professor,
+                is_active=True,
+                is_verified=True,
+            )
+            db.add(p2)
+            db.flush()
+            db.add(models.Wallet(user_id=p2.id, token_balance=2000.0, reserved_tokens=0.0))
+            print("      ✓ Seeded: professor2 / password123")
+        else:
+            print("      → professor2 already exists, skipping.")
 
         # Super Admin
         if not db.query(models.AdminUser).filter(models.AdminUser.admin_id == "admin1").first():
@@ -146,7 +183,7 @@ def init_db() -> None:
         db.close()
 
     print("\n" + "=" * 54)
-    print("  ✅  Database initialization complete!")
+    print("  Database initialization complete!")
     print("=" * 54 + "\n")
 
 

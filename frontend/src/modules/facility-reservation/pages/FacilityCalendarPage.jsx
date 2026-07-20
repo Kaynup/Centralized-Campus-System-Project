@@ -234,7 +234,7 @@ const { notify } = useNotification();
           selectedSlotsCount={selectedSlots.length}
           onReserveSelected={reserveSelectedSlots}
           onChangeStatusSelected={changeStatusSelectedSlots}
-          isAdmin={user?.role === 'admin'}
+          isAdmin={user?.accountType === 'admin' && (user?.role === 'super_admin' || user?.role === 'facility_admin')}
         />
 
         <CalendarLegend />

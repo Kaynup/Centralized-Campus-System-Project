@@ -871,7 +871,7 @@ export default function ReservationDrawer({ selectedDate, slotsMap = {} }) {
           error={localError || bookingError}
           onInitiateCancel={handleInitiateCancel}
           onClose={closeDrawer}
-          isAdmin={user?.role === 'admin'}
+          isAdmin={user?.accountType === 'admin' && (user?.role === 'super_admin' || user?.role === 'facility_admin')}
           onAdminForceCancel={() => setDrawerMode('admin_cancel')}
         />
       ) : drawerMode === 'cancel' ? (
