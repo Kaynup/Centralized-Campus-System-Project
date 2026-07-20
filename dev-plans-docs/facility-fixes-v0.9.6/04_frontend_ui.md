@@ -4,9 +4,8 @@
 **Issue**: The calendar grid's internal scrolling was broken. Instead of the calendar containing the scrollbar within its own component boundaries, the entire global page would stretch vertically and force the user to scroll the whole browser window to see lower time slots.
 **Fix**:
 - Investigated `PageLayout.css` and `calendar.css`.
-- The `.facility-page` layout wrapper lacked a fixed boundary. Assigned it `height: 100%` and `overflow: hidden` to completely lock global scrolling.
-- Replaced the flawed `max-height: calc(100vh - 400px)` logic inside `.calendar-shell`.
-- Re-architected both `.facility-page__content` and `.calendar-shell` using `flex: 1` and `min-height: 0`. This dynamically forces the calendar container to fill the exact remaining viewport space below the topbar and cleanly confines the scrollbar within the component.
+- Prevented Global Scroll: Assigned `height: calc(100vh - 120px)` and `overflow: hidden` to `.facility-page` in `PageLayout.css`. This acts as an absolute height boundary, completely stopping the overall page from scrolling.
+- Fixed Local Scroll Bug: Discovered a classic flexbox bug where `.facility-page__content` was missing `min-height: 0`. Without it, the child expanded infinitely, which pushed past the `overflow: hidden` boundary and completely broke the `.calendar-shell`'s `overflow: auto`. Adding `min-height: 0` correctly bound the calendar grid to the parent's height, instantly restoring the internal scrollbar!
 
 ## 2. Dynamic Environment Variable Configuration
 **Issue**: The `MAX_FACILITY_TOKEN_LIMIT` was hardcoded as `10` directly inside `ProfilePage.jsx`. This created a drift risk where backend adjustments to the limit would not reflect accurately in the frontend UI.
