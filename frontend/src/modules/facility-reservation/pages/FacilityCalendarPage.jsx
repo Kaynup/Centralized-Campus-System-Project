@@ -132,7 +132,7 @@ function FacilityCalendarPage() {
   } = useBooking()
   const { facilities, isLoading: facilitiesLoading, error: facilitiesError, loadFacilities } = useFacilities()
   const { user } = useAuth()
-  const { balance } = useWallet();
+  const { wallet } = useWallet();
   /* ── Slots (DEV → mock, PROD → API) ──────────────────────────────────── */
   const {
     slotsMap,
@@ -148,12 +148,17 @@ function FacilityCalendarPage() {
    * ────────────────────────────────────────────────────────────────────── */
   const currentUser = useMemo(() => {
     if (!user) return null
+    
+    const MAX_FACILITY_LIMIT = 10;
+    const facilityUsed = wallet?.facility_tokens_used || 0;
+    const facilityRemaining = Math.max(0, MAX_FACILITY_LIMIT - facilityUsed);
+
     return {
       ...user,
       name:         user.fullName || user.full_name || user.name || user.email || 'User',
-      tokenBalance: balance,
+      tokenBalance: facilityRemaining,
     }
-  }, [user, balance])
+  }, [user, wallet])
 
 const { notify } = useNotification();
 
@@ -229,7 +234,7 @@ const { notify } = useNotification();
           selectedSlotsCount={selectedSlots.length}
           onReserveSelected={reserveSelectedSlots}
           onChangeStatusSelected={changeStatusSelectedSlots}
-          isAdmin={user?.role === 'admin'}
+          isAdmin={user?.accountType === 'admin' && (user?.role === 'super_admin' || user?.role === 'facility_admin')}
         />
 
         <CalendarLegend />

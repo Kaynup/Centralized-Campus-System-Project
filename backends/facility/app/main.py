@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import facilities, reservations, health, admin
+from app.routers import facilities, reservations, health, admin, notifications
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -20,6 +20,7 @@ app.include_router(facilities.router, prefix="/api/v1")
 app.include_router(reservations.router, prefix="/api/v1")
 app.include_router(health.router, prefix="/api/v1")
 app.include_router(admin.router, prefix="/api/v1")
+app.include_router(notifications.router, prefix="/api/v1")
 
 
 

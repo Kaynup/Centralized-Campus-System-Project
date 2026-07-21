@@ -154,7 +154,10 @@ function SystemLogsPage() {
   }
 
   /* ── Role guard ─────────────────────────────────────────────────────────── */
-  if (user && user.role === 'student') {
+  const isSuperAdmin = user?.accountType === "admin" && user?.role === "super_admin";
+  const isFacilityAdmin = isSuperAdmin || user?.role === "facility_admin";
+
+  if (user && !isFacilityAdmin) {
     return <Navigate to="/calendar" replace />
   }
 

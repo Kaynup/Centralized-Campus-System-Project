@@ -11,8 +11,8 @@ export const fetchPendingApprovals = async () => {
   return bookings.map(b => ({
     id: b.id, // we map id to bookingId on the page side, or use it directly
     bookingId: b.id,
-    requesterName: b.user_id, // we only have user_id, displaying it as name
-    requesterEmail: b.user_id,
+    requesterName: b.requester_name || b.user_id, // we only have user_id, displaying it as name
+    requesterEmail: b.requester_email || b.user_id,
     facilityName: b.facility_name,
     facilityGroup: b.facility_group,
     date: b.booking_date,

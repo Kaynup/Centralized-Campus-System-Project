@@ -69,7 +69,6 @@ const FACILITY_ITEMS = [
 const FACILITY_ADMIN_ITEMS = [
   { to: "/facility/admin/approvals", label: "Approvals", icon: ClipboardCheck },
   { to: "/facility/admin/logs", label: "System Logs", icon: FileClock },
-  { to: "/facility/admin/users/upload", label: "User Entries", icon: UserPlus },
 ];
 
 export default function Sidebar({ isCollapsed, isMobile, isMobileOpen, onCloseMobile }) {

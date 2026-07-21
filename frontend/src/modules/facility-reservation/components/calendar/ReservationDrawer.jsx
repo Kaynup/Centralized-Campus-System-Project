@@ -743,6 +743,9 @@ export default function ReservationDrawer({ selectedDate, slotsMap = {} }) {
           ? 'Booking request submitted! Awaiting approval.'
           : 'Booking confirmed!'
       )
+      if (window.dispatchEvent) {
+         window.dispatchEvent(new Event("wallet-refresh"));
+      }
       setTimeout(() => closeDrawer(), 1800)
     } catch (err) {
       setLocalError(err.response?.data?.message || err.message || 'Booking failed. Please try again.')
@@ -792,7 +795,10 @@ export default function ReservationDrawer({ selectedDate, slotsMap = {} }) {
       await adminApi.forceCancelBooking(bookingId, { reason: cancelReason })
       triggerRefresh()
       await loadMyBookings()
-      setSuccessMsg('Booking force-cancelled successfully. 100% refunded.')
+      setSuccessMsg('Booking cancelled successfully. Tokens refunded to your wallet.')
+      if (window.dispatchEvent) {
+         window.dispatchEvent(new Event("wallet-refresh"));
+      }
       setTimeout(() => closeDrawer(), 1800)
     } catch (err) {
       setLocalError(err.response?.data?.message || err.message || 'Force cancellation failed.')
@@ -865,7 +871,7 @@ export default function ReservationDrawer({ selectedDate, slotsMap = {} }) {
           error={localError || bookingError}
           onInitiateCancel={handleInitiateCancel}
           onClose={closeDrawer}
-          isAdmin={user?.role === 'admin'}
+          isAdmin={user?.accountType === 'admin' && (user?.role === 'super_admin' || user?.role === 'facility_admin')}
           onAdminForceCancel={() => setDrawerMode('admin_cancel')}
         />
       ) : drawerMode === 'cancel' ? (

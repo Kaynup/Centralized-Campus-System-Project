@@ -1,0 +1,28 @@
+# docker/Dockerfile.init
+# ─────────────────────────────────────────────────────────────────────────────
+# One-shot container that bootstraps the shared MySQL database.
+# Build context: project root  (so it can access both backends/ and docker/)
+# ─────────────────────────────────────────────────────────────────────────────
+
+FROM python:3.12-slim
+
+WORKDIR /app/backends
+
+# Install gcc for any C-extension wheels (cryptography, etc.)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies from centralized_core (the only service whose
+# code runs inside this container)
+COPY backends/centralized_core/requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+
+# Copy full backends directory so SQL schema files and source are all present
+COPY backends/ /app/backends/
+
+# Copy and install the entrypoint script
+COPY docker/init-db.sh /init-db.sh
+RUN sed -i 's/\r$//' /init-db.sh && chmod +x /init-db.sh
+
+ENTRYPOINT ["/init-db.sh"]

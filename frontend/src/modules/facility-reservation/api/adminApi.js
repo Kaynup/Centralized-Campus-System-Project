@@ -11,13 +11,18 @@ export const toggleSlotAvailability = async (payload) => {
 };
 
 export const getSlotHistory = async (facilityId, dateStr, slotId) => {
-  console.warn("getSlotHistory is not supported by the backend");
-  return [];
+  const { data } = await facilityClient.get(
+    `/api/v1/admin/history?facility_id=${facilityId}&date=${dateStr}&slot_id=${slotId}`
+  );
+  return data.history || [];
 };
 
 export const forceCancelBooking = async (bookingId, payload) => {
-  console.warn("forceCancelBooking is not supported by the backend");
-  return {};
+  const { data } = await facilityClient.patch(
+    `/api/v1/admin/bookings/${bookingId}/force-cancel`,
+    payload
+  );
+  return data;
 };
 
 export const topUpUser = async (userId, payload) => {
@@ -30,6 +35,9 @@ export const topUpUser = async (userId, payload) => {
 };
 
 export const universalTopUp = async (payload) => {
-  console.warn("universalTopUp is not currently implemented in core service");
-  return {};
+  const { data } = await authClient.post(
+    `/api/v1/wallet/bulk-topup`,
+    payload
+  );
+  return data;
 };

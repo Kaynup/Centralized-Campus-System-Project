@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Lock, Bell, Moon, Sun, Save } from "lucide-react";
+import { Lock, Bell, Save } from "lucide-react";
+// import {Moon, Sun} from "lucide-react";
 import { useNotification } from "../shared/hooks/useNotification";
-import { useTheme } from "../shared/context/ThemeContext";
+// import { useTheme } from "../shared/context/ThemeContext";
 import { parseApiError } from "../shared/utils/parseApiError";
 import { authClient } from "../shared/api/axiosClient";
 
@@ -55,7 +56,7 @@ function ToggleRow({ label, description, checked, onChange }) {
 
 export default function Settings() {
   const { notify } = useNotification();
-  const { isDarkMode, toggleTheme } = useTheme();
+  // const { isDarkMode, toggleTheme } = useTheme();
 
   // --- Password ---
   const [currentPassword, setCurrentPassword] = useState("");
@@ -98,10 +99,10 @@ export default function Settings() {
     }
   }
 
-  function handleToggleTheme() {
-    toggleTheme();
-    notify.info(!isDarkMode ? "Dark mode enabled." : "Light mode enabled.");
-  }
+  // function handleToggleTheme() {
+  //   toggleTheme();
+  //   notify.info(!isDarkMode ? "Dark mode enabled." : "Light mode enabled.");
+  // }
 
   const cardStyle = {
     backgroundColor: "var(--color-surface)",
@@ -221,7 +222,7 @@ export default function Settings() {
         </div>
 
         {/* Appearance */}
-        <div
+        {/* <div
           className="rounded-2xl border border-slate/10 p-6 shadow-sm transition-colors"
           style={cardStyle}
         >
@@ -240,7 +241,7 @@ export default function Settings() {
             checked={isDarkMode}
             onChange={handleToggleTheme}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

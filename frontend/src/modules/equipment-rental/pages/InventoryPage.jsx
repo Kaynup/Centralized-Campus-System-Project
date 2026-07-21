@@ -53,6 +53,11 @@ useEffect(() => {
         })}`
       );
       fetchInventory();
+      
+      // Inform the global wallet context to update the Navbar balance
+      if (window.dispatchEvent) {
+         window.dispatchEvent(new Event("wallet-refresh"));
+      }
     } catch (err) {
       const detail = err?.response?.data?.detail || "Checkout failed";
       setErrorMsg(detail);

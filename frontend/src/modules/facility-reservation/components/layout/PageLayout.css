@@ -6,6 +6,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  height: calc(100vh - 120px);
+  overflow: hidden;
 }
 
 .facility-update-banner {
@@ -153,4 +155,9 @@
 
 .facility-page__content {
   min-width: 0;
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }

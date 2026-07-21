@@ -34,7 +34,7 @@ def create_reservation(
     try:
         booking = services.create_booking(
             db_session,
-            current_user.id,
+            current_user,
             facility_id=payload.facility_id,
             booking_date=payload.booking_date,
             start_slot_id=payload.start_slot_id,
@@ -58,8 +58,8 @@ def list_reservations(
 ):
     """List bookings for the current user (or all if admin)."""
     query = db_session.query(models.Booking)
-    if current_user.role != "admin" and current_user.accountType != "admin":
-        query = query.filter(models.Booking.user_id == current_user.id)
+    # Always filter by current user so My Reservations page only shows the user's own bookings
+    query = query.filter(models.Booking.user_id == current_user.id)
     if facility_id:
         query = query.filter(models.Booking.facility_id == facility_id)
 
@@ -139,7 +139,7 @@ def approve_reservation(
     
     try:
         approval = services.action_approval(
-            db_session, approval_id=booking_id,
+            db_session, booking_id=booking_id,
             approver_id=current_user.id,
             approve=True,
             notes=None if not payload.notes else payload.notes
@@ -163,7 +163,7 @@ def reject_reservation(
 
     try:
         approval = services.action_approval(
-            db_session, approval_id=booking_id,
+            db_session, booking_id=booking_id,
             approver_id=current_user.id,
             approve=False,
             notes=None if not payload.notes else payload.notes
@@ -171,3 +171,20 @@ def reject_reservation(
         return success_response(data={"approval_id": approval.id}, message="Reservation rejected")
     except NotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+@router.get(
+    "/{booking_id}",
+    response_model=schemas.BookingResponse,
+    summary="Get a booking by id"
+)
+def get_booking(
+    booking_id: int,
+    db_session: Session = Depends(db.get_db),
+    current_user=Depends(get_current_user),
+):
+    booking = db_session.query(models.Booking).filter(models.Booking.id == booking_id).first()
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    if str(booking.user_id) != str(current_user.id) and current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not allowed")
+    return booking

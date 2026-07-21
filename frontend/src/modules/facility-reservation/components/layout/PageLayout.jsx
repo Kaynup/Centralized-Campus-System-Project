@@ -66,6 +66,21 @@ export default function PageLayout({
     onDateChange(d.toISOString().slice(0, 10))
   }
 
+  const formatDateString = (dateStr) => {
+    if (!dateStr) return '';
+    const [year, monthStr, dayStr] = dateStr.split('-');
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = months[parseInt(monthStr, 10) - 1];
+    const day = parseInt(dayStr, 10);
+    
+    let suffix = 'th';
+    if (day % 10 === 1 && day !== 11) suffix = 'st';
+    else if (day % 10 === 2 && day !== 12) suffix = 'nd';
+    else if (day % 10 === 3 && day !== 13) suffix = 'rd';
+
+    return `${month} ${day}${suffix}, ${year}`;
+  };
+
   return (
     <div className="facility-page">
       {backendUpdated && (
@@ -90,7 +105,7 @@ export default function PageLayout({
             <button onClick={prevDay} aria-label="Previous day" className="calendar-toolbar__nav-btn">
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <span className="calendar-toolbar__date-label">{selectedDate}</span>
+            <span className="calendar-toolbar__date-label">{formatDateString(selectedDate)}</span>
             <button onClick={nextDay} aria-label="Next day" className="calendar-toolbar__nav-btn">
               <ChevronRight className="w-5 h-5" />
             </button>

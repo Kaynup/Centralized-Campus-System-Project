@@ -96,6 +96,16 @@ export function WalletProvider({ children }) {
     }
   }, [isAuthenticated, user, fetchWallet, resetWallet]);
 
+  useEffect(() => {
+    const handleRefresh = () => {
+      if (isAuthenticated && user?.accountType !== "admin") {
+        fetchWallet();
+      }
+    };
+    window.addEventListener("wallet-refresh", handleRefresh);
+    return () => window.removeEventListener("wallet-refresh", handleRefresh);
+  }, [isAuthenticated, user, fetchWallet]);
+
   const topUp = useCallback(async ({ amount, method = "card" }) => {
     if (!amount || amount <= 0) {
       const err = new Error("Enter an amount greater than zero.");

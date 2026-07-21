@@ -9,7 +9,15 @@ from app.db import Base
 # Alembic Config object
 config = context.config
 
-# Logging setup
+# ── Docker / env-var override ────────────────────────────────────────────────
+# Allow DATABASE_URL to be injected via the environment (e.g. from docker-compose)
+# so that the hardcoded URL in alembic.ini is not required in containerised setups.
+import os as _os
+_db_url = _os.environ.get("DATABASE_URL")
+if _db_url:
+    config.set_main_option("sqlalchemy.url", _db_url)
+# ─────────────────────────────────────────────────────────────────────────────
+
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 

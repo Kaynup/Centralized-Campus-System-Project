@@ -1,0 +1,162 @@
+# docker-compose.dev.yml
+# ─────────────────────────────────────────────────────────────────────────────
+# Development compose file for the Campus System.
+# Starts 6 containers:
+#   mysql              — shared MySQL 8.0 database
+#   db-init            — one-shot DB bootstrapper (exits 0 on success)
+#   backend-core       — Centralized Core API        (port 8000)
+#   backend-facility   — Facility Reservation API    (port 8002)
+#   backend-equipment  — Equipment Rental API        (port 8001)
+#   backend-marketplace— Secure Marketplace API      (port 8003)
+#   frontend           — Vite/React SPA via nginx    (port 5173)
+#
+# Usage:
+#   docker compose -f docker-compose.dev.yml up --build
+#   docker compose -f docker-compose.dev.yml down -v   # also wipes DB volume
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # 1. MySQL 8.0  (shared database for all 4 backend services)
+  # ───────────────────────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: campus_mysql
+    restart: unless-stopped
+    env_file: .env.docker
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval:     10s
+      timeout:       5s
+      retries:      12
+      start_period: 30s
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # 2. DB Init  (one-shot — runs once then exits 0)
+  #    Creates the database, all tables, and seeds mock users.
+  #    All backend services wait for this to complete before starting.
+  # ───────────────────────────────────────────────────────────────────────────
+  db-init:
+    build:
+      context:    .
+      dockerfile: docker/Dockerfile.init
+    container_name: campus_db_init
+    restart: "no"
+    env_file: .env.docker
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # 3. Centralized Core  (FastAPI — port 8000)
+  # ───────────────────────────────────────────────────────────────────────────
+  backend-core:
+    build:
+      context:    backends/centralized_core
+      dockerfile: Dockerfile
+    container_name: campus_backend_core
+    restart: unless-stopped
+    env_file: .env.docker
+    ports:
+      - "8000:8000"
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # 4. Facility Service  (FastAPI + Alembic — port 8002)
+  #    Runs `alembic upgrade head && python -m app.seed` before uvicorn.
+  # ───────────────────────────────────────────────────────────────────────────
+  backend-facility:
+    build:
+      context:    backends/facility
+      dockerfile: Dockerfile
+    container_name: campus_backend_facility
+    restart: unless-stopped
+    env_file: .env.docker
+    ports:
+      - "8002:8002"
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # 5. Equipment Service  (FastAPI — port 8001)
+  # ───────────────────────────────────────────────────────────────────────────
+  backend-equipment:
+    build:
+      context:    backends/equipment
+      dockerfile: Dockerfile
+    container_name: campus_backend_equipment
+    restart: unless-stopped
+    env_file: .env.docker
+    ports:
+      - "8001:8001"
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # 6. Marketplace Service  (FastAPI — port 8003)
+  # ───────────────────────────────────────────────────────────────────────────
+  backend-marketplace:
+    build:
+      context:    backends/marketplace
+      dockerfile: Dockerfile
+    container_name: campus_backend_marketplace
+    restart: unless-stopped
+    env_file: .env.docker
+    ports:
+      - "8003:8003"
+    volumes:
+      # Persist uploaded marketplace images across restarts
+      - marketplace_static:/app/static/images
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # 7. Frontend  (Vite build → nginx — port 5173)
+  #    VITE_ variables are baked into the bundle at build time.
+  #    They must be the HOST-visible URLs (localhost:XXXX) because the browser
+  #    makes requests directly, not through the Docker network.
+  # ───────────────────────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context:    frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL:    http://localhost:8000
+        VITE_AUTH_API:        http://localhost:8000
+        VITE_EQUIPMENT_API:   http://localhost:8001
+        VITE_FACILITY_API:    http://localhost:8002
+        VITE_MARKETPLACE_API: http://localhost:8003
+        VITE_WS_BASE_URL:     ws://localhost:8003
+    container_name: campus_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    # Frontend does not need a DB — it just needs the backends to be reachable
+    # from the host browser (they're exposed on ports above)
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Named Volumes
+# ─────────────────────────────────────────────────────────────────────────────
+volumes:
+  mysql_data:
+    driver: local
+  marketplace_static:
+    driver: local
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Networks
+# ─────────────────────────────────────────────────────────────────────────────
+networks:
+  default:
+    name:   campus_network
+    driver: bridge

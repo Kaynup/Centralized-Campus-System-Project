@@ -1,24 +1,29 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect } from "react";
 
 const ThemeContext = createContext(null);
 
 export function ThemeProvider({ children }) {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    return localStorage.getItem("campus_theme") === "dark";
-  });
-
   useEffect(() => {
-    document.documentElement.setAttribute(
-      "data-theme",
-      isDarkMode ? "dark" : "light"
-    );
-    localStorage.setItem("campus_theme", isDarkMode ? "dark" : "light");
-  }, [isDarkMode]);
+    // Always force the entire application to light mode.
+    // This prevents browser/OS dark mode from affecting the app.
+    document.documentElement.setAttribute("data-theme", "light");
 
-  const toggleTheme = () => setIsDarkMode((prev) => !prev);
+    // Keep the saved preference consistent
+    localStorage.setItem("campus_theme", "light");
+  }, []);
+
+  const toggleTheme = () => {
+    // Dark mode is intentionally disabled.
+    return;
+  };
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+    <ThemeContext.Provider
+      value={{
+        isDarkMode: false,
+        toggleTheme,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   );
@@ -26,8 +31,10 @@ export function ThemeProvider({ children }) {
 
 export function useTheme() {
   const context = useContext(ThemeContext);
+
   if (!context) {
     throw new Error("useTheme must be used within a ThemeProvider");
   }
+
   return context;
 }

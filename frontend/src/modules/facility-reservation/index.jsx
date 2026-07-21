@@ -11,7 +11,6 @@ import ProfilePage from "./pages/ProfilePage";
 
 import ApprovalDashboardPage from "./pages/ApprovalDashboardPage";
 import SystemLogsPage from "./pages/SystemLogsPage";
-import AdminUserUploadPage from "./pages/AdminUserUploadPage";
 
 import NotFoundPage from "./pages/NotFoundPage";
 
@@ -35,10 +34,6 @@ function FacilityRoutes() {
 
           <Route path="admin/approvals" element={<ApprovalDashboardPage />} />
           <Route path="admin/logs" element={<SystemLogsPage />} />
-          <Route
-            path="admin/users/upload"
-            element={<AdminUserUploadPage />}
-          />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

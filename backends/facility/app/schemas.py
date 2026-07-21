@@ -1,8 +1,9 @@
 from pydantic import BaseModel, Field, ConfigDict, model_validator
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from datetime import datetime, date, time
 from uuid import UUID
 from app.models import FacilityGroup, BookingStatus, ApprovalStatus, LogLevel
+
 class BookingCreate(BaseModel):
     facility_id: int
     booking_date: date
@@ -23,13 +24,15 @@ class ApproveRejectPayload(BaseModel):
 
 class NotificationResponse(BaseModel):
     id: int
+    user_id: str
     type: str
     title: str
     message: str
     booking_id: Optional[int] = None
-    read: bool
+    is_read: bool = Field(alias="read")
     created_at: datetime
-    model_config = ConfigDict(from_attributes=True)
+    
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 class BookingListResponse(BaseModel):
     id: int
@@ -91,6 +94,21 @@ class FacilityCalendarSlotResponse(SlotResponse):
     booking_id: Optional[int] = None
     user_name: Optional[str] = None
     deposit: Optional[float] = None
+    
+class ApprovalDetailOut(BaseModel):
+    id: int
+    booking_id: int
+    requester_name: str
+    requester_email: str
+    facility_name: str
+    facility_group: str
+    date: str
+    start_time: str
+    end_time: str
+    requested_at: datetime
+    status: ApprovalStatus
+    notes: Optional[str] = None
+    model_config = ConfigDict(from_attributes=True)
 
 class SystemLogResponse(SystemLogBase):
     id: int
