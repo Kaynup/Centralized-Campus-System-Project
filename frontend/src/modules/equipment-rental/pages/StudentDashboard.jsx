@@ -1,46 +1,76 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../shared/hooks/useAuth";
-import { equipmentClient } from "../../../shared/api/axiosClient";
-import Button from "../../../shared/ui/Button";
 import { RefreshCw } from "lucide-react";
 
+import { useAuth } from "../../../shared/hooks/useAuth";
+import { useWallet } from "../../../shared/hooks/useWallet";
+import { equipmentClient } from "../../../shared/api/axiosClient";
+import { MAX_RENTAL_LIMIT } from "../../../shared/wallet/constants";
+
+import Button from "../../../shared/ui/Button";
+
 export default function StudentDashboard() {
-  const [wallet, setWallet] = useState(null);
   const [activeRentals, setActiveRentals] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
-  const { user, logout } = useAuth();
+  const { user} = useAuth();
+
+  // Global wallet state
+  const {
+    wallet,
+    loading: walletLoading,
+    refresh: refreshWallet,
+  } = useWallet();
 
   const studentId = user?.id;
   const studentCode = user?.code ?? user?.loginId ?? user?.name;
   const studentEmail = user?.email;
-  async function fetchData() {
-    try {
-      const [walletRes, rentalsRes] = await Promise.all([
-        equipmentClient.get(`/wallet/${studentId}`),
-        equipmentClient.get(`/rentals/${studentId}/active`),
-      ]);
 
-      setWallet(walletRes.data);
+  /**
+   * Fetch only equipment-specific data here.
+   *
+   * Wallet data comes from the global WalletProvider.
+   */
+  async function fetchRentals() {
+    if (!studentId) return;
+
+    try {
+      const rentalsRes = await equipmentClient.get(
+        `/rentals/${studentId}/active`
+      );
+
       setActiveRentals(rentalsRes.data.active_rentals || []);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to fetch active rentals:", err);
     } finally {
       setLoading(false);
     }
   }
 
+  /**
+   * Refresh both:
+   * - Global wallet
+   * - Equipment active rentals
+   */
+  async function fetchData() {
+    setLoading(true);
+
+    await Promise.all([
+      refreshWallet(),
+      fetchRentals(),
+    ]);
+
+    setLoading(false);
+  }
+
   useEffect(() => {
     if (!studentId) return;
-    fetchData();
+
+    fetchRentals();
   }, [studentId]);
 
-  async function handleLogout() {
-    await logout();
-    navigate("/login", { replace: true });
-  }
 
   function formatDate(dateStr) {
     return new Date(dateStr).toLocaleDateString("en-IN", {
@@ -50,11 +80,31 @@ export default function StudentDashboard() {
     });
   }
 
-  if (loading) {
+  /**
+   * Wallet values from the global WalletProvider.
+   */
+  // const tokenBalance = Number(wallet?.token_balance || 0);
+
+  const rentalTokensUsed = Number(
+    wallet?.rental_tokens_used || 0
+  );
+
+  const availableRentalAllowance = Math.max(
+    0,
+    MAX_RENTAL_LIMIT - rentalTokensUsed
+  );
+
+  const isLoading = loading || walletLoading;
+
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-[#fafafa] flex items-center justify-center">
         <div className="flex items-center gap-3 text-stone-400">
-          <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+          <svg
+            className="w-5 h-5 animate-spin"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
             <circle
               className="opacity-25"
               cx="12"
@@ -63,12 +113,14 @@ export default function StudentDashboard() {
               stroke="currentColor"
               strokeWidth="4"
             />
+
             <path
               className="opacity-75"
               fill="currentColor"
               d="M4 12a8 8 0 018-8v8z"
             />
           </svg>
+
           Loading...
         </div>
       </div>
@@ -78,31 +130,44 @@ export default function StudentDashboard() {
   return (
     <div className="min-h-screen bg-[#fafafa]">
       <main className="max-w-4xl mx-auto px-6 py-10">
-        {/* Header */}
 
+        {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>
-            <p className="label-caps mb-1">Equipment Rental</p>
+            <p className="label-caps mb-1">
+              Equipment Rental
+            </p>
 
             <h1 className="text-2xl font-bold text-stone-900">
               Welcome back, {studentCode}
             </h1>
 
-            <p className="text-sm text-stone-400">{studentEmail}</p>
+            <p className="text-sm text-stone-400">
+              {studentEmail}
+            </p>
           </div>
 
           <div className="flex gap-2">
-            <Button variant="secondary" onClick={fetchData}>
+            <Button
+              variant="secondary"
+              onClick={fetchData}
+            >
               <RefreshCw className="h-4 w-4" />
             </Button>
 
-            <Button onClick={() => navigate("/equipment/inventory")}>
+            <Button
+              onClick={() =>
+                navigate("/equipment/inventory")
+              }
+            >
               Browse Equipment
             </Button>
 
             <Button
               variant="secondary"
-              onClick={() => navigate("/equipment/rentals")}
+              onClick={() =>
+                navigate("/equipment/rentals")
+              }
             >
               My Rentals
             </Button>
@@ -111,45 +176,79 @@ export default function StudentDashboard() {
 
         {/* Wallet Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+
+          {/* Available Rental Allowance */}
           <div className="bg-white rounded-2xl border border-stone-100 p-6 shadow-sm">
             <p className="text-[12px] font-semibold text-stone-400 uppercase tracking-widest mb-2">
               Available Allowance
             </p>
+
             <p className="text-3xl font-bold text-stone-900">
-              {Math.max(0, 50 - parseFloat(wallet?.rental_tokens_used || 0)).toFixed(2)} tokens
+              {availableRentalAllowance.toFixed(2)} tokens
             </p>
-            <p className="text-xs text-stone-400 mt-1">Ready to use for rentals</p>
+
+            <p className="text-xs text-stone-400 mt-1">
+              Ready to use for rentals
+            </p>
           </div>
 
+          {/* Rental Tokens Used */}
           <div className="bg-white rounded-2xl border border-stone-100 p-6 shadow-sm">
             <p className="text-[12px] font-semibold text-stone-400 uppercase tracking-widest mb-2">
               Tokens Used
             </p>
+
             <p className="text-3xl font-bold text-amber-500">
-              {parseFloat(wallet?.rental_tokens_used || 0).toFixed(2)} tokens
+              {rentalTokensUsed.toFixed(2)} tokens
             </p>
-            <p className="text-xs text-stone-400 mt-1">Currently tied up in rentals</p>
+
+            <p className="text-xs text-stone-400 mt-1">
+              Currently tied up in rentals
+            </p>
           </div>
 
+          {/* Total Rental Allowance */}
           <div className="bg-white rounded-2xl border border-stone-100 p-6 shadow-sm">
             <p className="text-[12px] font-semibold text-stone-400 uppercase tracking-widest mb-2">
               Total Allowance
             </p>
+
             <p className="text-3xl font-bold text-primary">
-              50.00 tokens
+              {Number(MAX_RENTAL_LIMIT).toFixed(2)} tokens
             </p>
-            <p className="text-xs text-stone-400 mt-1">Maximum equipment limit</p>
+
+            <p className="text-xs text-stone-400 mt-1">
+              Maximum equipment limit
+            </p>
           </div>
         </div>
+
+        {/* Global Wallet Balance */}
+        {/* <div className="bg-white rounded-2xl border border-stone-100 p-6 shadow-sm mb-10">
+          <p className="text-[12px] font-semibold text-stone-400 uppercase tracking-widest mb-2">
+            Wallet Balance
+          </p>
+
+          <p className="text-3xl font-bold text-stone-900">
+            {tokenBalance.toFixed(2)} tokens
+          </p>
+
+          <p className="text-xs text-stone-400 mt-1">
+            Your current global wallet balance
+          </p>
+        </div> */}
 
         {/* Active Rentals */}
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-stone-800">
             Active Rentals
           </h2>
+
           <Button
             variant="primary"
-            onClick={() => navigate("/equipment/inventory")}
+            onClick={() =>
+              navigate("/equipment/inventory")
+            }
             className="btn-outline text-sm px-4 min-h-0 py-2"
           >
             + Borrow Equipment
@@ -173,12 +272,20 @@ export default function StudentDashboard() {
                 />
               </svg>
             </div>
-            <p className="text-stone-500 font-medium">No active rentals</p>
+
+            <p className="text-stone-500 font-medium">
+              No active rentals
+            </p>
+
             <p className="text-stone-400 text-sm mt-1">
               Browse equipment to get started
             </p>
-            <Button variant="primary"
-              onClick={() => navigate("/equipment/inventory")}
+
+            <Button
+              variant="primary"
+              onClick={() =>
+                navigate("/equipment/inventory")
+              }
               className="btn-primary mt-4 text-sm px-6"
             >
               Browse Equipment
@@ -195,13 +302,16 @@ export default function StudentDashboard() {
                   <p className="font-semibold text-stone-800">
                     {rental.equipment_name}
                   </p>
+
                   <p className="text-sm text-stone-400 mt-0.5">
                     {rental.category}
                   </p>
+
                   <p className="text-xs text-stone-400 mt-1">
                     Due: {formatDate(rental.due_date)}
                   </p>
                 </div>
+
                 <div className="text-right">
                   {rental.days_remaining > 0 ? (
                     <span className="inline-block bg-green-50 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
@@ -212,6 +322,7 @@ export default function StudentDashboard() {
                       {Math.abs(rental.days_remaining)}d overdue
                     </span>
                   )}
+
                   <p className="text-xs text-stone-400 mt-2">
                     Deposit: {rental.deposit_amount} tokens
                   </p>
@@ -221,15 +332,19 @@ export default function StudentDashboard() {
           </div>
         )}
 
+        {/* Rental History */}
         <div className="mt-6 text-center">
           <Button
             variant="secondary"
-            onClick={() => navigate("/equipment/rentals")}
+            onClick={() =>
+              navigate("/equipment/rentals")
+            }
             className="text-sm text-primary hover:underline min-h-0 min-w-0 bg-transparent px-2 py-1"
           >
             View full rental history →
           </Button>
         </div>
+
       </main>
     </div>
   );
