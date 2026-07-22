@@ -249,19 +249,29 @@ const { notify } = useNotification();
 
         {/* ── Calendar grid (only when data is ready) ──────────────────── */}
         {!isLoading && !error && (
-          <section style={{ marginTop: '1rem' }}>
+          <section
+            style={{
+              marginTop: '1rem',
+              display: 'flex',
+              flexDirection: 'column',
+              flex: 1,
+              minHeight: 0,
+            }}
+          >
             <h2>Facility Calendar</h2>
-            <CalendarGrid
-              facilities={facilities}
-              slotsMap={slotsMap}
-              selectedDate={selectedDate}
-              onSlotClick={handleSlotClick}
-              onSlotRangeSelect={selectSlotRange}
-              filters={filters}
-              multiSelectMode={multiSelectMode}
-              selectedSlots={selectedSlots}
-              selectedFacility={multiSelectFacility}
-            />
+            <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
+              <CalendarGrid
+                facilities={facilities}
+                slotsMap={slotsMap}
+                selectedDate={selectedDate}
+                onSlotClick={handleSlotClick}
+                onSlotRangeSelect={selectSlotRange}
+                filters={filters}
+                multiSelectMode={multiSelectMode}
+                selectedSlots={selectedSlots}
+                selectedFacility={multiSelectFacility}
+              />
+            </div>
           </section>
         )}
 
